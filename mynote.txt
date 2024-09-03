@@ -1,0 +1,18 @@
+Tech Stack
+- Next JS 14 ✅
+- React ✅
+- Tailwind ✅
+- Prisma
+- Daisy UI / Shadcn UI
+- PostGres
+- Axios ?
+- HeroIcons
+
+TO DO:
+- Install Package:
+    daisyui = npm i -D daisyui@latest ✅
+    prisma = npm i -D prisma
+    axios = npm install axios, yarn add axios
+    HeroIcons = npm install @heroicons/react
+
+- Migrasi Native ke Next 
