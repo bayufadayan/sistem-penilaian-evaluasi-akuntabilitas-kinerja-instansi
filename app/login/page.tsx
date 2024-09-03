@@ -1,12 +1,13 @@
 import Image from "next/image";
 import NavbarLite from "@/app/components/navbarLite";
-import Footer from "../../components/footer";
+import Footer from "../components/footer";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 
 export default function LoginPage() {
   return (
     <div>
       <NavbarLite />
-      {/* Content Login */}
+      
       <main className="login-main">
         <div className="container">
           <div className="login-container">
@@ -22,11 +23,11 @@ export default function LoginPage() {
                 <div className="input-container">
                   <div className="email-container">
                     <label htmlFor="email">Email</label>
-                    <input type="email" name="email" id="email" />
+                    <input type="email" name="email" id="email" className="input-bordered input tracking-widest"/>
                   </div>
                   <div className="password-container">
                     <label htmlFor="password">Password</label>
-                    <input type="password" name="password" id="password" />
+                    <input type="password" name="password" id="password"/>
                   </div>
                 </div>
 
@@ -75,8 +76,8 @@ export default function LoginPage() {
                 <Image
                   src="/images/illustration1.png"
                   alt="illustrasi 1"
-                  width={308}
-                  height={308}
+                  width={390}
+                  height={390}
                 />
               </div>
 

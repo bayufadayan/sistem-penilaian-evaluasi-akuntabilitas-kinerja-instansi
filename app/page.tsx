@@ -1,9 +1,9 @@
-import LoginPage from "./layouts/login/page";
+import Dashboard from "./dashboard/page";
 
 export default function Home() {
   return (
     <div>
-      <LoginPage />
+      <Dashboard />
     </div>
   );
 }

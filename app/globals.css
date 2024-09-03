@@ -16,6 +16,11 @@
   }
 }
 
+::selection {
+  background-color: green;
+  color: white;
+}
+
 body {
 }
 
@@ -26,14 +31,14 @@ body {
 }
 
 /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^ MY CSS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"); */
 
 /* ========================== GENERAL COMPONENTS ========================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Inter", sans-serif;
+  /* font-family: "Inter", sans-serif; */
 }
 
 footer {
@@ -162,11 +167,13 @@ footer {
 .email-container input,
 .password-container input {
   padding-block: 8px;
-  padding-inline: 4px;
+  padding-inline: 10px;
   border-radius: 10px;
   height: 48px;
   border: none;
   background-color: #e8e8e8;
+  outline: rgba(0, 0, 0, 0.1);
+  font-weight: 500;
 }
 
 .remember-and-forgot {
