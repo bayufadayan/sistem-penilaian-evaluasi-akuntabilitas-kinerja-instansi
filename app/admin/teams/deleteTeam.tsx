@@ -4,19 +4,13 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import AdminDeleteButton from "../components/buttons/adminDeleteButton";
 
-type User = {
+type Team = {
   id: number;
-  email: string;
-  password: string;
-  nip: bigint;
   name: string;
-  role: string;
-  gender: string;
-  status: string;
-  id_team: number;
 };
 
-export default function DeleteAccount({ user }: { user: User }) {
+export default function DeleteTeam({ team }: { team: Team }) {
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,9 +20,9 @@ export default function DeleteAccount({ user }: { user: User }) {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleDelete = async (userId: number) => {
+  const handleDelete = async (teamId: number) => {
     setIsLoading(true);
-    await axios.delete(`/../api/users/${userId}`);
+    await axios.delete(`/api/teams/${teamId}`);
     router.refresh();
     setIsLoading(false);
     setIsModalOpen(false);
@@ -43,7 +37,7 @@ export default function DeleteAccount({ user }: { user: User }) {
         <div
           id="popup-modal"
           tabIndex={-1}
-          className="fixed inset-0 z-50 flex items-center justify-center w-full h-screen bg-gray-900 bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 h-full w-full"
         >
           <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700">
             {/* Close button */}
@@ -90,7 +84,7 @@ export default function DeleteAccount({ user }: { user: User }) {
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
                 Apakah Anda yakin ingin menghapus akun{" "}
                 <span className="inline-block bg-slate-800 text-slate-400 text-base font-semibold rounded-lg px-2 py-1">
-                  {user.name}?
+                  {team.name}?
                 </span>
               </h3>
 
@@ -98,7 +92,7 @@ export default function DeleteAccount({ user }: { user: User }) {
                 <button
                   type="button"
                   className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                  onClick={() => handleDelete(user.id)}
+                  onClick={() => handleDelete(team.id)}
                 >
                   Ya, Saya yakin
                 </button>
@@ -106,7 +100,7 @@ export default function DeleteAccount({ user }: { user: User }) {
                 <button
                   type="button"
                   className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                  onClick={() => handleDelete(user.id)}
+                  onClick={() => handleDelete(team.id)}
                 >
                   <svg
                     aria-hidden="true"

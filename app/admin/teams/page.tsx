@@ -1,7 +1,8 @@
 import AdminNavbar from "../components/adminNavbar";
 import AdminSidebar from "../components/adminSidebar";
-import AdminAddButton from "../components/adminAddButton";
-import AdminEditButton from "../components/buttons/adminEditButton";
+import AddTeam from "./addTeam";
+import UpdateTeam from "./updateTeam";
+import DeleteTeam from "./deleteTeam";
 import Link from "next/link";
 import { prisma } from "../../lib/prisma";
 
@@ -11,7 +12,7 @@ const getTeams = async () => {
       id: true,
       name: true,
     },
-  })
+  });
   return res;
 };
 
@@ -36,11 +37,9 @@ export default async function ManagementAccountPage() {
 
         {/* Manajemen User Bang */}
         <div className="flex justify-between items-center mb-1">
-          <h1 className="text-2xl font-semibold mb-4">
-            Manajemen Tim
-          </h1>
+          <h1 className="text-2xl font-semibold mb-4">Manajemen Tim</h1>
 
-          <AdminAddButton props="/admin/teams/create/" label="Tambah Tim" />
+          <AddTeam teams={teams} />
         </div>
 
         {/* Tabel Konten */}
@@ -61,15 +60,18 @@ export default async function ManagementAccountPage() {
                     <td className="py-4">{index + 1}</td>
                     <td className="pe-8">{team.name.toUpperCase()}</td>
                     <td>
-                      <button type="button" className="btn btn-primary">Tambah Anggota</button>
-                      <button type="button" className="btn btn-primary">Lihat Anggota</button>
-                      </td>
+                      <button type="button" className="btn btn-primary">
+                        Tambah Anggota
+                      </button>
+                      <button type="button" className="btn btn-primary">
+                        Lihat Anggota
+                      </button>
+                    </td>
                     <td>
-                      <AdminEditButton
-                        props={`/admin/accounts/edit/${team.id}`}
-                      />
-
-                      {/* <DeleteAccount team={team} /> */}
+                      <span className="flex items-stretch justify-start space-x-0">
+                        <UpdateTeam team={team} />
+                        <DeleteTeam team={team} />
+                      </span>
                     </td>
                   </tr>
                 ))}

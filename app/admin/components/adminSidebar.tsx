@@ -143,7 +143,7 @@ export default function AdminSidebar() {
                     >
                       <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z" />
                     </svg>
-                    <span className="ml-3">Forms</span>
+                    <span className="ml-3 text-left">Manajemen LKE AKIP</span>
                   </span>
                   <svg
                     className={`w-5 h-5 transition-transform ${
@@ -167,24 +167,53 @@ export default function AdminSidebar() {
                 {isDropdownOpen && (
                   <ul className="ml-8 mt-2 space-y-2">
                     <li>
+                      <Link href={"/admin/evaluations"}>
+                        <button
+                          type="button"
+                          className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                          aria-controls="dropdown-example"
+                          data-collapse-toggle="dropdown-example"
+                        >
+                          Lembar Kerja Evaluasi
+                        </button>
+                      </Link>
+                    </li>
+                    <hr className="opacity-20" />
+                    <li>
+                      <Link href={"/admin/evaluations/components/"}>
                       <button
                         type="button"
                         className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                         aria-controls="dropdown-example"
                         data-collapse-toggle="dropdown-example"
                       >
-                        Form 1
+                        Components
                       </button>
+                      </Link>
                     </li>
                     <li>
-                      <button
+                    <Link href={"/admin/evaluations/sub-components/"}>
+                    <button
                         type="button"
                         className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                         aria-controls="dropdown-example"
                         data-collapse-toggle="dropdown-example"
                       >
-                        Form 1
+                        Sub-Components
                       </button>
+                      </Link>
+                    </li>
+                    <li>
+                    <Link href={"/admin/evaluations/criteria/"}>
+                    <button
+                        type="button"
+                        className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        aria-controls="dropdown-example"
+                        data-collapse-toggle="dropdown-example"
+                      >
+                        Criteria
+                      </button>
+                      </Link>
                     </li>
                   </ul>
                 )}
