@@ -62,7 +62,7 @@ export default function AdminNavbar() {
         <div className="flex items-center space-x-3">
           {/* Profile Picture */}
           <Image
-            src="/profile.png" // ganti dengan path gambar profile
+            src="/images/card-bg-2png.png"
             alt="Profile"
             width={40}
             height={40}

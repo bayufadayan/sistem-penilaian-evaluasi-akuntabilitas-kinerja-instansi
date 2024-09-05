@@ -27,16 +27,16 @@ export default function DeleteAccount({ user }: { user: User }) {
   };
 
   const handleDelete = async (userId: number) => {
-    setIsLoading(true)
+    setIsLoading(true);
     await axios.delete(`/../api/users/${userId}`);
     router.refresh();
-    setIsLoading(false)
+    setIsLoading(false);
     setIsModalOpen(false);
   };
 
   return (
     <>
-      <AdminDeleteButton handleProps={handleModalToggle}/>
+      <AdminDeleteButton handleProps={handleModalToggle} />
 
       {/* Main modal */}
       {isModalOpen && (

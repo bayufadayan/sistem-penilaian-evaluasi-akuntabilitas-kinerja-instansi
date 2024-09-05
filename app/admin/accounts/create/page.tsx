@@ -1,9 +1,7 @@
 "use client";
-import type { User } from "@prisma/client";
 import { type SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { redirect } from 'next/navigation'
 
 import AdminNavbar from "../../components/adminNavbar";
 import AdminSidebar from "../../components/adminSidebar";

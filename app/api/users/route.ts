@@ -20,7 +20,7 @@ export const POST = async (request: Request) => {
 
     const responseUser = {
         ...user,
-        nip: user.nip.toString(), // Konversi BigInt menjadi string di sini
+        nip: user.nip.toString(),
     };
     return NextResponse.json(responseUser, { status: 201 });
 }

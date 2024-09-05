@@ -28,11 +28,11 @@ enum Status {
   INACTIVE
 }
 
-// model Team {
-//   id    Int     @id @default(autoincrement())
-//   name  String  @unique
-//   users Users[]
-// }
+model Team {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  // users Users[]
+}
 
 model User {
   id Int @id @default(autoincrement())
