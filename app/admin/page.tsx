@@ -1,11 +1,27 @@
-import AdminSidebar from "./components/adminSidebar"
-import AdminNavbar from "./components/adminNavbar"
+import AdminSidebar from "./components/adminSidebar";
+import AdminNavbar from "./components/adminNavbar";
 
-export default function AdminPage() {
-    return (
-        <>
-            <AdminSidebar/>
-            <AdminNavbar/>
-        </>
-    )
+// const getUsers = async () => {
+//   const res = await prisma.user.findMany({
+//     select: {
+//       id: true,
+//       email: true,
+//       nip: true,
+//       name: true,
+//       role: true,
+//       gender: true,
+//       status: true,
+//     },
+//   });
+//   return res;
+// };
+
+export default async function AdminPage() {
+
+  return (
+    <>
+      <AdminSidebar />
+      <AdminNavbar />
+    </>
+  );
 }
