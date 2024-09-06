@@ -22,7 +22,7 @@ export default function CreateAccountPage() {
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await axios.post("/../../api/users", {
+    await axios.post("/api/users", {
       name: name,
       nip: Number(nip),
       email: email,

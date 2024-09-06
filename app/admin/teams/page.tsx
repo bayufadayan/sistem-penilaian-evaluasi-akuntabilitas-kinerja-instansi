@@ -59,7 +59,7 @@ export default async function ManagementAccountPage() {
                   <tr className="border-b" key={team.id}>
                     <td className="py-4">{index + 1}</td>
                     <td className="pe-8">{team.name.toUpperCase()}</td>
-                    <td>
+                    <td className="">
                       <button type="button" className="btn btn-primary">
                         Tambah Anggota
                       </button>

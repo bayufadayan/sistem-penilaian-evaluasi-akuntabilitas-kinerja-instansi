@@ -28,6 +28,13 @@ enum Status {
   INACTIVE
 }
 
+enum StatusEvaluation {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
 model Team {
   id    Int     @id @default(autoincrement())
   name  String  @unique
@@ -35,16 +42,56 @@ model Team {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String
-  password String
-  nip BigInt
-  name String
-  role Role
-  gender Gender
-  status Status
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  id_team Int
+  id          Int       @id @default(autoincrement())
+  email       String
+  password    String
+  nip         BigInt
+  name        String
+  role        Role
+  gender      Gender
+  status      Status
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  id_team     Int
   // team Team @relation(fields: [id_team], references: [id])
+}
+
+model EvaluationSheet {
+  id          Int               @id @default(autoincrement())
+  title       String
+  date_start  DateTime
+  date_finish DateTime
+  description String
+  status      StatusEvaluation  @default(PENDING)
+  year        String
+  // components  Component[]
+}
+
+model Component {
+  id           Int              @id @default(autoincrement())
+  name         String
+  description  String?
+  weight       Float
+  // id_team      Int
+  // id_LKE       Int
+  // evaluation   EvaluationSheet?  @relation(fields: [id_LKE], references: [id])
+  // subComponents SubComponent[]
+}
+
+model SubComponent {
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String?
+  weight        Float
+  // id_components Int
+  // component     Component    @relation(fields: [id_components], references: [id])
+  // criteria      Criteria[]
+}
+
+model Criteria {
+  id                Int         @id @default(autoincrement())
+  name              String
+  description       String?
+  // id_subcomponents  Int
+  // subComponent      SubComponent @relation(fields: [id_subcomponents], references: [id])
 }
