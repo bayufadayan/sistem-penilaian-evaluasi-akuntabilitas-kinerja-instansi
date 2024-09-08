@@ -2,7 +2,7 @@
 import { useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import type { Criteria, SubComponent } from "@prisma/client";
+import type { SubComponent } from "@prisma/client";
 
 export default function AddCriteria({ subComponents }: { subComponents : SubComponent[] }) {
   const [name, setName] = useState("");
