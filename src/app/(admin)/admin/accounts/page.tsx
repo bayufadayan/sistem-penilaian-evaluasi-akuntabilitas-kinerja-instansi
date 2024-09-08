@@ -16,6 +16,11 @@ const getUsers = async () => {
       gender: true,
       status: true,
       id_team: true,
+      team: {
+        select: {
+          name: true,
+        },
+      },
     },
   });
   return res;
@@ -77,7 +82,7 @@ export default async function ManagementAccountPage() {
                     >
                       {user.status}
                     </td>
-                    <td>{user.id_team}</td>
+                    <td>{user.team?.name || 'Tidak ada tim'}</td>
                     <td>
                       <AdminEditButton props={`/admin/accounts/edit/${user.id}`}/>
                       <DeleteAccount user={user} />

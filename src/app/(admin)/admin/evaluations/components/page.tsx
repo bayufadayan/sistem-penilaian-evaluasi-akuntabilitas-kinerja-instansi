@@ -13,6 +13,16 @@ const getComponents = async () => {
       weight: true,
       id_team: true,
       id_LKE: true,
+      team: {
+        select: {
+          name: true, 
+        },
+      },
+      evaluation: {
+        select: {
+          title: true,
+        },
+      },
     },
   });
   return res;
@@ -73,9 +83,9 @@ export default async function ManagementAccountPage() {
                     <td className="py-4">{index + 1}</td>
                     <td className="">{component.name.toUpperCase()}</td>
                     <td className="">{component.description}</td>
-                    <td className="">{component.weight}</td>
-                    <td className="">{component.id_team}</td>
-                    <td className="">{component.id_LKE}</td>
+                    <td className="">{component.weight.toFixed(1)}</td>
+                    <td className="">{component.team?.name || "Tidak Ditemukan"}</td>
+                    <td className="">{component.evaluation?.title || "Tidak Ditemukan"}</td>
                     <td>
                       <span className="flex items-stretch justify-start space-x-0">
                       <UpdateComponent component={component} teams={teams} evaluationSheets={evaluationSheets}/>

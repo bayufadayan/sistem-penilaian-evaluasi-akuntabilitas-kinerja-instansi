@@ -55,7 +55,6 @@ export const PATCH = async (
     },
     data: {
       email: body.email,
-      password: body.password,
       nip: BigInt(body.nip),
       name: body.name,
       role: body.role,

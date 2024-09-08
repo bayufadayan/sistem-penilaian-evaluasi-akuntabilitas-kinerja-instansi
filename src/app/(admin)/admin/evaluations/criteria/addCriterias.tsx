@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import type { Criteria, SubComponent } from "@prisma/client";
 
-export default function AddCriteria({ criterias, subComponents }: { criterias: Criteria[], subComponents : SubComponent[] }) {
+export default function AddCriteria({ subComponents }: { subComponents : SubComponent[] }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [idSubComponents, setIdSubComponents] = useState("");
@@ -68,6 +68,7 @@ export default function AddCriteria({ criterias, subComponents }: { criterias: C
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
                 placeholder="Nama Kriteria"
+                required
               />
             </div>
             <div className="form-control w-full">
@@ -91,6 +92,7 @@ export default function AddCriteria({ criterias, subComponents }: { criterias: C
                 onChange={(e) => setIdSubComponents(e.target.value)}
                 id="idSubComponents"
                 className="select select-bordered w-full"
+                required
               >
                 <option value="">Select Sub-Components</option>
                 {subComponents.map((subComponent) => (

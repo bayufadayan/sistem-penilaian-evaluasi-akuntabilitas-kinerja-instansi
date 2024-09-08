@@ -5,10 +5,8 @@ import axios from "axios";
 import type { SubComponent, Component } from "@prisma/client";
 
 export default function AddSubComponent({
-  subComponents,
   components,
 }: {
-  subComponents: SubComponent[];
   components: Component[];
 }) {
   const [name, setName] = useState("");
@@ -76,7 +74,8 @@ export default function AddSubComponent({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
-                placeholder="Nama Komponen"
+                placeholder="Nama Sub Komponen"
+                required
               />
             </div>
             <div className="form-control w-full">
@@ -96,6 +95,7 @@ export default function AddSubComponent({
                 onChange={(e) => setWeight(e.target.value)}
                 className="input input-bordered"
                 placeholder="0.00"
+                required
               />
             </div>
             <div className="col-span-1">
@@ -110,6 +110,7 @@ export default function AddSubComponent({
                 onChange={(e) => setIdComponent(e.target.value)}
                 id="idComponent"
                 className="select select-bordered w-full"
+                required
               >
                 <option value="">Select Components</option>
                 {components.map((component) => (

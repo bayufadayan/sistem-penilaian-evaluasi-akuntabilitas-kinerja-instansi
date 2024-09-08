@@ -80,6 +80,7 @@ export default function AddComponents({
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
                 placeholder="Nama Komponen"
+                required
               />
             </div>
             <div className="form-control w-full">
@@ -99,6 +100,7 @@ export default function AddComponents({
                 onChange={(e) => setWeight(e.target.value)}
                 className="input input-bordered"
                 placeholder="0.00"
+                required
               />
             </div>
             <div className="form-control w-full">
@@ -117,6 +119,7 @@ export default function AddComponents({
                     onChange={(e) => setIdTeam(e.target.value)}
                     id="idTeam"
                     className="input input-bordered w-full"
+                    required
                   >
                     <option value="">Select team</option>
                     {teams.map((team) => (
@@ -138,6 +141,7 @@ export default function AddComponents({
                     onChange={(e) => setIdEvaluationSheet(e.target.value)}
                     id="idEvaluationSheet"
                     className="input input-bordered w-full"
+                    required
                   >
                     <option value="">Select LKE</option>
                     {evaluationSheets.map((evaluationSheet) => (
