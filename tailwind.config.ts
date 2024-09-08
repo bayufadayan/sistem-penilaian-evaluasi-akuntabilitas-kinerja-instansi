@@ -14,6 +14,9 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: ["light"], // Hanya mengaktifkan tema light mode
+  },
 };
 export default config;

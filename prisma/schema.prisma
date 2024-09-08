@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum StatusEvaluation {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Team {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  users      User[]
+  components Component[]
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  nip        BigInt
+  name       String
+  role       Role
+  gender     Gender
+  status     Status
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  id_team    Int
+  team       Team     @relation(fields: [id_team], references: [id], onDelete: Cascade)
+  Score      Score[]
+}
+
+model EvaluationSheet {
+  id          Int              @id @default(autoincrement())
+  title       String
+  date_start  DateTime
+  date_finish DateTime
+  description String
+  status      StatusEvaluation @default(PENDING)
+  year        String
+  components  Component[]
+}
+
+model Component {
+  id            Int              @id @default(autoincrement())
+  name          String
+  description   String?
+  weight        Float
+  id_team       Int
+  id_LKE        Int
+  team          Team?            @relation(fields: [id_team], references: [id])
+  evaluation    EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
+  subComponents SubComponent[]
+}
+
+model SubComponent {
+  id            Int        @id @default(autoincrement())
+  name          String
+  description   String?
+  weight        Float
+  id_components Int
+  component     Component  @relation(fields: [id_components], references: [id], onDelete: Cascade)
+  criteria      Criteria[]
+}
+
+model Criteria {
+  id               Int          @id @default(autoincrement())
+  name             String
+  description      String?
+  id_subcomponents Int
+  subComponent     SubComponent @relation(fields: [id_subcomponents], references: [id], onDelete: Cascade)
+  Score            Score[]
+}
+
+model Score {
+  id           Int        @id @default(autoincrement())
+  score        String
+  notes        String?
+  created_at   DateTime   @default(now())
+  id_criterias Int
+  id_users     Int
+  criteria     Criteria   @relation(fields: [id_criterias], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [id_users], references: [id], onDelete: Cascade)
+  Evidence     Evidence[]
+}
+
+model Evidence {
+  id               Int      @id @default(autoincrement())
+  file_name        String
+  file_type        String
+  file_size        Float
+  file_path        String
+  date_uploaded_at DateTime @default(now())
+  id_score         Int
+  score            Score    @relation(fields: [id_score], references: [id], onDelete: Cascade)
+}
