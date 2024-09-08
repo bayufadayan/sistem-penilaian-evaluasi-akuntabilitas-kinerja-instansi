@@ -62,6 +62,7 @@ export default function UpdateCriteria({ criteria, subComponents }: { criteria: 
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
                 placeholder="Nama Kriteria"
+                required
               />
             </div>
             <div className="form-control w-full">
@@ -85,6 +86,7 @@ export default function UpdateCriteria({ criteria, subComponents }: { criteria: 
                 onChange={(e) => setIdSubComponents(Number.parseInt(e.target.value))}
                 id="idSubComponents"
                 className="select select-bordered w-full"
+                required
               >
                 <option value="">Select Sub-Components</option>
                 {subComponents.map((subComponent) => (

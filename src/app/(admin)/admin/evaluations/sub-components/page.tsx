@@ -13,6 +13,11 @@ const getSubComponents = async () => {
       description: true,
       weight: true,
       id_components: true,
+      component: {
+        select: {
+          name: true, 
+        },
+      },
     },
   });
   return res;
@@ -42,7 +47,7 @@ export default async function EvaluationPage() {
         <div className="flex justify-between items-center mb-1">
           <h1 className="text-2xl font-semibold mb-4"> Manajemen Sub Komponen</h1>
 
-          <AddSubComponent subComponents={subComponents} components={components} />
+          <AddSubComponent components={components} />
         </div>
 
         {/* Tabel Konten */}
@@ -66,7 +71,7 @@ export default async function EvaluationPage() {
                   <td className="">{subComponent.name.toUpperCase()}</td>
                   <td className="">{subComponent.description}</td>
                   <td className="">{subComponent.weight}</td>
-                  <td className="">{subComponent.id_components}</td>
+                  <td className="">{subComponent.component.name}</td>
                   <td>
                     <span className="flex items-stretch justify-start space-x-0">
                       <UpdateSubComponent subComponent={subComponent} components={components}/>

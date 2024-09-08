@@ -74,6 +74,7 @@ export default function UpdateComponent({
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
                 placeholder="Nama Komponen"
+                required
               />
             </div>
             <div className="form-control w-full">
@@ -93,6 +94,7 @@ export default function UpdateComponent({
                 onChange={(e) => setWeight(Number.parseFloat(e.target.value))}
                 className="input input-bordered"
                 placeholder="0.00"
+                required
               />
             </div>
             <div className="form-control w-full">
@@ -111,6 +113,7 @@ export default function UpdateComponent({
                     onChange={(e) => setIdTeam(Number.parseInt(e.target.value))}
                     id="idTeam"
                     className="input input-bordered w-full"
+                    required
                   >
                     <option value="">Select team</option>
                     {teams.map((team) => (
@@ -132,6 +135,7 @@ export default function UpdateComponent({
                     onChange={(e) => setIdEvaluationSheet(Number.parseInt(e.target.value))}
                     id="idEvaluationSheet"
                     className="input input-bordered w-full"
+                    required
                   >
                     <option value="">Select LKE</option>
                     {evaluationSheets.map((evaluationSheet) => (

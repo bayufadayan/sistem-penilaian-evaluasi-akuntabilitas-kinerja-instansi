@@ -70,6 +70,7 @@ export default function UpdateSubComponent({
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
                 placeholder="Nama Sub Komponen"
+                required
               />
             </div>
             <div className="form-control w-full">
@@ -89,6 +90,7 @@ export default function UpdateSubComponent({
                 onChange={(e) => setWeight(Number.parseFloat(e.target.value))}
                 className="input input-bordered"
                 placeholder="0.00"
+                required
               />
             </div>
             <div className="col-span-1">
@@ -103,6 +105,7 @@ export default function UpdateSubComponent({
                 onChange={(e) => setIdComponents(Number.parseInt(e.target.value))}
                 id="idComponent"
                 className="select select-bordered w-full"
+                required
               >
                 <option value="">Select Components</option>
                 {components.map((component) => (

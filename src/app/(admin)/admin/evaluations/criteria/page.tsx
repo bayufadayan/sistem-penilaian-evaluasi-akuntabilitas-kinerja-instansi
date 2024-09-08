@@ -11,6 +11,11 @@ const getCriterias = async () => {
       name: true,
       description: true,
       id_subcomponents: true,
+      subComponent: {
+        select: {
+          name: true,
+        }
+      }
     },
   });
   return res;
@@ -42,7 +47,7 @@ export default async function ManagementAccountPage() {
         <div className="flex justify-between items-center mb-1">
           <h1 className="text-2xl font-semibold mb-4">Manajemen Tim</h1>
 
-          <AddCriteria criterias={criterias} subComponents={subComponents}/>
+          <AddCriteria subComponents={subComponents}/>
         </div>
 
         {/* Tabel Konten */}
@@ -64,7 +69,7 @@ export default async function ManagementAccountPage() {
                     <td className="py-4">{index + 1}</td>
                     <td className="pe-8">{criteria.name.toUpperCase()}</td>
                     <td className="">{criteria.description}</td>
-                    <td className="">{criteria.id_subcomponents}</td>
+                    <td className="">{criteria.subComponent.name}</td>
                     <td>
                       <span className="flex items-stretch justify-start space-x-0">
                         <UpdateCriteria criteria={criteria} subComponents={subComponents} />

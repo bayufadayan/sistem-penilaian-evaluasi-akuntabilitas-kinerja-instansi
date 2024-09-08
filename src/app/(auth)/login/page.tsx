@@ -1,8 +1,24 @@
+'use client'
 import NavbarLite from "@/components/navbarLite";
 import Footer from "@/components/footer";
 import Image from "next/image";
+import type { FC } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signInFormSchema } from '@/lib/form-schema';
 
-export default function LoginPage() {
+import type { z } from "zod";
+
+const LoginPage: FC = () => {
+  const form = useForm<z.infer<typeof signInFormSchema>>({
+    resolver: zodResolver(signInFormSchema),
+  });
+  
+
+  const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
+    console.log(values);
+  };
+
   return (
     <div>
       <NavbarLite />
@@ -18,28 +34,34 @@ export default function LoginPage() {
             </div>
 
             <div className="login-form">
-              <form method="POST">
+              <form method="POST" onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="input-container">
                   <div className="email-container">
                     <label htmlFor="email">Email</label>
                     <input
+                      {...form.register("email")}
                       type="email"
                       name="email"
                       id="email"
-                      value={""}
                       className="input-bordered input tracking-widest"
                       required
                     />
+                    {form.formState.errors.email && (
+                      <p className="text-red-700">{form.formState.errors.email.message}</p>
+                    )}
                   </div>
                   <div className="password-container">
                     <label htmlFor="password">Password</label>
                     <input
+                      {...form.register("password")}
                       type="password"
                       name="password"
                       id="password"
-                      value={""}
                       required
                     />
+                    {form.formState.errors.password && (
+                      <p>{form.formState.errors.password.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -77,7 +99,7 @@ export default function LoginPage() {
                   </span>
                 </div>
 
-                <button type="submit">Masuk</button>
+                <button type="submit" className="hover:bg-blue-600 font-bold transition duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-300">Masuk</button>
               </form>
             </div>
           </div>
@@ -108,4 +130,6 @@ export default function LoginPage() {
       <Footer />
     </div>
   );
-}
+};
+
+export default LoginPage;

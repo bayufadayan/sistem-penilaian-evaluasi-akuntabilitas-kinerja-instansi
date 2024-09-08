@@ -1,25 +1,48 @@
 "use client";
-import { useState, type SyntheticEvent } from "react";
+import { useState } from "react";
 import type { Team } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { teamFormSchema } from "@/lib/form-schema";
+
+type TeamFormData = {
+  name: string;
+};
 
 export default function UpdateTeam({ team }: { team: Team }) {
-  const [name, setName] = useState(team.name);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
-  const handleUpdate = async (e: SyntheticEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<TeamFormData>({
+    resolver: zodResolver(teamFormSchema),
+    defaultValues: {
+      name: team.name,
+    },
+  });
+
+  const handleUpdate = async (data: TeamFormData) => {
     setIsLoading(true);
-    await axios.patch(`/api/teams/${team.id}`, {
-      name: name,
-    });
-    setIsLoading(false);
-    router.refresh();
-    setIsOpen(false);
+    try {
+      await axios.patch(`/api/teams/${team.id}`, {
+        name: data.name,
+      });
+      setIsLoading(false);
+      reset();
+      router.refresh();
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error:", error);
+      setIsLoading(false);
+    }
   };
 
   const handleModal = () => {
@@ -49,16 +72,18 @@ export default function UpdateTeam({ team }: { team: Team }) {
       <div className={isOpen ? "modal modal-open" : "modal"}>
         <div className="modal-box">
           <h3 className="font-bold text-lg">Update {team.name}</h3>
-          <form onSubmit={handleUpdate}>
+          <form onSubmit={handleSubmit(handleUpdate)}>
             <div className="form-control w-full">
               <label className="label font-bold">Nama Tim</label>
               <input
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="input input-bordered"
+                {...register("name")} // Register input for form validation
+                className={`input input-bordered ${errors.name ? "input-error" : ""}`}
                 placeholder="Nama Tim"
               />
+              {errors.name?.message && (
+                <span className="text-red-500">{errors.name.message}</span>
+              )}
             </div>
             <div className="modal-action">
               <button type="button" className="btn" onClick={handleModal}>

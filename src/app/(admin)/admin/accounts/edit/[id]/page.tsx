@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import type { Team } from "@prisma/client";
 
+
 const fetchTeams = async () => {
   const res = await axios.get("/api/teams");
   return res.data;
@@ -20,7 +21,6 @@ export default function UpdateAccountPage({
   const [name, setName] = useState("");
   const [nip, setNip] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [gender, setGender] = useState("");
   const [status, setStatus] = useState("");
@@ -37,7 +37,6 @@ export default function UpdateAccountPage({
         name: name,
         nip: Number(nip),
         email: email,
-        password: password,
         role: role,
         gender: gender,
         status: status,
@@ -48,7 +47,6 @@ export default function UpdateAccountPage({
       setName("");
       setNip("");
       setEmail("");
-      setPassword("");
       setGender("");
       setStatus("");
       setIdTeam("");
@@ -88,7 +86,6 @@ export default function UpdateAccountPage({
       setName(user.name || "");
       setNip(user.nip || "");
       setEmail(user.email || "");
-      setPassword(user.password || "");
       setRole(user.role || "");
       setGender(user.gender || "");
       setStatus(user.status || "");
@@ -103,7 +100,7 @@ export default function UpdateAccountPage({
   return (
     <>
       {loadingData && (
-        <div className="fixed inset-0 bg-opacity-75 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-opacity-75 flex items-center justify-center z-50 bg-black">
           <div className="text-center">
             <svg
               aria-hidden="true"
@@ -159,7 +156,7 @@ export default function UpdateAccountPage({
               <input
                 value={nip}
                 onChange={(e) => setNip(e.target.value)}
-                type="text"
+                type="number"
                 id="nip"
                 className="input input-bordered w-full"
                 placeholder="Enter NIP"
@@ -193,13 +190,11 @@ export default function UpdateAccountPage({
                 Password
               </label>
               <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 id="password"
-                className="input input-bordered w-full"
-                placeholder="Enter password"
-                required
+                className="input input-bordered w-full disabled"
+                placeholder="Tidak Dapat merubah password secara instan"
+                disabled
               />
             </div>
 
