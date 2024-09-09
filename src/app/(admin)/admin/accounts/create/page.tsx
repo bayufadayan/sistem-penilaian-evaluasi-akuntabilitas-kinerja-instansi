@@ -26,6 +26,8 @@ const UserForm: FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [isEmailNotAvailable, setIsEmailNotAvailable] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -38,6 +40,7 @@ const UserForm: FC = () => {
 
   const onSubmit = async (values: z.infer<typeof userFormSchema>) => {
     setIsLoading(true);
+    setIsEmailNotAvailable(false);
 
     try {
       await axios.post("/api/users", {
@@ -54,6 +57,13 @@ const UserForm: FC = () => {
       reset();
       router.push(`/admin/accounts?timestamp=${new Date().getTime()}`);
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data?.message) {
+          // alert(error.response.data.message);
+          setIsEmailNotAvailable(true);
+          setToastMessage(error.response.data.message);
+        }
+      }
       console.error("Error submitting form:", error);
     } finally {
       setIsLoading(false);
@@ -73,8 +83,66 @@ const UserForm: FC = () => {
     loadTeams();
   }, []);
 
+  useEffect(() => {
+    if (isEmailNotAvailable) {
+      const timer = setTimeout(() => {
+        setIsEmailNotAvailable(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [isEmailNotAvailable]);
+
   return (
     <div>
+      {isEmailNotAvailable && (
+        <div
+          id="toast-danger"
+          className={`fixed right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-lg border border-red-300 transition-all duration-500 ease-in-out transform ${
+            isEmailNotAvailable ? "animate-slideIn" : "animate-slideOut"
+          }`}
+          role="alert"
+        >
+          <div className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 text-red-500 bg-red-100 rounded-full shadow-md">
+            <svg
+              className="w-6 h-6"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+            </svg>
+            <span className="sr-only">Error icon</span>
+          </div>
+          <div className="ml-3 text-sm font-medium text-red-700">
+            {toastMessage}
+          </div>
+          <button
+            type="button"
+            className="ml-auto text-gray-400 hover:text-gray-900 focus:ring-2 focus:ring-red-300 p-1.5 rounded-lg bg-transparent hover:bg-gray-200 focus:bg-gray-100"
+            aria-label="Close"
+            onClick={() => setIsEmailNotAvailable(false)}
+          >
+            <span className="sr-only">Close</span>
+            <svg
+              className="w-4 h-4"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 14"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
+
       <h2 className="text-2xl font-semibold mb-4">Create New Account</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4 mb-4 grid-cols-2">

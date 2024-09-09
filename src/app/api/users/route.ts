@@ -5,6 +5,19 @@ import { hashPassword } from "@/lib/utils";
 
 export const POST = async (request: Request) => {
     const body: User = await request.json();
+
+    const existingUser = await prisma.user.findUnique({
+        where: {
+            email: body.email,
+        },
+    });
+    if (existingUser) {
+        return NextResponse.json(
+            { message: "Email sudah terdaftar, silakan daftarkan dengan email lain" },
+            { status: 400 }
+        );
+    }
+    
     const hashedPassword = await hashPassword(body.password);
     const user = await prisma.user.create({
         data: {
