@@ -1,8 +1,24 @@
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import AkipCard from "@/components/akipCard";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function Home() {
+  const {data : session, status} : {data: unknown; status: string}= useSession();
+  const router = useRouter();
+  console.log(session);
+  console.log(status);
+  
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push('/login')
+    } 
+  },[router, status])
+
   return (
     <div className="main-content">
       <div className="evaluation-card-container">

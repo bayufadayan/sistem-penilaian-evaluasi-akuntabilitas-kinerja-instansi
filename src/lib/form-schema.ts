@@ -2,9 +2,11 @@ import { z } from "zod";
 
 export const signInFormSchema = z.object({
   email: z
-    .string({ required_error: "Email is required" })
-    .email({ message: "Email is not valid" }),
-  password: z.string({ required_error: "Password is required" }),
+    .string({ required_error: "Email wajib diisi" })
+    .email({ message: "Format email tidak valid" }),
+  password: z
+    .string({ required_error: "Password wajib diisi" })
+    .min(8, { message: "Password harus terdiri dari minimal 8 karakter" }),
 });
 
 export const userFormSchema = z.object({
@@ -36,40 +38,40 @@ export const userFormSchema = z.object({
 
 export const teamFormSchema = z.object({
   name: z
-    .string({ required_error: "Nama Tim Wajib Di Isi" })
-    .min(4, { message: "Nama Tim minimal 4 Karakter" }),
+    .string({ required_error: "Nama tim wajib diisi" })
+    .min(4, { message: "Nama tim harus minimal 4 karakter" }),
 });
 
 export const evaluationSheetSchema = z.object({
-  title: z.string({ required_error: "Title is required" }),
-  date_start: z.date({ required_error: "Start date is required" }),
-  date_finish: z.date({ required_error: "Finish date is required" }),
+  title: z.string({ required_error: "Judul wajib diisi" }),
+  date_start: z.date({ required_error: "Tanggal mulai wajib diisi" }),
+  date_finish: z.date({ required_error: "Tanggal selesai wajib diisi" }),
   description: z.string().optional(),
   status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"], {
-    required_error: "Status is required",
+    required_error: "Status wajib diisi",
   }),
-  year: z.string({ required_error: "Year is required" }),
+  year: z.string({ required_error: "Tahun wajib diisi" }),
 });
 
 export const componentSchema = z.object({
-  name: z.string({ required_error: "Component name is required" }),
+  name: z.string({ required_error: "Nama komponen wajib diisi" }),
   description: z.string().optional(),
-  weight: z.number({ required_error: "Weight is required" }),
-  id_team: z.number({ required_error: "Team ID is required" }),
-  id_LKE: z.number({ required_error: "Evaluation Sheet ID is required" }),
+  weight: z.number({ required_error: "Bobot wajib diisi" }),
+  id_team: z.number({ required_error: "ID Tim wajib diisi" }),
+  id_LKE: z.number({ required_error: "ID Lembar Evaluasi wajib diisi" }),
 });
 
 export const subComponentSchema = z.object({
-  name: z.string({ required_error: "Sub-component name is required" }),
+  name: z.string({ required_error: "Nama sub-komponen wajib diisi" }),
   description: z.string().optional(),
-  weight: z.number({ required_error: "Weight is required" }),
-  id_components: z.number({ required_error: "Component ID is required" }),
+  weight: z.number({ required_error: "Bobot wajib diisi" }),
+  id_components: z.number({ required_error: "ID Komponen wajib diisi" }),
 });
 
 export const criteriaSchema = z.object({
-  name: z.string({ required_error: "Criteria name is required" }),
+  name: z.string({ required_error: "Nama kriteria wajib diisi" }),
   description: z.string().optional(),
   id_subcomponents: z.number({
-    required_error: "Sub-component ID is required",
+    required_error: "ID Sub-komponen wajib diisi",
   }),
 });
