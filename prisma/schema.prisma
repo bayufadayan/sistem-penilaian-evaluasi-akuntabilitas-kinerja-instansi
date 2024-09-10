@@ -13,7 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 enum Role {
   ADMIN
   USER
@@ -34,6 +33,12 @@ enum StatusEvaluation {
   IN_PROGRESS
   COMPLETED
   CANCELLED
+}
+
+enum ScoreExplainSection {
+  Keberadaan
+  Kualitas
+  Pemanfaat
 }
 
 model Team {
@@ -122,4 +127,12 @@ model Evidence {
   date_uploaded_at DateTime @default(now())
   id_score         Int
   score            Score    @relation(fields: [id_score], references: [id], onDelete: Cascade)
+}
+
+model ExplainingScore {
+  id         Int                 @id @default(autoincrement())
+  section    ScoreExplainSection
+  pilihan    String
+  nilai      String
+  penjelasan String
 }

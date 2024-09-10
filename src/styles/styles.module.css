@@ -446,6 +446,7 @@
   cursor: pointer;
 }
 
+
 .lkeComponentsContainer {
   display: flex;
   flex-direction: column;
@@ -525,10 +526,18 @@
 }
 
 .lkeSidebar a button {
-  background: var(
-    --Primary-Gradient,
-    linear-gradient(104deg, #01499f 0%, #1c73db 100%)
-  );
+  background: linear-gradient(104deg, #01499f 0%, #1c73db 100%);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.lkeSidebar a:hover button {
+  background: #257dfd;
+}
+
+.lkeSidebar a button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .lkeContentContainer {
@@ -623,28 +632,28 @@
 }
 
 /* ========================== PENJELASAN PENILAIAN ==========================*/
-.scroring-guide-container {
+.scroringGuideContainer {
   display: flex;
   justify-content: space-between;
 }
 
-.explain-menu-section {
+.explainMenuSection {
   width: 35%;
   display: flex;
   flex-direction: column;
 }
 
-.explain-main-menu {
+.explainMainMenu {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.explain-main-menu h5 {
+.explainMainMenu h5 {
   font-size: medium;
 }
 
-.menu-container {
+.menuContainer {
   width: 100%;
   padding: 0;
   overflow: hidden;
@@ -654,31 +663,32 @@
   background-color: white;
 }
 
-.the-menu {
+.theMenu {
   padding: 24px 30px;
   display: flex;
   justify-content: space-between;
-  color: blue;
+  /* color: #01499f; */
   font-weight: 700;
 }
 
-.the-menu:hover {
-  background-color: #00b73b;
-}
+  /* .theMenu:hover {
+    background-color: #01499f;
+    color: #fff;
+  } */
 
-.the-menu i {
+.theMenu i {
   font-size: larger;
 }
 
-.the-menu p {
+.theMenu p {
   font-size: large;
 }
 
-.next-score-explain button {
+.nextScoreExplain button {
   background-color: white;
 }
 
-.explain-table-section {
+.explainTableSection {
   background-color: white;
   width: 65%;
   margin-left: 20px;
@@ -687,48 +697,49 @@
   padding: 8px;
 }
 
-.explain-table-section table {
+.explainTableSection table {
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
 }
 
-.explain-table-section thead {
+.explainTableSection thead {
   font-weight: 700;
 }
 
-.explain-table-section thead tr {
+.explainTableSection thead tr {
   background-color: #ebebeb;
   border-radius: 10px;
 }
 
-.explain-table-section table tr td {
+.explainTableSection table tr td {
   text-align: center;
   border: none;
   outline: none;
 }
 
-.explain-table-section table tr td:first-child {
+.explainTableSection table tr td:first-child {
   width: 10%;
 }
 
-.explain-table-section table tr td:nth-child(2) {
+.explainTableSection table tr td:nth-child(2) {
   width: 15%;
 }
 
-.explain-table-section table tr td:nth-child(3) {
+.explainTableSection table tr td:nth-child(3) {
   width: 10%;
 }
 
-.explain-table-section table tr td:nth-child(4) {
+.explainTableSection table tr td:nth-child(4) {
   width: calc(100% - 35%);
   padding: 10px;
   text-align: left;
 }
 
-.explain-table-section table tr:nth-child(even) {
+.explainTableSection table tr:nth-child(even) {
   background-color: #f0f0f0;
 }
+
 
 /* ========================== ISI NILAI ==========================*/
 

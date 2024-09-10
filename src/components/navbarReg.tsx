@@ -40,12 +40,14 @@ export default function Navbar() {
   return (
     <nav className={styles.mainNav}>
       <div className={styles.navLogo}>
-        <Image
-          src="/images/nav-logo-main.svg"
-          alt="logo aplikasi"
-          width={198}
-          height={48.14}
-        />
+        <Link href={"/"}>
+          <Image
+            src="/images/nav-logo-main.svg"
+            alt="logo aplikasi"
+            width={198}
+            height={48.14}
+          />
+        </Link>
       </div>
 
       <ul className={`${styles.navMainMenu} flex space-x-8`}>

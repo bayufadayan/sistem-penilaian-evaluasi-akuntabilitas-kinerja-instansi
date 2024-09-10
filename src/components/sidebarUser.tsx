@@ -18,7 +18,15 @@ interface SubComponent {
   weight: number;
 }
 
-export default function SidebarUser({ components, evaluationTitle }: {components: Component[]; evaluationTitle: string}) {
+export default function SidebarUser({
+  components,
+  evaluationTitle,
+  evaluationId,
+}: {
+  components: Component[];
+  evaluationTitle: string;
+  evaluationId: string;
+}) {
   return (
     <div className={styles.lkeSidebar}>
       <div className={styles.sidebarHeader}>
@@ -26,7 +34,7 @@ export default function SidebarUser({ components, evaluationTitle }: {components
           <h4 className="font-bold text-lg text-center">{evaluationTitle}</h4>
         </div>
 
-        <a href="/sheets/score-guide">
+        <a href={`/sheets/${evaluationId}/instruction`}>
           <button type="button">Penjelasan Penilaian</button>
         </a>
       </div>

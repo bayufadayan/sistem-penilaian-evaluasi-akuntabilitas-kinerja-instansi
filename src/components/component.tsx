@@ -37,7 +37,7 @@ export default function ComponentCard({
           <div className={styles.componentsContent}>
             <div className={styles.componentsInfo}>
               <h2 className="text-left font-bold text-lg">{component.name}</h2>
-              <small className="text-left">Bobot: {component.weight} • 3 Sub-komponen</small>
+              <small className="text-left">Bobot: {component.weight} • {component.subComponents.length} Sub-komponen</small>
             </div>
 
             <div className={styles.componentsDropdown}>

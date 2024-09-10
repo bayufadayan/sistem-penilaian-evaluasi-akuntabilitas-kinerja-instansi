@@ -11,7 +11,7 @@ interface SubComponent {
 export default function SubComponentListCard({subComponents} : {subComponents: SubComponent[]}) {
   return (
     subComponents.map((subComponent) => (
-      <p key={subComponent.id} className="font-medium">{subComponent.name}</p>
+      <p key={subComponent.id} className="font-medium hover:bg-slate-600 hover:text-white hover:cursor-pointer">{subComponent.name}</p>
     ))
   );
 }
