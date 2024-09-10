@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export const POST = async (request: Request) => {
   const body: EvaluationSheet = await request.json();
-  const evaluationSheet= await prisma.evaluationSheet.create({
+  const evaluationSheet = await prisma.evaluationSheet.create({
     data: {
       title: body.title,
       date_start: body.date_start,
@@ -17,4 +17,16 @@ export const POST = async (request: Request) => {
   });
 
   return NextResponse.json(evaluationSheet, { status: 201 });
+};
+
+export const GET = async () => {
+  try {
+    const sheets = await prisma.evaluationSheet.findMany();
+    return NextResponse.json(sheets);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch evaluation sheets" },
+      { status: 500 }
+    );
+  }
 };

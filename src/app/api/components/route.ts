@@ -11,7 +11,7 @@ export const POST = async (request: Request) => {
             description: body.description,
             weight: Number(body.weight),
             id_team: Number(body.id_team),
-            id_LKE: Number(body.id_LKE),
+            id_LKE: body.id_LKE
         }
     });
 

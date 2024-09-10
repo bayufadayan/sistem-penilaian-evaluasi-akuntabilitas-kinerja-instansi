@@ -1,0 +1,1108 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+.allGeneral {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+/* ========================== DASHBOARD PAGE ==========================*/
+.mainHeader {
+  background-color: rgb(255, 255, 255);
+}
+
+.mainHeader nav {
+  position: fixed;
+  height: 80px;
+  background-color: white;
+  display: flex;
+  width: 100%;
+  padding: 10px 100px;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 99;
+}
+
+.mainHeader nav img {
+  height: 42px;
+}
+
+.navMainMenu {
+  display: flex;
+  list-style-type: none;
+  gap: 10px;
+}
+
+.navRightMenu {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  gap: 10px;
+  font-size: larger;
+  color: #001d6c;
+}
+
+.accountButton {
+  background-color: #e8e8e8;
+  display: flex;
+  list-style-type: none;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.accountButton li:nth-child(2) {
+  font-size: medium;
+}
+
+.heroImage{
+  background: var(
+    --Primary-Gradient,
+    linear-gradient(104deg, #01499f 0%, #1c73db 100%)
+  );
+  padding: 0px 100px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.heroContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 80px;
+}
+
+.heroTitle {
+  color: white;
+  height: 100%;
+  width: 65%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: -10px;
+}
+
+.heroTitle h1 {
+  font-size: 42px;
+  font-family: "Inter", "Helvetica Neue", "Helvetica", "Arial";
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.heroTitle p {
+  font-size: 18px;
+}
+
+.heroPictures {
+  width: 32%;
+  height: 325px;
+  overflow: hidden;
+  margin-top: -25px;
+}
+
+.heroPictures img {
+  height: 100%;
+  object-fit: cover;
+}
+
+/* /////////// */
+
+.mainContainer {
+  background-color: #ecf1f4;
+  padding: 36px 100px;
+}
+
+.mainContent {
+  display: flex;
+}
+
+.evaluationCardContainer {
+  width: 65%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.evaluationCardContainer h4{
+  font-weight: 700;
+}
+
+.evaluationCardSection {
+  display: flex;
+  gap: 32px;
+}
+
+.evaluationCard {
+  display: flex;
+  background-color: #309365;
+  border-radius: 10px;
+  height: 180px;
+  width: 315px;
+  position: relative;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.evaluationCard .background {
+  position: absolute;
+  display: flex;
+  height: 180px;
+  width: 315px;
+}
+
+.evaluationCard .background img:nth-child(1) {
+  top: 0;
+  left: 0;
+  height: 65%;
+}
+
+.evaluationCard .background img:nth-child(2) {
+  right: 10px;
+  top: 8px;
+  height: 90%;
+  position: absolute;
+}
+
+.cardInformation {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1;
+  color: white;
+}
+
+.cardInformation h3 {
+  font-size: 28px;
+  width: 80%;
+}
+
+.summaryCard {
+  background-color: white;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 49.6px 0px rgba(0, 0, 0, 0.25);
+  gap: 12px;
+}
+
+.summaryCard .title {
+  text-align: center;
+  padding-block: 10px;
+}
+
+.progressSection {
+  margin-block: 8px;
+}
+
+.persentageSection {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summaryCard p {
+  font-size: small;
+  font-weight: 600;
+}
+
+.persentage {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.progressBar {
+  background-color: #e8e8e8;
+  display: block;
+  width: 90%;
+  border-radius: 100px;
+  color: #4176b7;
+  font-size: small;
+}
+
+.insideProgress {
+  background-color: #4176b7;
+  border-radius: 100px;
+  width: 90%;
+}
+
+.progressSection button {
+  width: 100%;
+  padding: 15px 10px;
+  font-weight: 600;
+  border-radius: 10px;
+  background: var(
+    --Primary-Gradient,
+    linear-gradient(104deg, #01499f 0%, #1c73db 100%)
+  );
+  border: none;
+  color: white;
+  font-size: 15px;
+}
+
+.deadlineSection {
+  /* background-color: indigo; */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reminderContainer {
+  display: flex;
+  color: #ed1b24;
+  font-size: small;
+  align-items: center;
+}
+
+.reminderContainer p{
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.dateContainer {
+  display: flex;
+  border-radius: 10px;
+  border: 1px solid #622026;
+  background: rgba(223, 73, 88, 0.25);
+  padding: 15px 0px;
+  font-weight: 700;
+  color: #622026;
+  text-align: center;
+  margin-bottom: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dateContainer p {
+  display: flex;
+  gap: 4px;
+  font-size: 18px;
+  justify-content: center;
+  align-items: center;  
+}
+
+
+
+.summarySection {
+  /* margin-block: 16px; */
+}
+
+.summarySection p {
+  font-size: small;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.summaryScoreCard {
+  padding: 10px;
+  background-color: #ecf1f4;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.tempResult .infomation{
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+}
+
+.scoreInfo:nth-child(1) {
+  margin-bottom: 28px;
+}
+
+.scoreInfo p:nth-child(1) {
+  font-weight: 600;
+  color: #01499f;
+  margin: 0;
+}
+
+.scoreInfo p:nth-child(2) {
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.scoreInfo p:nth-child(1) {
+  font-weight: 600;
+  color: #01499f;
+}
+
+.scoreInfo p:nth-child(2) {
+  font-weight: 700;
+  font-size: medium;
+}
+
+.grade {
+  padding: 10px;
+  background-color: white;
+  font-weight: 700;
+  height: fit-content;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 0px 1px #01499f;
+}
+
+.grade .gradeScore {
+  font-size: 24px;
+}
+
+.buttonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buttonSection button {
+  width: 100%;
+  padding: 15px 10px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  color: white;
+}
+
+.buttonSection a:nth-child(1) button {
+  background: var(
+    --Primary-Gradient,
+    linear-gradient(104deg, #01499f 0%, #1c73db 100%)
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttonSection a:nth-child(2) button {
+  background-color: #00b73b;
+}
+
+.buttonSection a {
+  text-decoration: none;
+}
+
+.buttonSection a button {
+  display: flex;
+  text-align: center;
+  padding-inline: 20px;
+}
+
+.buttonSection a button i {
+  font-size: 20px;
+}
+
+.buttonSection a button p {
+  width: 100%;
+  margin-right: 10px;
+  font-size: 15px;
+}
+
+/* LKE FILL GUIDE PAGE */
+.lkeFilling {
+  padding: 0;
+  display: flex;
+}
+
+.lkeSidebar {
+  margin-top: 80px;
+  position: fixed;
+  width: 25%;
+  padding: 16px 24px 100px 24px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: white;
+  overflow-y: scroll;
+}
+
+.sidebarHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebarHeader a {
+  width: 100%;
+  text-decoration: none;
+  display: flex;
+}
+
+.sidebarHeader a button,
+.lkeSidebar a button {
+  width: 100%;
+  padding: 20px 15px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lkeComponentsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lkeComponentsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lkeComponents {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lkeSingleComponents {
+  background-color: #ecf1f4;
+  display: flex;
+  gap: 12px;
+  padding: 20px 20px;
+  border-radius: 10px;
+}
+
+.componentsIcon {
+  font-size: 50px;
+  display: flex;
+  color: #04140d;
+  /* align-items: center; */
+}
+
+.componentsContent {
+  display: flex;
+  /* width: 85%; */
+  width: 100%;
+}
+
+.componentsInfo {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.componentsInfo small {
+  color: #8c8ca1;
+  font-size: small;
+}
+
+.componentsDropdown {
+  display: flex;
+  justify-content: end;
+  font-size: 24px;
+  width: 20%;
+  padding-top: 10px;
+}
+
+.lkeCriteria {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lkeCriteria p {
+  padding: 12px;
+  background-color: #e1f2fc;
+  border-radius: 8px;
+}
+
+.lkeSidebar a {
+  display: flex;
+  width: 100%;
+  text-decoration: none;
+}
+
+.lkeSidebar a button {
+  background: var(
+    --Primary-Gradient,
+    linear-gradient(104deg, #01499f 0%, #1c73db 100%)
+  );
+}
+
+.lkeContentContainer {
+  width: 75%;
+  margin-left: 25%;
+  margin-top: 80px;
+}
+
+.lkeContent {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 100px;
+}
+
+.lkeContentHeader {
+  display: flex;
+  flex-direction: column;
+  /* gap: 8px; */
+}
+
+.lkeContentHeader h1{
+  font-weight: 700;
+}
+
+.breadcrumb {
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.lkeContentHeader h1 {
+  font-size: 46px;
+}
+
+.lkeContentHeader p {
+  font-size: 18px;
+}
+
+.fillguideMain {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.staticticAnswer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.staticticAnswer img {
+  margin-left: -12px;
+}
+
+.explainComponents {
+  /* background-color: lightblue; */
+}
+
+.explainComponents h5 {
+  font-size: medium;
+  margin-bottom: 4px;
+}
+
+.nextButton {
+  display: flex;
+  padding: 8px 0px;
+  justify-content: end;
+}
+
+.nextButton button {
+  display: flex;
+  gap: 4px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  padding-block: 12px;
+  padding-left: 10px;
+}
+
+.nextButton p {
+  display: flex;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.nextButton svg {
+  height: 28px;
+}
+
+/* ========================== PENJELASAN PENILAIAN ==========================*/
+.scroring-guide-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.explain-menu-section {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+}
+
+.explain-main-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.explain-main-menu h5 {
+  font-size: medium;
+}
+
+.menu-container {
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+.the-menu {
+  padding: 24px 30px;
+  display: flex;
+  justify-content: space-between;
+  color: blue;
+  font-weight: 700;
+}
+
+.the-menu:hover {
+  background-color: #00b73b;
+}
+
+.the-menu i {
+  font-size: larger;
+}
+
+.the-menu p {
+  font-size: large;
+}
+
+.next-score-explain button {
+  background-color: white;
+}
+
+.explain-table-section {
+  background-color: white;
+  width: 65%;
+  margin-left: 20px;
+  margin-top: 28px;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.explain-table-section table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.explain-table-section thead {
+  font-weight: 700;
+}
+
+.explain-table-section thead tr {
+  background-color: #ebebeb;
+  border-radius: 10px;
+}
+
+.explain-table-section table tr td {
+  text-align: center;
+  border: none;
+  outline: none;
+}
+
+.explain-table-section table tr td:first-child {
+  width: 10%;
+}
+
+.explain-table-section table tr td:nth-child(2) {
+  width: 15%;
+}
+
+.explain-table-section table tr td:nth-child(3) {
+  width: 10%;
+}
+
+.explain-table-section table tr td:nth-child(4) {
+  width: calc(100% - 35%);
+  padding: 10px;
+  text-align: left;
+}
+
+.explain-table-section table tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+/* ========================== ISI NILAI ==========================*/
+
+.fill-criteria-header-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.fill-criteria-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fill-criteria-heroContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.criteria-filled-progress {
+  font-size: medium;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.criteria-filled-progress .persentage {
+  background-color: #d9d9d9;
+  height: 16px;
+  border-radius: 100px;
+  overflow: hidden;
+  color: #01499f;
+}
+
+.criteria-filled-progress .progress-completed {
+  background-color: #01499f;
+  width: 70%;
+}
+
+.criteria-title-container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between; */
+}
+
+.criteria-title-container .main-title {
+  font-size: 20px;
+  margin-top: -8px;
+}
+
+.sub-component-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.sub-component-icon {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 20px;
+  background-color: #309365;
+  color: white;
+}
+
+.sub-component-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sub-component-title {
+  font-weight: 500;
+  font-size: large;
+}
+
+.sub-component-weight {
+  font-size: small;
+}
+
+.sub-component-weight span {
+  font-weight: bold;
+}
+
+.criteria-score-container {
+  width: 30%;
+  /* margin-top: 10px; */
+}
+
+.criteria-score {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 12px;
+}
+
+.score-and-persentage {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-card {
+  padding: 8px;
+  border-radius: 10px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: #01499f;
+}
+
+.score-card h5 {
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.score-card h2 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.grade-container {
+  width: 50%;
+}
+
+.grade-card {
+  background-color: white;
+  height: 136px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #01499f;
+  border-radius: 10px;
+  color: #01499f;
+  overflow: hidden;
+}
+
+.grade-card h5 {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px;
+  background-color: #01499f;
+  width: 100%;
+  text-align: center;
+  color: white;
+}
+
+.grade-card h1 {
+  font-size: 64px;
+}
+
+.fill-criteria-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.criteria-content {
+  display: flex;
+  gap: 30px;
+}
+
+.content-left-menu {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-left-menu p {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.criteria-list-container {
+  background-color: white;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  margin-bottom: 4px;
+}
+
+.the-criteria {
+  gap: 4px;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  padding: 12px 30px 12px 15px;
+}
+
+.the-criteria:hover {
+  background-color: khaki;
+}
+
+.the-criteria div {
+  font-weight: 700;
+  height: 30px;
+  width: 30px;
+  border-radius: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: grey;
+  color: white;
+  align-self: center;
+}
+
+.the-criteria p {
+  margin-right: 8px;
+  width: 80%;
+  display: flex;
+  margin: auto;
+}
+
+.the-criteria i {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.criteria-form-container {
+  width: 50%;
+}
+
+.content-left-menu .margin-top {
+  margin: 0;
+  font-weight: 700;
+}
+
+.criteria-form-container {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.criteria-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.criteria-form-subtitle {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.criteria-score-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.score-list {
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 62%;
+}
+
+.score-list li {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  font-size: 22px;
+  color: #4a4a68;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  background-color: white;
+}
+
+.criteria-note-field {
+  display: flex;
+  flex-direction: column;
+}
+
+#note-field {
+  border-radius: 10px;
+  min-height: 100px;
+  padding: 10px;
+  border: none;
+  outline: none;
+  max-height: 150px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.criteria-evidence-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.criteria-evidence-field .title {
+  display: flex;
+  flex-direction: column;
+}
+
+.criteria-evidence-field .title small {
+  margin-top: -8px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.evidence-section {
+  padding-block: 8px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-new-evidence {
+  display: inline-flex;
+  background-color: #257dfd;
+  justify-content: center;
+  align-items: center;
+  padding-block: 8px;
+  padding-inline: 8px;
+  gap: 4px;
+  color: white;
+  border-radius: 10px;
+}
+
+.evidence-card {
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: white;
+}
+
+.evidence-card .left-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-icon {
+  background-color: #ededed;
+  border-radius: 8px;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-self: self-start;
+}
+
+.file-info {
+  max-width: 150px;
+  display: flex;
+  flex-direction: column;
+  overflow-wrap: break-word;
+  gap: 4px;
+}
+
+.file-info h5 {
+  font-size: medium;
+  font-weight: 600;
+}
+
+.file-info p {
+  font-size: small;
+  opacity: 0.8;
+}

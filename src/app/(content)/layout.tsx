@@ -1,6 +1,7 @@
 // import type { Metadata } from "next";
 "use client";
 import "../globals.css";
+import styles from "@/styles/styles.module.css"
 import { Inter } from "next/font/google";
 import Navbar from "@/components/navbarReg";
 import Footer from "@/components/footer";
@@ -20,13 +21,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className}`}>
         <SessionProvider>
-          <header className="main-header">
+          <header className={styles.mainHeader}>
             <Navbar />
           </header>
 
+          <div>
           {children}
+          </div>
 
           <Footer />
         </SessionProvider>

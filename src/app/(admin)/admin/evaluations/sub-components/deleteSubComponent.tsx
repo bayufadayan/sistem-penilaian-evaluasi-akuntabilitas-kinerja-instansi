@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import AdminDeleteButton from "../../components/buttons/adminDeleteButton";
+import AdminDeleteButton from "@/app/(admin)/components/buttons/adminDeleteButton";
 
 type SubComponent = {
   id: number;

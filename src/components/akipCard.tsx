@@ -1,10 +1,24 @@
 import Image from "next/image";
+import styles from "@/styles/styles.module.css";
+import Link from "next/link";
 
-export default function AkipCard() {
+interface AkipCardProps {
+  title: string;
+  startDate: string | Date;
+  endDate: string | Date;
+  url: string;
+}
+
+export default function AkipCard({
+  title,
+  startDate,
+  endDate,
+  url,
+}: AkipCardProps) {
   return (
-    <div className="evaluation-card-section">
-      <div className="evaluation-card">
-        <div className="background">
+    <Link href={url}>
+      <div className={styles.evaluationCard}>
+        <div className={styles.background}>
           <Image
             src="/images/card-bg-1.png"
             alt="card-bg2"
@@ -19,11 +33,17 @@ export default function AkipCard() {
           />
         </div>
 
-        <div className="card-information">
-          <h3>LKE AKIP BPMSPH 2024</h3>
-          <p className="range-date">17 Nov 2024 - 10 Des 2024</p>
+        <div className={styles.cardInformation}>
+          <h3 className="font-bold">
+            {" "}
+            {title.length > 20 ? `${title.slice(0, 20)}...` : title}
+          </h3>
+          <p className={styles.rangeDate}>
+            {new Date(startDate).toLocaleDateString()} -{" "}
+            {new Date(endDate).toLocaleDateString()}
+          </p>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

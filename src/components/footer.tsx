@@ -1,16 +1,17 @@
 import Image from "next/image";
+import styles from "@/styles/footer.module.css"
 
 export default function Footer() {
   return (
     <footer>
-      <div className="footer-container">
-        <div className="footer-logo">
+      <div className={styles.footerContainer}>
+        <div className={styles.footerLogo}>
           <Image src="images/footer-logo.svg" alt="logo instansi" width={136} height={33}/>
         </div>
 
-        <div className="copyright">BPMSPH &copy; 2024. All right reserved</div>
+        <div className={styles.copyright}>BPMSPH &copy; 2024. All right reserved</div>
 
-        <div className="social-media">
+        <div className={styles.socialMedia}>
           <ul>
             {/* <!-- Youtube Icon --> */}
             <svg

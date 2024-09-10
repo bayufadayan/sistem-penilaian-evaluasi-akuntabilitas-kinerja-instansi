@@ -1,32 +1,53 @@
-import Link from "next/link"
-import SubComponentCard from "./subComponent"
+import Link from "next/link";
+import ComponentCard from "./component";
+import styles from "@/styles/styles.module.css";
+// import React, { useEffect, useState } from "react";
 
-export default function SidebarUser() {
+interface Component {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
+  subComponents: SubComponent[];
+}
 
-    return (
-        <div className="lke-sidebar">
-        <div className="sidebar-header">
-          <div className="title">
-            <h4>LKE AKIP BPMSPH 2024</h4>
-          </div>
+interface SubComponent {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
+}
 
-          <a href="/fill-scoring-explain.html">
-            <button type="button">Penjelasan Penilaian</button>
-          </a>
+export default function SidebarUser({ components, evaluationTitle }: {components: Component[]; evaluationTitle: string}) {
+  return (
+    <div className={styles.lkeSidebar}>
+      <div className={styles.sidebarHeader}>
+        <div className={styles.title}>
+          <h4 className="font-bold text-lg text-center">{evaluationTitle}</h4>
         </div>
 
-        <div className="lke-components-container">
-          <h5>Pengisian LKE</h5>
-
-          <div className="lke-components-section">
-            
-            <SubComponentCard/>
-            <SubComponentCard/>
-            
-          </div>
-        </div>
-
-        <Link href="#"><button type="button">Selesai</button></Link>
+        <a href="/sheets/score-guide">
+          <button type="button">Penjelasan Penilaian</button>
+        </a>
       </div>
-    )
+
+      <div className={styles.lkeComponentsContainer}>
+        <h5 className="font-bold opacity-50">Daftar Komponen Tersedia</h5>
+
+        <div className={styles.lkeComponentsSection}>
+          {components.map((component) => (
+            <ComponentCard
+              key={component.id}
+              component={component}
+              subComponents={component.subComponents}
+            />
+          ))}
+        </div>
+      </div>
+
+      <Link href="#">
+        <button type="button">Selesai</button>
+      </Link>
+    </div>
+  );
 }

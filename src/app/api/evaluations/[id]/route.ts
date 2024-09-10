@@ -1,23 +1,42 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { type NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { EvaluationSheet } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const GET = async (
-  req: NextRequest,
-  context: { params: { id: string } }
+  request: Request,
+  { params }: { params: { id: string } }
 ) => {
-  const id = Number(context.params.id) || 0;
-  const evaluationSheet = await prisma.evaluationSheet.findFirst({
-    where: {
-      id: id,
-    },
-  });
-  if (!evaluationSheet) {
-    return NextResponse.json({ message: "evaluationSheet not found" }, { status: 404 });
-  }
+  const id = params.id;
 
-  return NextResponse.json(evaluationSheet);
+  try {
+    const evaluationSheet = await prisma.evaluationSheet.findUnique({
+      where: { id },
+      include: {
+        components: {
+          where: { id_LKE: id },
+          include: {
+            subComponents: true,
+          },
+        },
+      },
+    });
+
+    if (!evaluationSheet) {
+      return NextResponse.json(
+        { message: "EvaluationSheet not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(evaluationSheet);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
+  }
 };
 
 export const DELETE = async (
@@ -26,7 +45,7 @@ export const DELETE = async (
 ) => {
   const evaluationSheet = await prisma.evaluationSheet.delete({
     where: {
-      id: Number(params.id),
+      id: params.id,
     },
   });
 
@@ -40,7 +59,7 @@ export const PATCH = async (
   const body: EvaluationSheet = await request.json();
   const evaluationSheet = await prisma.evaluationSheet.update({
     where: {
-      id: Number(params.id),
+      id: params.id,
     },
     data: {
       title: body.title,

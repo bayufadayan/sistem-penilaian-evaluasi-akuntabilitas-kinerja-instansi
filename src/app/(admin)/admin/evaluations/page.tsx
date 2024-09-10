@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import AdminAddButton from "../components/adminAddButton";
-import AdminEditButton from "../components/buttons/adminEditButton";
+import AdminAddButton from "../../components/adminAddButton";
+import AdminEditButton from "../../components/buttons/adminEditButton";
 import DeleteEvaluation from "./deleteEvaluation";
 
 const getEvalSheets = async () => {

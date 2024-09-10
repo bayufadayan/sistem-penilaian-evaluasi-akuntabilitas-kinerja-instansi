@@ -1,95 +1,94 @@
-'use client'
-import Image from "next/image";
+"use client";
+import styles from "@/styles/styles.module.css";
 import Link from "next/link";
 import AkipCard from "@/components/akipCard";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+interface EvaluationSheet {
+  id: string;
+  title: string;
+  date_start: string | Date;
+  date_finish: string | Date;
+  status: string;
+}
 
 export default function Home() {
-  const {data : session, status} : {data: unknown; status: string}= useSession();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: session, status }: { data: unknown; status: string } =
+    useSession();
   const router = useRouter();
-  console.log(session);
-  console.log(status);
-  
+
+  const [inProgressSheets, setInProgressSheets] = useState<EvaluationSheet[]>(
+    []
+  );
+  const [previousSheets, setPreviousSheets] = useState<EvaluationSheet[]>([]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push('/login')
-    } 
-  },[router, status])
+      router.push("/login");
+    }
+
+    const fetchSheets = async () => {
+      const res = await fetch("/api/evaluations");
+      const sheets: EvaluationSheet[] = await res.json();
+
+      const currentYear = new Date().getFullYear();
+      const inProgress = sheets.filter(
+        (sheet) => sheet.status === "IN_PROGRESS"
+      );
+      const previous = sheets.filter(
+        (sheet) => new Date(sheet.date_finish).getFullYear() < currentYear
+      );
+
+      setInProgressSheets(inProgress);
+      setPreviousSheets(previous);
+    };
+
+    fetchSheets();
+  }, [router, status]);
 
   return (
-    <div className="main-content">
-      <div className="evaluation-card-container">
+    <div className={styles.mainContent}>
+      <div className={styles.evaluationCardContainer}>
         <h4>Lembar Kerja Evaluasi Tersedia</h4>
 
-        <AkipCard />
-
-        <h4>Lembar Kerja Evaluasi Tahun Sebelumnya</h4>
-        <div className="evaluation-card-section">
-          <div
-            className="evaluation-card"
-            style={{ backgroundColor: "#ff5733" }}
-          >
-            <div className="background">
-              <Image
-                src="/images/card-bg-1.png"
-                alt="card-bg2"
-                width={147}
-                height={144}
-              />
-              <Image
-                src="/images/card-bg-2png.png"
-                alt="card-bgs"
-                width={165}
-                height={165}
-              />
-            </div>
-
-            <div className="card-information">
-              <h3>LKE AKIP BPMSPH 2024</h3>
-              <p className="range-date">17 Nov 2024 - 10 Des 2024</p>
-            </div>
+        {inProgressSheets.map((sheet) => (
+          <div className={styles.evaluationCardSection} key={sheet.id}>
+            <AkipCard
+              title={sheet.title}
+              startDate={sheet.date_start}
+              endDate={sheet.date_finish}
+              url={`/sheets/${sheet.id}`}
+            />
           </div>
-          <div
-            className="evaluation-card"
-            style={{ backgroundColor: "#750B8F" }}
-          >
-            <div className="background">
-              <Image
-                src="/images/card-bg-1.png"
-                alt="card-bg2"
-                width={147}
-                height={144}
-              />
-              <Image
-                src="/images/card-bg-2png.png"
-                alt="card-bgs"
-                width={165}
-                height={165}
-              />
-            </div>
+        ))}
 
-            <div className="card-information">
-              <h3>LKE AKIP BPMSPH 2024</h3>
-              <p className="range-date">17 Nov 2024 - 10 Des 2024</p>
-            </div>
+        <h4>Lembar Kerja Evaluasi Sebelumnya</h4>
+
+        {previousSheets.map((sheet) => (
+          <div className={styles.evaluationCardSection} key={sheet.id}>
+            <AkipCard
+              title={sheet.title}
+              startDate={sheet.date_start}
+              endDate={sheet.date_finish}
+              url={`/sheets/${sheet.id}`}
+            />
           </div>
-        </div>
+        ))}
       </div>
-
-      <div className="summary-card">
-        <div className="title">
-          <h2>Ringkasan</h2>
+      <div className={styles.summaryCard}>
+        <div className={styles.title}>
+          <h2 className="font-bold text-2xl">Ringkasan</h2>
         </div>
 
-        <div className="progress-section">
-          <div className="persentage-section">
+        <div className={styles.progressSection}>
+          <div className={styles.persentageSection}>
             <p>Progress Pengisian LKE Anda</p>
-            <div className="persentage">
-              <div className="progress-bar">
-                <div className="inside-progress">a</div>
+            <div className={styles.persentage}>
+              <div className={styles.progressBar}>
+                <div className={styles.insideProgress}>a</div>
               </div>
               <p>90%</p>
             </div>
@@ -99,9 +98,9 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="deadline-section">
+        <div className={`${styles.deadlineSection} flex`}>
           <p>Deadline Pengisian LKE</p>
-          <div className="date-container">
+          <div className={styles.dateContainer}>
             <p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -116,10 +115,10 @@ export default function Home() {
                   fill="#622026"
                 />
               </svg>{" "}
-              12 November - 10 Desember 2024
+              12 Nov 2024 - 10 Des 2024
             </p>
           </div>
-          <div className="reminder-container">
+          <div className={styles.reminderContainer}>
             <p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -139,33 +138,33 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="summary-section">
+        <div className={styles.summarySection}>
           <p>Ringkasan Hasil Sementara</p>
-          <div className="summary-score-card">
-            <div className="temp-result">
-              <div className="information">
-                <div className="score-info">
+          <div className={styles.summaryScoreCard}>
+            <div className={styles.tempResult}>
+              <div className={styles.information}>
+                <div className={styles.scoreInfo}>
                   <p>Nilai AKuntabilitas Kinerja</p>
                   <p>79,55</p>
                 </div>
 
-                <div className="status-info">
+                <div className={styles.scoreInfo}>
                   <p>Status Pengisian</p>
                   <p>45 ASN telah mengisi LKE</p>
                 </div>
               </div>
             </div>
 
-            <div className="grade">
-              <div className="grade-score">BB</div>
+            <div className={styles.grade}>
+              <div className={styles.gradeScore}>BB</div>
             </div>
           </div>
         </div>
 
-        <div className="button-section">
+        <div className={styles.buttonSection}>
           <Link href="#">
             <button type="button">
-              <div className="icon">
+              <div className={styles.icon}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -186,7 +185,7 @@ export default function Home() {
 
           <Link href="#">
             <button type="button">
-              <div className="icon">
+              <div className={styles.icon}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

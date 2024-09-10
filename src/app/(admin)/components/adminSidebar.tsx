@@ -55,9 +55,11 @@ export default function AdminSidebar() {
                 </clipPath>
               </defs>
             </svg>
-            <span className="text-xl font-semibold text-gray-900 dark:text-white">
-              EkaPrime Admin
-            </span>
+            <Link href={"/"}>
+              <span className="text-xl font-semibold text-gray-900 dark:text-white">
+                EkaPrime Admin
+              </span>
+            </Link>
           </div>
 
           {/* Menu Items */}
@@ -65,7 +67,7 @@ export default function AdminSidebar() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/admin"
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <svg
@@ -180,38 +182,38 @@ export default function AdminSidebar() {
                     <hr className="opacity-20" />
                     <li>
                       <Link href={"/admin/evaluations/components/"}>
-                      <button
-                        type="button"
-                        className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        aria-controls="dropdown-example"
-                        data-collapse-toggle="dropdown-example"
-                      >
-                        Components
-                      </button>
+                        <button
+                          type="button"
+                          className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                          aria-controls="dropdown-example"
+                          data-collapse-toggle="dropdown-example"
+                        >
+                          Components
+                        </button>
                       </Link>
                     </li>
                     <li>
-                    <Link href={"/admin/evaluations/sub-components/"}>
-                    <button
-                        type="button"
-                        className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        aria-controls="dropdown-example"
-                        data-collapse-toggle="dropdown-example"
-                      >
-                        Sub-Components
-                      </button>
+                      <Link href={"/admin/evaluations/sub-components/"}>
+                        <button
+                          type="button"
+                          className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                          aria-controls="dropdown-example"
+                          data-collapse-toggle="dropdown-example"
+                        >
+                          Sub-Components
+                        </button>
                       </Link>
                     </li>
                     <li>
-                    <Link href={"/admin/evaluations/criteria/"}>
-                    <button
-                        type="button"
-                        className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        aria-controls="dropdown-example"
-                        data-collapse-toggle="dropdown-example"
-                      >
-                        Criteria
-                      </button>
+                      <Link href={"/admin/evaluations/criteria/"}>
+                        <button
+                          type="button"
+                          className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                          aria-controls="dropdown-example"
+                          data-collapse-toggle="dropdown-example"
+                        >
+                          Criteria
+                        </button>
                       </Link>
                     </li>
                   </ul>

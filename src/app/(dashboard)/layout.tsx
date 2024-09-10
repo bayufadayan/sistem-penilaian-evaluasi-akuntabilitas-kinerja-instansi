@@ -6,6 +6,7 @@ import Navbar from "@/components/navbarReg";
 import Footer from "@/components/footer";
 import DashboardHero from "@/components/dashboardHero";
 import { SessionProvider } from "next-auth/react";
+import styles from "@/styles/styles.module.css"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,14 +22,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className}`}>
         <SessionProvider>
-          <header className="main-header">
+          <header className={styles.mainHeader}>
             <Navbar />
             <DashboardHero />
           </header>
 
-          <main className="main-container">{children}</main>
+          <main className={styles.mainContainer}>{children}</main>
 
           <Footer />
         </SessionProvider>

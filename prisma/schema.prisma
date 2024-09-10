@@ -60,7 +60,7 @@ model User {
 }
 
 model EvaluationSheet {
-  id          Int              @id @default(autoincrement())
+  id          String           @id @default(cuid())
   title       String
   date_start  DateTime
   date_finish DateTime
@@ -76,7 +76,7 @@ model Component {
   description   String?
   weight        Float
   id_team       Int
-  id_LKE        Int
+  id_LKE        String
   team          Team?            @relation(fields: [id_team], references: [id])
   evaluation    EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
   subComponents SubComponent[]

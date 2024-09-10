@@ -1,6 +1,6 @@
 import DeleteAccount from "./deleteAccount";
-import AdminAddButton from "../components/adminAddButton";
-import AdminEditButton from "../components/buttons/adminEditButton";
+import AdminAddButton from "../../components/adminAddButton";
+import AdminEditButton from "../../components/buttons/adminEditButton";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
