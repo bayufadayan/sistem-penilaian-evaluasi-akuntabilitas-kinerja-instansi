@@ -550,7 +550,7 @@
   padding: 30px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 4px;
   padding-right: 100px;
 }
 
@@ -743,62 +743,67 @@
 
 /* ========================== ISI NILAI ==========================*/
 
-.fill-criteria-header-content {
+.fillCriteriaHeaderContent {
   display: flex;
   justify-content: space-between;
+  margin-top: 6px;
 }
 
-.fill-criteria-header {
+.fillCriteriaHeader {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
-.fill-criteria-heroContainer {
+.fillCriteriaHeroContainer {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.criteria-filled-progress {
+.criteriaFilledProgress {
   font-size: medium;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.criteria-filled-progress .persentage {
+.criteriaFilledProgress .persentage {
   background-color: #d9d9d9;
-  height: 16px;
+  height: 12px;
   border-radius: 100px;
   overflow: hidden;
   color: #01499f;
 }
 
-.criteria-filled-progress .progress-completed {
+.criteriaFilledProgress .progressCompleted {
   background-color: #01499f;
   width: 70%;
 }
 
-.criteria-title-container {
+.criteriaTitleContainer {
   width: 50%;
   display: flex;
   flex-direction: column;
   /* justify-content: space-between; */
 }
 
-.criteria-title-container .main-title {
+.criteriaTitleContainer .mainTitle {
   font-size: 20px;
   margin-top: -8px;
+  font-weight: bold;
 }
 
-.sub-component-container {
+.subComponentContainer {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   margin-top: 12px;
+  padding: 8px 10px;
+  background-color: white;
+  border-radius: 10px;
 }
 
-.sub-component-icon {
+.subComponentIcon {
   height: 40px;
   width: 40px;
   display: flex;
@@ -811,72 +816,73 @@
   color: white;
 }
 
-.sub-component-content {
+.subComponentContent {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.sub-component-title {
-  font-weight: 500;
+.subComponentTitle {
+  font-weight: 700;
   font-size: large;
 }
 
-.sub-component-weight {
+.subComponentWeight {
   font-size: small;
 }
 
-.sub-component-weight span {
+.subComponentWeight span {
   font-weight: bold;
 }
 
-.criteria-score-container {
+.criteriaScoreContainer {
   width: 30%;
   /* margin-top: 10px; */
 }
 
-.criteria-score {
+.criteriaScore {
   display: flex;
   justify-content: flex-end;
   height: 100%;
   gap: 12px;
 }
 
-.score-and-persentage {
+.scoreAndPersentage {
   width: 50%;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  height: fit-content;
 }
 
-.score-card {
+.scoreCard {
   padding: 8px;
   border-radius: 10px;
   color: white;
   display: flex;
   flex-direction: column;
-  gap: 4px;
   background-color: #01499f;
+  height: 45%;
 }
 
-.score-card h5 {
+.scoreCard h5 {
   font-size: 12px;
   font-weight: 400;
   opacity: 0.9;
 }
 
-.score-card h2 {
+.scoreCard h2 {
   font-size: 24px;
   font-weight: 700;
 }
 
-.grade-container {
+.gradeContainer {
   width: 50%;
+  height: 100%;
 }
 
-.grade-card {
+.gradeCard {
   background-color: white;
-  height: 136px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -886,7 +892,7 @@
   overflow: hidden;
 }
 
-.grade-card h5 {
+.gradeCard h5 {
   font-size: 16px;
   font-weight: 700;
   padding: 10px;
@@ -894,35 +900,37 @@
   width: 100%;
   text-align: center;
   color: white;
+  font-weight: 600;
 }
 
-.grade-card h1 {
+.gradeCard h1 {
   font-size: 64px;
+  font-weight: 800;
 }
 
-.fill-criteria-content {
+.fillCriteriaContent {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
 }
 
-.criteria-content {
+.criteriaContent {
   display: flex;
   gap: 30px;
 }
 
-.content-left-menu {
+.contentLeftMenu {
   width: 45%;
   display: flex;
   flex-direction: column;
 }
 
-.content-left-menu p {
+.contentLeftMenu p {
   font-weight: 600;
   margin-bottom: 8px;
 }
 
-.criteria-list-container {
+.criteriaListContainer {
   background-color: white;
   padding: 0;
   overflow: hidden;
@@ -932,7 +940,7 @@
   margin-bottom: 4px;
 }
 
-.the-criteria {
+.theCriteria {
   gap: 4px;
   display: flex;
   /* justify-content: center; */
@@ -940,11 +948,11 @@
   padding: 12px 30px 12px 15px;
 }
 
-.the-criteria:hover {
+.theCriteria:hover {
   background-color: khaki;
 }
 
-.the-criteria div {
+.theCriteria div {
   font-weight: 700;
   height: 30px;
   width: 30px;
@@ -958,59 +966,60 @@
   align-self: center;
 }
 
-.the-criteria p {
+.theCriteria p {
   margin-right: 8px;
   width: 80%;
   display: flex;
   margin: auto;
 }
 
-.the-criteria i {
+.theCriteria i {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.criteria-form-container {
+.criteriaFormContainer {
   width: 50%;
 }
 
-.content-left-menu .margin-top {
+.contentLeftMenu .marginTop {
   margin: 0;
   font-weight: 700;
 }
 
-.criteria-form-container {
+.criteriaFormContainer {
   margin-top: 28px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
-.criteria-info {
+.criteriaInfo {
   display: flex;
   flex-direction: column;
 }
 
-.criteria-form-subtitle {
+.criteriaFormSubtitle {
   font-size: 14px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  font-weight: 500;
 }
 
-.criteria-score-field {
+.criteriaScoreField {
   display: flex;
   flex-direction: column;
 }
 
-.score-list {
+.scoreList {
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  width: 62%;
+  width: 75%;
 }
 
-.score-list li {
+.scoreList label {
   width: 56px;
   height: 56px;
   border-radius: 10px;
@@ -1021,14 +1030,15 @@
   align-items: center;
   font-weight: 500;
   background-color: white;
+  cursor: pointer;
 }
 
-.criteria-note-field {
+.criteriaNoteField {
   display: flex;
   flex-direction: column;
 }
 
-#note-field {
+#noteField {
   border-radius: 10px;
   min-height: 100px;
   padding: 10px;
@@ -1039,23 +1049,23 @@
   font-weight: 500;
 }
 
-.criteria-evidence-field {
+.criteriaEvidenceField {
   display: flex;
   flex-direction: column;
 }
 
-.criteria-evidence-field .title {
+.criteriaEvidenceField .title {
   display: flex;
   flex-direction: column;
 }
 
-.criteria-evidence-field .title small {
+.criteriaEvidenceField .title small {
   margin-top: -8px;
   font-size: 12px;
   opacity: 0.8;
 }
 
-.evidence-section {
+.evidenceSection {
   padding-block: 8px;
   width: 60%;
   display: flex;
@@ -1063,7 +1073,7 @@
   gap: 8px;
 }
 
-.add-new-evidence {
+.addNewEvidence {
   display: inline-flex;
   background-color: #257dfd;
   justify-content: center;
@@ -1073,9 +1083,18 @@
   gap: 4px;
   color: white;
   border-radius: 10px;
+  transition: transform 300ms ease;
 }
 
-.evidence-card {
+.addNewEvidence:hover{
+  background-color: #0e55be;
+}
+
+.addNewEvidence:active {
+  transform: scale(0.95);
+}
+
+.evidenceCard {
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -1084,13 +1103,13 @@
   background-color: white;
 }
 
-.evidence-card .left-section {
+.evidenceCard .leftSection {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.file-icon {
+.fileIcon {
   background-color: #ededed;
   border-radius: 8px;
   height: 40px;
@@ -1100,7 +1119,7 @@
   align-self: self-start;
 }
 
-.file-info {
+.fileInfo {
   max-width: 150px;
   display: flex;
   flex-direction: column;
@@ -1108,12 +1127,12 @@
   gap: 4px;
 }
 
-.file-info h5 {
+.fileInfo h5 {
   font-size: medium;
   font-weight: 600;
 }
 
-.file-info p {
+.fileInfo p {
   font-size: small;
   opacity: 0.8;
 }

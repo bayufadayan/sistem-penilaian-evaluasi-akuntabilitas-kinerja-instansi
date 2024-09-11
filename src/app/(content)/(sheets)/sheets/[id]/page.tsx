@@ -35,7 +35,7 @@ export default function EvaluationSheetsPage() {
 
           <div className={styles.explainComponents}>
             <h5 className="font-bold">Deskripsi</h5>
-            <p>Deskripsi dari context atau API</p>
+            <p>{dataContext.evaluationDesc}</p>
           </div>
         </div>
 

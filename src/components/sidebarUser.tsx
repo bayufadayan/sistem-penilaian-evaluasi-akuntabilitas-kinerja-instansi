@@ -48,6 +48,7 @@ export default function SidebarUser({
               key={component.id}
               component={component}
               subComponents={component.subComponents}
+              evaluationId = {evaluationId}
             />
           ))}
         </div>

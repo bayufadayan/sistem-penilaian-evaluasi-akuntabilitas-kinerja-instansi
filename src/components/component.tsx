@@ -20,9 +20,11 @@ interface SubComponent {
 export default function ComponentCard({
   component,
   subComponents,
+  evaluationId,
 }: {
   component: Component;
   subComponents: SubComponent[];
+  evaluationId: string
 }) {
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
 
@@ -90,7 +92,7 @@ export default function ComponentCard({
           }`}
           style={{ maxHeight: isOpenDropDown ? "1000px" : "0px" }}
         >
-          <SubComponentListCard subComponents={subComponents} />
+          <SubComponentListCard subComponents={subComponents} evaluationId={evaluationId}/>
         </div>
       )}
     </div>
