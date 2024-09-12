@@ -42,6 +42,10 @@ export default function ScoreInputPage({
     }
   }, [subComponent]);
 
+  const numberToAlphabet = (number: number): string => {
+    return String.fromCharCode(64 + number);
+  };
+
   return (
     <div className={styles.lkeContentContainer}>
       <div className={styles.lkeContent}>
@@ -64,7 +68,10 @@ export default function ScoreInputPage({
             <div className={styles.fillCriteriaHeaderContent}>
               <div className={styles.criteriaTitleContainer}>
                 <div className={styles.mainTitle}>
-                  <p className="text-sm text-blue-800 mb-1">Komponen No. 1</p>
+                  <p className="text-sm text-blue-800 mb-1">{`Komponen No. ${
+                    subComponent?.component?.component_number ?? ""
+                  }`}</p>
+
                   <h1 className="text-3xl">
                     {subComponent?.component.name.toUpperCase()}
                   </h1>
@@ -75,7 +82,9 @@ export default function ScoreInputPage({
                 </div>
 
                 <div className={`${styles.subComponentContainer} shadow-md`}>
-                  <div className={styles.subComponentIcon}>A</div>
+                  <div className={styles.subComponentIcon}>
+                    {numberToAlphabet(subComponent?.subcomponent_number ?? 0)}
+                  </div>
 
                   <div className={styles.subComponentContent}>
                     <div className={`${styles.subComponentTitle} capitalize`}>
@@ -131,8 +140,12 @@ export default function ScoreInputPage({
 
               <div className={`${styles.criteriaListContainer}`}>
                 {(subComponent?.criteria ?? []).length > 0 ? (
-                  subComponent?.criteria.map(
-                    (criterion: Criteria, index: number) => (
+                  subComponent?.criteria
+                    .sort(
+                      (a: Criteria, b: Criteria) =>
+                        a.criteria_number - b.criteria_number
+                    )
+                    .map((criterion: Criteria) => (
                       <button
                         type="button"
                         key={criterion.id}
@@ -150,19 +163,19 @@ export default function ScoreInputPage({
                               : "bg-blue-900 text-white"
                           }`}
                         >
-                          {index + 1}
+                          {criterion.criteria_number}
                         </div>
                         <p>{criterion.name}</p>
                         <IoIosArrowForward className="text-xl" />
                       </button>
-                    )
-                  )
+                    ))
                 ) : (
                   <p className="text-gray-500 italic text-center">
                     Loading... atau Tidak ada data criteria
                   </p>
                 )}
               </div>
+
               <div
                 className={`${styles.nextScoreExplain} ${styles.nextButton}`}
               >
@@ -195,7 +208,7 @@ export default function ScoreInputPage({
                   <p
                     className={`${styles.criteriaFormSubtitle} text-base font-semibold bg-blue-800 py-1 px-4 mb-1 rounded-full text-white w-fit`}
                   >
-                    Kriteria 1
+                    {`Kriteria ${selectedCriterion ? selectedCriterion.criteria_number : ""}`}
                   </p>
                   <h3 className="font-bold text-xl">
                     {selectedCriterion ? selectedCriterion.name : ""}

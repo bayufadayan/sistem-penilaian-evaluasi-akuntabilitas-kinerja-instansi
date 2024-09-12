@@ -15,6 +15,7 @@ interface SubComponent {
   name: string;
   description: string;
   weight: number;
+  subcomponent_number: number;
 }
 
 export default function ComponentCard({

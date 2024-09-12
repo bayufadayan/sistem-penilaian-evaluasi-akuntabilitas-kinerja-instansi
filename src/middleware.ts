@@ -34,6 +34,7 @@ export const config = {
         "/hasil-sementara",
         "/panduan",
         "/riwayat",
+        "/sheets/:path*",
         "/",
     ],
 };

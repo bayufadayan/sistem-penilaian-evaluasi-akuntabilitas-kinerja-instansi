@@ -16,6 +16,7 @@ export default function UpdateComponent({
   const [name, setName] = useState(component.name);
   const [description, setDescription] = useState(component.description);
   const [weight, setWeight] = useState(component.weight);
+  const [componentNumber, setComponentNumber] = useState(component.component_number);
   const [idTeams, setIdTeam] = useState(component.id_team);
   const [idEvaluationSheet, setIdEvaluationSheet] = useState(component.id_LKE);
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +31,7 @@ export default function UpdateComponent({
       name: name,
       description: description,
       weight: weight,
+      component_number: componentNumber,
       id_team: idTeams,
       id_LKE: idEvaluationSheet,
     });
@@ -98,6 +100,17 @@ export default function UpdateComponent({
               />
             </div>
             <div className="form-control w-full">
+              <label className="label font-bold">Nomor Komponen</label>
+              <input
+                type="number"
+                value={componentNumber}
+                onChange={(e) => setComponentNumber(Number.parseFloat(e.target.value))}
+                className="input input-bordered"
+                placeholder="0.00"
+                required
+              />
+            </div>
+            <div className="form-control w-full">
               <div className="grid grid-cols-2 gap-4">
                 {" "}
                 {/* Membagi menjadi dua kolom */}
@@ -132,7 +145,7 @@ export default function UpdateComponent({
                   </label>
                   <select
                     value={idEvaluationSheet}
-                    onChange={(e) => setIdEvaluationSheet(Number.parseInt(e.target.value))}
+                    onChange={(e) => setIdEvaluationSheet(e.target.value)}
                     id="idEvaluationSheet"
                     className="input input-bordered w-full"
                     required

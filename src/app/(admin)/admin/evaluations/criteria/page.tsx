@@ -10,6 +10,7 @@ const getCriterias = async () => {
       id: true,
       name: true,
       description: true,
+      criteria_number: true,
       id_subcomponents: true,
       subComponent: {
         select: {

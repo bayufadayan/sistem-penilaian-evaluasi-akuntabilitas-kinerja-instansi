@@ -14,6 +14,7 @@ export default function UpdateSubComponent({
   const [name, setName] = useState(subComponent.name);
   const [description, setDescription] = useState(subComponent.description);
   const [weight, setWeight] = useState(subComponent.weight);
+  const [subComponentNumber, setSubComponentNumber] = useState(subComponent.subcomponent_number);
   const [idComponents, setIdComponents] = useState(subComponent.id_components);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +28,7 @@ export default function UpdateSubComponent({
       name: name,
       description: description,
       weight: weight,
+      subComponentNumber: subComponentNumber,
       id_components: idComponents,
     });
     setIsLoading(false);
@@ -62,6 +64,17 @@ export default function UpdateSubComponent({
         <div className="modal-box">
           <h3 className="font-bold text-lg">Tambah Sub Komponen Baru</h3>
           <form onSubmit={handleUpdate}>
+            <div className="form-control w-full">
+              <label className="label font-bold">Nomor Sub Komponen</label>
+              <input
+                type="text"
+                value={subComponentNumber}
+                onChange={(e) => setSubComponentNumber(Number.parseInt(e.target.value))}
+                className="input input-bordered"
+                placeholder="Nomor Komponen"
+                required
+              />
+            </div>
             <div className="form-control w-full">
               <label className="label font-bold">Nama Sub Komponen</label>
               <input

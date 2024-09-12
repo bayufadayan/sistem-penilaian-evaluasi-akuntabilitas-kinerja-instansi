@@ -12,6 +12,7 @@ export default function AddSubComponent({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [weight, setWeight] = useState("");
+  const [subcomponenNumber, setSubComponentNumber] = useState("");
   const [idComponent, setIdComponent] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,12 +26,14 @@ export default function AddSubComponent({
       name: name,
       description: description,
       weight: weight,
+      subcomponent_number: subcomponenNumber,
       id_components: idComponent,
     });
     setIsLoading(false);
     setName("");
     setDescription("");
     setWeight("");
+    setSubComponentNumber("");
     setIdComponent("");
     router.refresh();
     setIsOpen(false);
@@ -67,6 +70,17 @@ export default function AddSubComponent({
         <div className="modal-box">
           <h3 className="font-bold text-lg">Tambah Sub Komponen Baru</h3>
           <form onSubmit={handleSubmit}>
+            <div className="form-control w-full">
+              <label className="label font-bold">Nomor Sub Komponen</label>
+              <input
+                type="text"
+                value={subcomponenNumber}
+                onChange={(e) => setSubComponentNumber(e.target.value)}
+                className="input input-bordered"
+                placeholder="Nama Sub Komponen"
+                required
+              />
+            </div>
             <div className="form-control w-full">
               <label className="label font-bold">Nama Sub Komponen</label>
               <input

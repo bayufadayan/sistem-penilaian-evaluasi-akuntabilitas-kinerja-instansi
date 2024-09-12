@@ -76,31 +76,34 @@ model EvaluationSheet {
 }
 
 model Component {
-  id            Int              @id @default(autoincrement())
-  name          String
-  description   String?
-  weight        Float
-  id_team       Int
-  id_LKE        String
-  team          Team?            @relation(fields: [id_team], references: [id])
-  evaluation    EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
-  subComponents SubComponent[]
+  id               Int              @id @default(autoincrement())
+  name             String
+  description      String?
+  weight           Float
+  component_number Int              @default(0)
+  id_team          Int
+  id_LKE           String
+  team             Team?            @relation(fields: [id_team], references: [id])
+  evaluation       EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
+  subComponents    SubComponent[]
 }
 
 model SubComponent {
-  id            Int        @id @default(autoincrement())
-  name          String
-  description   String?
-  weight        Float
-  id_components Int
-  component     Component  @relation(fields: [id_components], references: [id], onDelete: Cascade)
-  criteria      Criteria[]
+  id                  Int        @id @default(autoincrement())
+  name                String
+  description         String?
+  weight              Float
+  subcomponent_number Int        @default(0)
+  id_components       Int
+  component           Component  @relation(fields: [id_components], references: [id], onDelete: Cascade)
+  criteria            Criteria[]
 }
 
 model Criteria {
   id               Int          @id @default(autoincrement())
   name             String
   description      String?
+  criteria_number  Int          @default(0)
   id_subcomponents Int
   subComponent     SubComponent @relation(fields: [id_subcomponents], references: [id], onDelete: Cascade)
   Score            Score[]
@@ -112,9 +115,9 @@ model Score {
   notes        String?
   created_at   DateTime   @default(now())
   id_criterias Int
-  id_users     Int
+  id_users     Int?
   criteria     Criteria   @relation(fields: [id_criterias], references: [id], onDelete: Cascade)
-  user         User       @relation(fields: [id_users], references: [id], onDelete: Cascade)
+  user         User?      @relation(fields: [id_users], references: [id], onDelete: Cascade)
   Evidence     Evidence[]
 }
 

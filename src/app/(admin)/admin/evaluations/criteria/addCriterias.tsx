@@ -7,6 +7,7 @@ import type { SubComponent } from "@prisma/client";
 export default function AddCriteria({ subComponents }: { subComponents : SubComponent[] }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [criteriaNumber, setCriteriaNumber] = useState("");
   const [idSubComponents, setIdSubComponents] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,11 +20,13 @@ export default function AddCriteria({ subComponents }: { subComponents : SubComp
     await axios.post("/api/criterias", {
       name: name,
       description: description,
+      criteria_number: criteriaNumber,
       id_subcomponents: Number(idSubComponents),
     });
     setIsLoading(false);
     setName("");
     setDescription("");
+    setCriteriaNumber("");
     setIdSubComponents("");
     router.refresh();
     setIsOpen(false);
@@ -60,6 +63,17 @@ export default function AddCriteria({ subComponents }: { subComponents : SubComp
         <div className="modal-box">
           <h3 className="font-bold text-lg">Tambah Kriteria Baru</h3>
           <form onSubmit={handleSubmit}>
+            <div className="form-control w-full">
+              <label className="label font-bold">Nomor Kriteria</label>
+              <input
+                type="number"
+                value={criteriaNumber}
+                onChange={(e) => setCriteriaNumber(e.target.value)}
+                className="input input-bordered"
+                placeholder="Nama Kriteria"
+                required
+              />
+            </div>
             <div className="form-control w-full">
               <label className="label font-bold">Nama Kriteria</label>
               <input

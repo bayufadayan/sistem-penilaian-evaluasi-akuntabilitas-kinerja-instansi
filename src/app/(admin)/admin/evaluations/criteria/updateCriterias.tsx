@@ -7,6 +7,7 @@ import axios from "axios";
 export default function UpdateCriteria({ criteria, subComponents }: { criteria: Criteria, subComponents: SubComponent[] }) {
   const [name, setName] = useState(criteria.name);
   const [description, setDescription] = useState(criteria.description);
+  const [criteriaNumber, setCriteriaNumber] = useState(criteria.criteria_number);
   const [idSubComponents, setIdSubComponents] = useState(criteria.id_subcomponents);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +20,7 @@ export default function UpdateCriteria({ criteria, subComponents }: { criteria: 
     await axios.patch(`/api/criterias/${criteria.id}`, {
       name: name,
       description: description,
+      setCriteriaNumber: criteriaNumber,
       id_subcomponents: Number(idSubComponents),
     });
     setIsLoading(false);
@@ -54,6 +56,17 @@ export default function UpdateCriteria({ criteria, subComponents }: { criteria: 
         <div className="modal-box">
           <h3 className="font-bold text-lg">Tambah Kriteria Baru</h3>
           <form onSubmit={handleUpdate}>
+            <div className="form-control w-full">
+              <label className="label font-bold">Nomor Kriteria</label>
+              <input
+                type="number"
+                value={criteriaNumber}
+                onChange={(e) => setCriteriaNumber(Number.parseInt(e.target.value))}
+                className="input input-bordered"
+                placeholder="Nama Kriteria"
+                required
+              />
+            </div>
             <div className="form-control w-full">
               <label className="label font-bold">Nama Kriteria</label>
               <input

@@ -835,6 +835,7 @@
   width: fit-content;
   color: #001d6c;
   border-radius: 4px;
+  font-weight: bold;
 }
 
 .componentWeight {
@@ -845,10 +846,6 @@
   width: fit-content;
   color: #006c1b;
   border-radius: 4px;
-}
-
-.subComponentWeight span {
-  font-weight: bold;
 }
 
 .criteriaScoreContainer {

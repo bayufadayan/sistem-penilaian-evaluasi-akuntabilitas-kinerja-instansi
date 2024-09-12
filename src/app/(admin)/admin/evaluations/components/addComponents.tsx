@@ -14,6 +14,7 @@ export default function AddComponents({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [weight, setWeight] = useState("");
+  const [componentNumber, setComponentNumber] = useState("");
   const [idTeam, setIdTeam] = useState("");
   const [idEvaluationSheet, setIdEvaluationSheet] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -28,6 +29,7 @@ export default function AddComponents({
       name: name,
       description: description,
       weight: weight,
+      component_number: componentNumber,
       id_team: idTeam,
       id_LKE: idEvaluationSheet,
     });
@@ -35,6 +37,7 @@ export default function AddComponents({
     setName("");
     setDescription("");
     setWeight("");
+    setComponentNumber("");
     setIdTeam("");
     setIdEvaluationSheet("");
     router.refresh();
@@ -98,6 +101,17 @@ export default function AddComponents({
                 type="number"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
+                className="input input-bordered"
+                placeholder="0.00"
+                required
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label font-bold">Nomor Komponen</label>
+              <input
+                type="number"
+                value={componentNumber}
+                onChange={(e) => setComponentNumber(e.target.value)}
                 className="input input-bordered"
                 placeholder="0.00"
                 required

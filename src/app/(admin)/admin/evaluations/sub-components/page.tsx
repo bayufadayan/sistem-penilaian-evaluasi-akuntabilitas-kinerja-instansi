@@ -12,6 +12,7 @@ const getSubComponents = async () => {
       name: true,
       description: true,
       weight: true,
+      subcomponent_number: true,
       id_components: true,
       component: {
         select: {
@@ -57,7 +58,6 @@ export default async function EvaluationPage() {
               <tr className="text-gray-500 border-b">
               <th className="py-2 pe-8">#</th>
                 <th className="py-2 w-52">NAMA KOMPONEN</th>
-                <th className="py-2">DESKIPSI</th>
                 <th className="py-2">BOBOT</th>
                 <th className="py-2">KOMPONEN</th>
                 <th className="py-2">AKSI</th>
@@ -69,7 +69,6 @@ export default async function EvaluationPage() {
                 <tr className="border-b" key={subComponent.id}>
                   <td className="py-4 pe-8">{index + 1}</td>
                   <td className="">{subComponent.name.toUpperCase()}</td>
-                  <td className="">{subComponent.description}</td>
                   <td className="">{subComponent.weight}</td>
                   <td className="">{subComponent.component.name}</td>
                   <td>

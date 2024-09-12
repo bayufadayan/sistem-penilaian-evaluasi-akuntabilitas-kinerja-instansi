@@ -11,6 +11,7 @@ const getComponents = async () => {
       name: true,
       description: true,
       weight: true,
+      component_number: true,
       id_team: true,
       id_LKE: true,
       team: {
@@ -78,9 +79,9 @@ export default async function ManagementAccountPage() {
             </thead>
             {components.length > 0 ? (
               <tbody>
-                {components.map((component, index) => (
+                {components.map((component) => (
                   <tr className="border-b" key={component.id}>
-                    <td className="py-4">{index + 1}</td>
+                    <td className="py-4">{component.component_number}</td>
                     <td className="">{component.name.toUpperCase()}</td>
                     <td className="">{component.description}</td>
                     <td className="">{component.weight.toFixed(1)}</td>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { type NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { Criteria } from "@prisma/client";
