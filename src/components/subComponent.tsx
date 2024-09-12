@@ -16,7 +16,7 @@ export default function SubComponentListCard({
   evaluationId : string
 }) {
   return subComponents.map((subComponent) => (
-    <Link href={`/${evaluationId}/${subComponent.id}`} key={subComponent.id}>
+    <Link href={`/sheets/${evaluationId}/${subComponent.id}`} key={subComponent.id}>
       <p
         className="font-medium hover:bg-slate-600 hover:text-white hover:cursor-pointer"
       >

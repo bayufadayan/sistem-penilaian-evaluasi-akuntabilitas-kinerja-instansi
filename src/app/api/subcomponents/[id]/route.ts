@@ -35,3 +35,36 @@ export const PATCH = async (
   });
   return NextResponse.json(subComponent, { status: 200 });
 };
+
+export const GET = async (
+  request: Request,
+  { params }: { params: { id: string } }
+) => {
+  // Konversi id dari string ke integer
+  const id = Number.parseInt(params.id);
+
+  try {
+    const subComponent = await prisma.subComponent.findUnique({
+      where: { id },
+      include: {
+        criteria: true,
+        component: true
+      },
+    });
+
+    if (!subComponent) {
+      return NextResponse.json(
+        { message: "Sub Component not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(subComponent);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
+  }
+};

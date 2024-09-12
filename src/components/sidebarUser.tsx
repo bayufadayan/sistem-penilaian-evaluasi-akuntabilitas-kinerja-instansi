@@ -31,7 +31,9 @@ export default function SidebarUser({
     <div className={styles.lkeSidebar}>
       <div className={styles.sidebarHeader}>
         <div className={styles.title}>
-          <h4 className="font-bold text-lg text-center">{evaluationTitle}</h4>
+          <Link href={`/sheets/${evaluationId}`}>
+            <h4 className="font-bold text-lg text-center">{evaluationTitle}</h4>
+          </Link>
         </div>
 
         <a href={`/sheets/${evaluationId}/instruction`}>
@@ -48,7 +50,7 @@ export default function SidebarUser({
               key={component.id}
               component={component}
               subComponents={component.subComponents}
-              evaluationId = {evaluationId}
+              evaluationId={evaluationId}
             />
           ))}
         </div>

@@ -1,10 +1,47 @@
 "use client";
 import React from "react";
 import styles from "@/styles/styles.module.css";
+import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosCloseCircle } from "react-icons/io";
+import type { Criteria, SubComponent, Component } from "@prisma/client";
 
-export default function ScoreInputPage() {
+type SubComponentWithCriteria = SubComponent & {
+  criteria: Criteria[];
+  component: Component;
+};
+
+export default function ScoreInputPage({
+  params,
+}: {
+  params: { criteriaid: string };
+}) {
+  const [subComponent, setSubComponent] = useState<
+    SubComponentWithCriteria | undefined
+  >(undefined);
+  const [selectedCriterion, setSelectedCriterion] = useState<Criteria | null>(
+    null
+  );
+
+  const id = params.criteriaid;
+
+  useEffect(() => {
+    const fetchEvaluationSheet = async () => {
+      if (id) {
+        const res = await fetch(`/api/subcomponents/${id}`);
+        const data = await res.json();
+        setSubComponent(data);
+      }
+    };
+    fetchEvaluationSheet();
+  }, [id]);
+
+  useEffect(() => {
+    if (subComponent?.criteria && subComponent.criteria.length > 0) {
+      setSelectedCriterion(subComponent.criteria[0]);
+    }
+  }, [subComponent]);
+
   return (
     <div className={styles.lkeContentContainer}>
       <div className={styles.lkeContent}>
@@ -28,19 +65,26 @@ export default function ScoreInputPage() {
               <div className={styles.criteriaTitleContainer}>
                 <div className={styles.mainTitle}>
                   <p className="text-sm text-blue-800 mb-1">Komponen No. 1</p>
-                  <h1 className="text-3xl">Perencanaan Kinerja</h1>
+                  <h1 className="text-3xl">
+                    {subComponent?.component.name.toUpperCase()}
+                  </h1>
+                  <div className={styles.componentWeight}>
+                    Bobot komponen:{" "}
+                    <span>{subComponent?.component.weight.toFixed(2)}</span>
+                  </div>
                 </div>
 
                 <div className={`${styles.subComponentContainer} shadow-md`}>
                   <div className={styles.subComponentIcon}>A</div>
 
                   <div className={styles.subComponentContent}>
-                    <div className={styles.subComponentTitle}>
-                      Dokumen Perencanaan Kinerja telah Tersedia
+                    <div className={`${styles.subComponentTitle} capitalize`}>
+                      {subComponent?.name}
                     </div>
 
                     <div className={styles.subComponentWeight}>
-                      Bobot sub-komponen: <span>6,00</span>
+                      Bobot sub-komponen:{" "}
+                      <span>{subComponent?.weight.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -84,41 +128,40 @@ export default function ScoreInputPage() {
           <div className={styles.criteriaContent}>
             <div className={styles.contentLeftMenu}>
               <p>Pilihan Kriteria:</p>
-              <div className={styles.criteriaListContainer}>
-                <div className={styles.theCriteria}>
-                  <div className={styles.criteriaNumber}>1</div>
-                  <p> Terdapat pedomanrja.</p>
-                  <IoIosArrowForward className="text-xl" />
-                </div>
-                <div className={styles.theCriteria}>
-                  <div className={styles.criteriaNumber}>1</div>
-                  <p> Terdapat pedoman teknis perencanaan kinerja.</p>
-                  <IoIosArrowForward className="text-xl" />
-                </div>
-                <div className={styles.theCriteria}>
-                  <div className={styles.criteriaNumber}>1</div>
-                  <p>
-                    {" "}
-                    Terdapat pedoman teknisgdfgfdgfdgdfgdfgfd perencanaan
-                    kinerja.
+
+              <div className={`${styles.criteriaListContainer}`}>
+                {(subComponent?.criteria ?? []).length > 0 ? (
+                  subComponent?.criteria.map(
+                    (criterion: Criteria, index: number) => (
+                      <button
+                        type="button"
+                        key={criterion.id}
+                        className={`${
+                          selectedCriterion?.id === criterion.id
+                            ? "bg-blue-900 text-white"
+                            : "hover:bg-blue-200 hover:text-blue-900"
+                        } ${styles.theCriteria} cursor-pointer`}
+                        onClick={() => setSelectedCriterion(criterion)}
+                      >
+                        <div
+                          className={`${styles.criteriaNumber} ${
+                            selectedCriterion?.id === criterion.id
+                              ? "bg-white text-blue-900"
+                              : "bg-blue-900 text-white"
+                          }`}
+                        >
+                          {index + 1}
+                        </div>
+                        <p>{criterion.name}</p>
+                        <IoIosArrowForward className="text-xl" />
+                      </button>
+                    )
+                  )
+                ) : (
+                  <p className="text-gray-500 italic text-center">
+                    Loading... atau Tidak ada data criteria
                   </p>
-                  <IoIosArrowForward className="text-xl" />
-                </div>
-                <div className={styles.theCriteria}>
-                  <div className={styles.criteriaNumber}>1</div>
-                  <p> Terdapat pedoman teknis perencanaan kinerja.</p>
-                  <IoIosArrowForward className="text-xl" />
-                </div>
-                <div className={styles.theCriteria}>
-                  <div className={styles.criteriaNumber}>1</div>
-                  <p> Terdapat pedoman teknis perencanaan kinerja.</p>
-                  <IoIosArrowForward className="text-xl" />
-                </div>
-                <div className={styles.theCriteria}>
-                  <div className={styles.criteriaNumber}>1</div>
-                  <p> Terdapat pedoman teknis perencanaan kinerja.</p>
-                  <IoIosArrowForward className="text-xl" />
-                </div>
+                )}
               </div>
               <div
                 className={`${styles.nextScoreExplain} ${styles.nextButton}`}
@@ -155,14 +198,25 @@ export default function ScoreInputPage() {
                     Kriteria 1
                   </p>
                   <h3 className="font-bold text-xl">
-                    Terdapat Pedoman Teknis Perencaasdhjasbhcfysdcfgjhsdfghdsg
-                    sdhf gfhdsgf hsd f gnaan Kinerja.
+                    {selectedCriterion ? selectedCriterion.name : ""}
                   </h3>
+                  <div className="text-sm text-gray-600 mt-1">
+                    <div className="font-semibold text-gray-800">
+                      Deskripsi:
+                    </div>
+                    <p>
+                      {selectedCriterion &&
+                      selectedCriterion.description?.trim() !== ""
+                        ? selectedCriterion.description
+                        : "Tidak ada Deskripsi"}
+                    </p>
+                  </div>
+                  <hr className="border-t-2 border-gray-300 mt-4 mb-2" />
                 </div>
 
                 <div className={styles.criteriaScoreField}>
                   <p className={`${styles.criteriaFormSubtitle} text-gray-700`}>
-                    Pilih salah satu:
+                    Berikan penilaian Anda:
                   </p>
                   <ul className={styles.scoreList}>
                     <li>
@@ -303,8 +357,7 @@ export default function ScoreInputPage() {
                 <div className={styles.title}>
                   <p className={styles.criteriaFormSubtitle}>Daftar Evidence</p>
                   <small>
-                    *Silakan berikan nama file yang relevan
-                    sebelumnya
+                    *Silakan berikan nama file yang relevan sebelumnya
                   </small>
                 </div>
 
@@ -381,7 +434,7 @@ export default function ScoreInputPage() {
 
                     <div className={styles.rightSection}>
                       <div className={styles.removeIcon}>
-                        <IoIosCloseCircle className="text-lg"/>
+                        <IoIosCloseCircle className="text-lg" />
                       </div>
                     </div>
                   </div>
