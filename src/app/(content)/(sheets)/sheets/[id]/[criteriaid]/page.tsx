@@ -1,13 +1,32 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React from "react";
+import type React from "react";
 import styles from "@/styles/styles.module.css";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
+import { uploadFileToSupabase, supabase } from "@/lib/supabaseClient";
 import { IoIosArrowForward } from "react-icons/io";
-import { IoIosCloseCircle } from "react-icons/io";
-import type { Criteria, SubComponent, Component } from "@prisma/client";
+import { FaArrowRight } from "react-icons/fa";
+import { IoSave } from "react-icons/io5";
+import { FaTrashCan } from "react-icons/fa6";
+import { FaCircleCheck } from "react-icons/fa6";
+import { BiSolidFilePdf } from "react-icons/bi";
+import { SiGoogledocs, SiGooglesheets } from "react-icons/si";
+import { FaFile } from "react-icons/fa";
+import type {
+  Criteria,
+  SubComponent,
+  Component,
+  Evidence,
+  Score,
+} from "@prisma/client";
+
+type CriteriaWithScore = Criteria & {
+  score: Score[];
+};
 
 type SubComponentWithCriteria = SubComponent & {
-  criteria: Criteria[];
+  criteria: CriteriaWithScore[];
   component: Component;
 };
 
@@ -19,20 +38,28 @@ export default function ScoreInputPage({
   const [subComponent, setSubComponent] = useState<
     SubComponentWithCriteria | undefined
   >(undefined);
-  const [selectedCriterion, setSelectedCriterion] = useState<Criteria | null>(
-    null
-  );
-
+  const [selectedCriterion, setSelectedCriterion] =
+    useState<CriteriaWithScore | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [evidenceData, setEvidenceData] = useState<Evidence[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const id = params.criteriaid;
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success");
 
   useEffect(() => {
     const fetchEvaluationSheet = async () => {
       if (id) {
-        const res = await fetch(`/api/subcomponents/${id}`);
-        const data = await res.json();
-        setSubComponent(data);
+        try {
+          const response = await axios.get(`/api/subcomponents/${id}`);
+          setSubComponent(response.data);
+        } catch (error) {
+          console.error("Error fetching subcomponent:", error);
+        }
       }
     };
+
     fetchEvaluationSheet();
   }, [id]);
 
@@ -42,12 +69,176 @@ export default function ScoreInputPage({
     }
   }, [subComponent]);
 
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = event.target.files?.[0] || null;
+    setFile(selectedFile);
+
+    if (selectedFile) {
+      await handleUpload(selectedFile);
+    }
+  };
+
+  const handleButtonClick = () => {
+    const fileInput = document.getElementById(
+      "hiddenFileInput"
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  };
+
+  const handleUpload = async (selectedFile: File) => {
+    setIsLoading(true);
+    try {
+      const data = await uploadFileToSupabase(selectedFile);
+      if (data) {
+        const fileName = selectedFile.name;
+        const fileType = selectedFile.type;
+        const fileSize = selectedFile.size;
+        const filePath = data.path;
+        const dateUploadedAt = new Date().toISOString();
+
+        const { data: publicData } = supabase.storage
+          .from("evidence")
+          .getPublicUrl(filePath);
+
+        const publicUrl = publicData?.publicUrl || "";
+
+        const newEvidence = {
+          file_name: fileName,
+          file_type: fileType,
+          file_size: fileSize,
+          file_path: filePath,
+          public_path: publicUrl,
+          date_uploaded_at: dateUploadedAt,
+          id_score: selectedCriterion?.score?.[0]?.id,
+        };
+
+        await axios.post("/api/evidence", newEvidence);
+
+        // alert("File berhasil diunggah dan data berhasil disimpan di database!");
+        showToast("File berhasil diunggah dan data disimpan di database!", "success");
+        fetchEvidence();
+      }
+    } catch (error) {
+      const errorMessage = error;
+      // alert(`Gagal mengunggah file: ${errorMessage}`);
+      showToast(`Gagal mengunggah file: ${errorMessage}`, "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchEvidence = useCallback(async () => {
+    try {
+      const response = await axios.get("/api/evidence");
+      setEvidenceData(response.data.evidence);
+    } catch (error) {
+      console.error("Error fetching evidence:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchEvidence();
+  }, [fetchEvidence]);
+
+  const fileIcon = (fileType: string) => {
+    if (fileType.includes("pdf"))
+      return <BiSolidFilePdf className="text-red-700 h-full text-4xl" />;
+    if (
+      fileType.includes("spreadsheet") ||
+      fileType.includes("excel") ||
+      fileType.includes("csv")
+    )
+      return <SiGooglesheets className="text-green-700 h-full text-3xl" />;
+    if (fileType.includes("word") || fileType.includes("document"))
+      return <SiGoogledocs className="text-blue-700 h-full text-3xl" />;
+    return <FaFile className="text-slate-700 h-full text-xl" />;
+  };
+
   const numberToAlphabet = (number: number): string => {
     return String.fromCharCode(64 + number);
   };
 
+  const showToast = (message: string, type: "success" | "error") => {
+    setToastMessage(message);
+    setToastType(type);
+    setIsToastVisible(true);
+  
+    setTimeout(() => {
+      setIsToastVisible(false);
+    }, 3000);
+  };
+
+
   return (
+
     <div className={styles.lkeContentContainer}>
+      {/* Toast */}
+      {isToastVisible && (
+      <div
+        className={`fixed right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-lg border ${
+          toastType === "success" ? "border-green-300" : "border-red-300"
+        } transition-all duration-500 ease-in-out transform ${
+          isToastVisible ? "animate-slideIn" : "animate-slideOut"
+        }`}
+        // biome-ignore lint/a11y/useSemanticElements: <explanation>
+        role="alert"
+      >
+        <div
+          className={`inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full shadow-md ${
+            toastType === "success" ? "bg-green-100 text-green-500" : "bg-red-100 text-red-500"
+          }`}
+        >
+          {toastType === "success" ? (
+            <FaCircleCheck className="text-green-600 text-2xl"/>
+          ) : (
+            <svg
+              className="w-6 h-6"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+            </svg>
+          )}
+        </div>
+        <div className="ml-3 text-sm font-medium">
+          {toastMessage}
+        </div>
+        <button
+          type="button"
+          className="ml-auto text-gray-400 hover:text-gray-900 focus:ring-2 focus:ring-red-300 p-1.5 rounded-lg bg-transparent hover:bg-gray-200 focus:bg-gray-100"
+          aria-label="Close"
+          onClick={() => setIsToastVisible(false)}
+        >
+          <svg
+            className="w-4 h-4"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 14"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+            />
+          </svg>
+        </button>
+      </div>
+    )}
+
+
+
+
+
+
       <div className={styles.lkeContent}>
         <div className={styles.fillCriteriaHeader}>
           <div className={styles.breadcrumb}>
@@ -145,7 +336,7 @@ export default function ScoreInputPage({
                       (a: Criteria, b: Criteria) =>
                         a.criteria_number - b.criteria_number
                     )
-                    .map((criterion: Criteria) => (
+                    .map((criterion) => (
                       <button
                         type="button"
                         key={criterion.id}
@@ -171,7 +362,7 @@ export default function ScoreInputPage({
                     ))
                 ) : (
                   <p className="text-gray-500 italic text-center">
-                    Loading... atau Tidak ada data criteria
+                    Tidak ada data criteria
                   </p>
                 )}
               </div>
@@ -203,256 +394,313 @@ export default function ScoreInputPage({
             </div>
 
             <div className={styles.criteriaFormContainer}>
-              <div className="flex flex-col gap-2">
-                <div className={styles.criteriaInfo}>
-                  <p
-                    className={`${styles.criteriaFormSubtitle} text-base font-semibold bg-blue-800 py-1 px-4 mb-1 rounded-full text-white w-fit`}
-                  >
-                    {`Kriteria ${selectedCriterion ? selectedCriterion.criteria_number : ""}`}
-                  </p>
-                  <h3 className="font-bold text-xl">
-                    {selectedCriterion ? selectedCriterion.name : ""}
-                  </h3>
-                  <div className="text-sm text-gray-600 mt-1">
-                    <div className="font-semibold text-gray-800">
-                      Deskripsi:
-                    </div>
-                    <p>
-                      {selectedCriterion &&
-                      selectedCriterion.description?.trim() !== ""
-                        ? selectedCriterion.description
-                        : "Tidak ada Deskripsi"}
-                    </p>
-                  </div>
-                  <hr className="border-t-2 border-gray-300 mt-4 mb-2" />
-                </div>
-
-                <div className={styles.criteriaScoreField}>
-                  <p className={`${styles.criteriaFormSubtitle} text-gray-700`}>
-                    Berikan penilaian Anda:
-                  </p>
-                  <ul className={styles.scoreList}>
-                    <li>
-                      <input
-                        type="radio"
-                        name="score"
-                        id="score100"
-                        value={"100"}
-                        className="hidden peer"
-                      />
-                      <label
-                        htmlFor="score100"
-                        className="peer-checked:bg-green-600 peer-checked:text-white hover:bg-green-200 hover:text-green-800"
-                      >
-                        100
-                      </label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        name="score"
-                        id="score90"
-                        value={"90"}
-                        className="hidden peer"
-                      />
-                      <label
-                        htmlFor="score90"
-                        className="peer-checked:bg-green-600 peer-checked:text-white hover:bg-green-200 hover:text-green-800"
-                      >
-                        90
-                      </label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        name="score"
-                        id="score80"
-                        value={"80"}
-                        className="hidden peer"
-                      />
-                      <label
-                        htmlFor="score80"
-                        className="peer-checked:bg-green-600 peer-checked:text-white hover:bg-green-200 hover:text-green-800"
-                      >
-                        80
-                      </label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        name="score"
-                        id="score70"
-                        value={"70"}
-                        className="hidden peer"
-                      />
-                      <label
-                        htmlFor="score70"
-                        className="peer-checked:bg-yellow-500 peer-checked:text-white hover:bg-yellow-200 hover:text-yellow-800"
-                      >
-                        70
-                      </label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        name="score"
-                        id="score60"
-                        value={"60"}
-                        className="hidden peer"
-                      />
-                      <label
-                        htmlFor="score60"
-                        className="peer-checked:bg-yellow-500 peer-checked:text-white hover:bg-yellow-200 hover:text-yellow-800"
-                      >
-                        60
-                      </label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        name="score"
-                        id="score50"
-                        value={"50"}
-                        className="hidden peer"
-                      />
-                      <label
-                        htmlFor="score50"
-                        className="peer-checked:bg-yellow-500 peer-checked:text-white hover:bg-yellow-200 hover:text-yellow-800"
-                      >
-                        50
-                      </label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        name="score"
-                        id="score30"
-                        value={"30"}
-                        className="hidden peer"
-                      />
-                      <label
-                        htmlFor="score30"
-                        className="peer-checked:bg-red-600 peer-checked:text-white hover:bg-red-200 hover:text-red-800"
-                      >
-                        30
-                      </label>
-                    </li>
-                    <li>
-                      <input
-                        type="radio"
-                        name="score"
-                        id="score0"
-                        value={"0"}
-                        className="hidden peer"
-                      />
-                      <label
-                        htmlFor="score0"
-                        className="peer-checked:bg-red-600 peer-checked:text-white hover:bg-red-200 hover:text-red-800"
-                      >
-                        0
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className={styles.criteriaNoteField}>
-                <p className={styles.criteriaFormSubtitle}>Catatan</p>
-                <textarea
-                  name="noteField"
-                  id={styles.noteField}
-                  placeholder="Masukan Catatan Anda"
-                  className="py-1"
+              <form>
+                <input
+                  type="text"
+                  value={selectedCriterion?.score?.[0]?.id}
+                  hidden
                 />
-              </div>
+                <div className="flex flex-col gap-2">
+                  <div className={styles.criteriaInfo}>
+                    <p
+                      className={`${styles.criteriaFormSubtitle} text-base font-semibold bg-blue-800 py-1 px-4 mb-1 rounded-full text-white w-fit`}
+                    >
+                      {`Kriteria ${
+                        selectedCriterion
+                          ? selectedCriterion.criteria_number
+                          : ""
+                      }`}
+                    </p>
+                    <h3 className="font-bold text-xl">
+                      {selectedCriterion ? selectedCriterion.name : ""}
+                    </h3>
+                    <div className="text-sm text-gray-600 mt-1">
+                      <div className="font-semibold text-gray-800 ">
+                        Deskripsi:
+                      </div>
+                      <p>
+                        {selectedCriterion &&
+                        selectedCriterion.description?.trim() !== ""
+                          ? selectedCriterion.description
+                          : "Tidak ada Deskripsi"}
+                      </p>
+                    </div>
+                    <hr className="border-t-2 border-gray-300 mt-2" />
+                  </div>
 
-              <div className={styles.criteriaEvidenceField}>
-                <div className={styles.title}>
-                  <p className={styles.criteriaFormSubtitle}>Daftar Evidence</p>
-                  <small>
-                    *Silakan berikan nama file yang relevan sebelumnya
-                  </small>
+                  <div className={styles.criteriaScoreField}>
+                    <p
+                      className={`${styles.criteriaFormSubtitle} text-gray-700 font-semibold`}
+                    >
+                      Berikan penilaian Anda:
+                    </p>
+                    <ul className={styles.scoreList}>
+                      <li>
+                        <input
+                          type="radio"
+                          name="score"
+                          id="score100"
+                          value={"100"}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor="score100"
+                          className="peer-checked:bg-green-600 peer-checked:text-white hover:bg-green-200 hover:text-green-800"
+                        >
+                          100
+                        </label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="score"
+                          id="score90"
+                          value={"90"}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor="score90"
+                          className="peer-checked:bg-green-600 peer-checked:text-white hover:bg-green-200 hover:text-green-800"
+                        >
+                          90
+                        </label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="score"
+                          id="score80"
+                          value={"80"}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor="score80"
+                          className="peer-checked:bg-green-600 peer-checked:text-white hover:bg-green-200 hover:text-green-800"
+                        >
+                          80
+                        </label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="score"
+                          id="score70"
+                          value={"70"}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor="score70"
+                          className="peer-checked:bg-yellow-500 peer-checked:text-white hover:bg-yellow-200 hover:text-yellow-800"
+                        >
+                          70
+                        </label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="score"
+                          id="score60"
+                          value={"60"}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor="score60"
+                          className="peer-checked:bg-yellow-500 peer-checked:text-white hover:bg-yellow-200 hover:text-yellow-800"
+                        >
+                          60
+                        </label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="score"
+                          id="score50"
+                          value={"50"}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor="score50"
+                          className="peer-checked:bg-yellow-500 peer-checked:text-white hover:bg-yellow-200 hover:text-yellow-800"
+                        >
+                          50
+                        </label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="score"
+                          id="score30"
+                          value={"30"}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor="score30"
+                          className="peer-checked:bg-red-600 peer-checked:text-white hover:bg-red-200 hover:text-red-800"
+                        >
+                          30
+                        </label>
+                      </li>
+                      <li>
+                        <input
+                          type="radio"
+                          name="score"
+                          id="score0"
+                          value={"0"}
+                          className="hidden peer"
+                        />
+                        <label
+                          htmlFor="score0"
+                          className="peer-checked:bg-red-600 peer-checked:text-white hover:bg-red-200 hover:text-red-800"
+                        >
+                          0
+                        </label>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
 
-                <div className={styles.evidenceSection}>
+                <div className={styles.criteriaNoteField}>
+                  <p className={`${styles.criteriaFormSubtitle} font-semibold`}>
+                    Catatan
+                  </p>
+                  <textarea
+                    name="noteField"
+                    id={styles.noteField}
+                    placeholder="Masukan Catatan Anda"
+                    className="py-1"
+                  />
+                </div>
+
+                <div className={styles.criteriaEvidenceField}>
+                  <div className={styles.title}>
+                    <p
+                      className={`${styles.criteriaFormSubtitle} font-semibold`}
+                    >
+                      Daftar Evidence
+                    </p>
+                    <small>
+                      *Silakan berikan nama file yang relevan sebelumnya
+                    </small>
+                  </div>
+
+                  <div className={styles.evidenceSection}>
+                    <div>
+                      <input
+                        id="hiddenFileInput"
+                        type="file"
+                        onChange={handleFileChange}
+                        style={{ display: "none" }}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={handleButtonClick}
+                        className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 active:scale-95 active:shadow-inner transition-transform duration-150"
+                      >
+                        {isLoading ? (
+                          <div className="flex items-center">
+                            <svg
+                              aria-hidden="true"
+                              className="w-6 h-6 text-gray-200 animate-spin dark:text-white-600 fill-blue-600 mr-2"
+                              viewBox="0 0 100 101"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor"
+                              />
+                              <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentFill"
+                              />
+                            </svg>
+                            <span>Uploading...</span>
+                          </div>
+                        ) : (
+                          "+ Tambah Evidence"
+                        )}
+                      </button>
+                    </div>
+
+                    {evidenceData.length > 0 ? (
+                      evidenceData.filter(
+                        (evidence) =>
+                          evidence.id_score ===
+                          selectedCriterion?.score?.[0]?.id
+                      ).length > 0 ? (
+                        evidenceData
+                          .filter(
+                            (evidence) =>
+                              evidence.id_score ===
+                              selectedCriterion?.score?.[0]?.id
+                          )
+                          .map((evidence) => (
+                            <div
+                              className={styles.evidenceCard}
+                              key={evidence.id}
+                            >
+                              <div className={styles.leftSection}>
+                                <div className={styles.fileIcon}>
+                                  {fileIcon(evidence.file_type)}
+                                </div>
+
+                                <div className={`${styles.fileInfo}`}>
+                                  <a
+                                    href={evidence.public_path}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-blue-600 hover:underline"
+                                  >
+                                    <h5
+                                      className={`${styles.fileTitle} break-words`}
+                                    >
+                                      {evidence.file_name}
+                                    </h5>
+                                  </a>
+
+                                  <p className={styles.fileSize}>
+                                    {(evidence.file_size / 1024).toFixed(2)} KB
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className={styles.rightSection}>
+                                <button
+                                  type="button"
+                                  className="bg-red-700 px-3 py-5 rounded text-white flex items-center justify-center gap-2 transition-all duration-200 ease-in-out transform hover:bg-red-600 hover:scale-105 active:scale-95 focus:outline-none"
+                                >
+                                  <FaTrashCan />
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                      ) : (
+                        <p className="text-gray-600">
+                          No evidence found for the selected criterion.
+                        </p>
+                      )
+                    ) : (
+                      <p className="text-gray-600">No evidence found.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex justify-start items-center">
                   <button
                     type="button"
-                    className={styles.addNewEvidence}
-                    onClick={() => {
-                      const fileInput = document.getElementById(
-                        "fileInput"
-                      ) as HTMLInputElement | null;
-                      if (fileInput) {
-                        fileInput.click();
-                      }
-                    }}
+                    className="flex justify-center items-center gap-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="29"
-                      height="29"
-                      viewBox="0 0 29 29"
-                      fill="none"
-                    >
-                      <title>Plus</title>
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M8.87521 4.8539C12.6137 4.43998 16.3864 4.43998 20.1248 4.8539C22.1947 5.0859 23.8646 6.71594 24.1075 8.79306C24.5505 12.5848 24.5505 16.4152 24.1075 20.207C23.8646 22.2841 22.1947 23.9141 20.1248 24.1461C16.3864 24.5601 12.6137 24.5601 8.87521 24.1461C6.80534 23.9141 5.13542 22.2841 4.89255 20.207C4.44964 16.4156 4.44964 12.5856 4.89255 8.79427C5.01539 7.78516 5.47542 6.8471 6.19807 6.13213C6.92072 5.41715 7.86363 4.96717 8.874 4.8551M14.5 8.46681C14.7404 8.46681 14.9709 8.56229 15.1408 8.73225C15.3108 8.9022 15.4063 9.13271 15.4063 9.37306V13.5938H19.627C19.8673 13.5938 20.0978 13.6893 20.2678 13.8592C20.4377 14.0292 20.5332 14.2597 20.5332 14.5C20.5332 14.7404 20.4377 14.9709 20.2678 15.1408C20.0978 15.3108 19.8673 15.4063 19.627 15.4063H15.4063V19.627C15.4063 19.8673 15.3108 20.0978 15.1408 20.2678C14.9709 20.4378 14.7404 20.5332 14.5 20.5332C14.2597 20.5332 14.0291 20.4378 13.8592 20.2678C13.6892 20.0978 13.5938 19.8673 13.5938 19.627V15.4063H9.37304C9.13269 15.4063 8.90218 15.3108 8.73223 15.1408C8.56227 14.9709 8.4668 14.7404 8.4668 14.5C8.4668 14.2597 8.56227 14.0292 8.73223 13.8592C8.90218 13.6893 9.13269 13.5938 9.37304 13.5938H13.5938V9.37306C13.5938 9.13271 13.6892 8.9022 13.8592 8.73225C14.0291 8.56229 14.2597 8.46681 14.5 8.46681Z"
-                        fill="white"
-                      />
-                    </svg>
-
-                    <p>Tambah Bukti Evidence</p>
-
-                    <input
-                      type="file"
-                      id="fileInput"
-                      style={{ display: "none" }}
-                      accept=".pdf, .doc, .docx, .xls, .xlsx"
-                      // onChange={(e) => console.log(e.target.files[0])}
-                    />
+                    <IoSave /> Simpan
                   </button>
-
-                  <div className={styles.evidenceCard}>
-                    <div className={styles.leftSection}>
-                      <div className={styles.fileIcon}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="40"
-                          height="40"
-                          viewBox="0 0 40 40"
-                          fill="none"
-                        >
-                          <title>File</title>
-                          <path
-                            d="M13.7783 24.4668C13.4717 24.4668 13.265 24.4968 13.1583 24.5268V26.4901C13.285 26.5201 13.4433 26.5285 13.6617 26.5285C14.46 26.5285 14.9517 26.1251 14.9517 25.4435C14.9517 24.8335 14.5283 24.4668 13.7783 24.4668ZM19.59 24.4868C19.2567 24.4868 19.04 24.5168 18.9117 24.5468V28.8968C19.04 28.9268 19.2467 28.9268 19.4333 28.9268C20.795 28.9368 21.6817 28.1868 21.6817 26.6001C21.6917 25.2168 20.8833 24.4868 19.59 24.4868Z"
-                            fill="#DE1135"
-                          />
-                          <path
-                            d="M23.3334 3.3335H10C9.11597 3.3335 8.26812 3.68469 7.643 4.30981C7.01788 4.93493 6.66669 5.78277 6.66669 6.66683V33.3335C6.66669 34.2176 7.01788 35.0654 7.643 35.6905C8.26812 36.3156 9.11597 36.6668 10 36.6668H30C30.8841 36.6668 31.7319 36.3156 32.357 35.6905C32.9822 35.0654 33.3334 34.2176 33.3334 33.3335V13.3335L23.3334 3.3335ZM15.83 26.9835C15.315 27.4668 14.555 27.6835 13.67 27.6835C13.4984 27.6867 13.3268 27.6767 13.1567 27.6535V30.0302H11.6667V23.4702C12.3391 23.3702 13.0186 23.3245 13.6984 23.3335C14.6267 23.3335 15.2867 23.5102 15.7317 23.8652C16.155 24.2018 16.4417 24.7535 16.4417 25.4035C16.44 26.0568 16.2234 26.6085 15.83 26.9835ZM22.175 29.2418C21.475 29.8235 20.41 30.1002 19.1084 30.1002C18.3284 30.1002 17.7767 30.0502 17.4017 30.0002V23.4718C18.0744 23.374 18.7536 23.3277 19.4334 23.3335C20.695 23.3335 21.515 23.5602 22.155 24.0435C22.8467 24.5568 23.28 25.3752 23.28 26.5502C23.28 27.8218 22.815 28.7002 22.175 29.2418ZM28.3334 24.6168H25.78V26.1352H28.1667V27.3585H25.78V30.0318H24.27V23.3835H28.3334V24.6168ZM23.3334 15.0002H21.6667V6.66683L30 15.0002H23.3334Z"
-                            fill="#DE1135"
-                          />
-                        </svg>
-                      </div>
-
-                      <div className={styles.fileInfo}>
-                        <h5 className={styles.fileTitle}>
-                          SOP anaands dsdsdsd.pdf
-                        </h5>
-
-                        <p className={styles.fileSize}>2 MB</p>
-                      </div>
-                    </div>
-
-                    <div className={styles.rightSection}>
-                      <div className={styles.removeIcon}>
-                        <IoIosCloseCircle className="text-lg" />
-                      </div>
-                    </div>
-                  </div>
+                  <button
+                    type="button"
+                    className="flex justify-center items-center gap-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                  >
+                    Lanjut <FaArrowRight />
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>

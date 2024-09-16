@@ -9,15 +9,17 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export const uploadFileToSupabase = async (file: File) => {
   try {
     const { data, error } = await supabase.storage
-      .from("evidence") // Gunakan bucket "evidence"
-      .upload(`public/${file.name}`, file);
+      .from("evidence") 
+      .upload(`public/${file.name}`, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
 
     if (error) throw error;
 
-    return data; // Kembalikan informasi file, termasuk file path
+    return data;
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;
   }
 };
-

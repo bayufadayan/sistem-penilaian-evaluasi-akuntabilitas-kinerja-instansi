@@ -40,15 +40,18 @@ export const GET = async (
   request: Request,
   { params }: { params: { id: string } }
 ) => {
-  // Konversi id dari string ke integer
   const id = Number.parseInt(params.id);
 
   try {
     const subComponent = await prisma.subComponent.findUnique({
       where: { id },
       include: {
-        criteria: true,
-        component: true
+        criteria: {
+          include: {
+            score: true, 
+          },
+        },
+        component: true,
       },
     });
 

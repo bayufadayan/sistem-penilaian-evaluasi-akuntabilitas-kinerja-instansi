@@ -106,7 +106,7 @@ model Criteria {
   criteria_number  Int          @default(0)
   id_subcomponents Int
   subComponent     SubComponent @relation(fields: [id_subcomponents], references: [id], onDelete: Cascade)
-  Score            Score[]
+  score            Score[]
 }
 
 model Score {
@@ -127,6 +127,7 @@ model Evidence {
   file_type        String
   file_size        Float
   file_path        String
+  public_path      String
   date_uploaded_at DateTime @default(now())
   id_score         Int
   score            Score    @relation(fields: [id_score], references: [id], onDelete: Cascade)
