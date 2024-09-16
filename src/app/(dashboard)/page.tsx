@@ -53,17 +53,17 @@ export default function Home() {
     <div className={styles.mainContent}>
       <div className={styles.evaluationCardContainer}>
         <h4>Lembar Kerja Evaluasi Tersedia</h4>
-
-        {inProgressSheets.map((sheet) => (
-          <div className={styles.evaluationCardSection} key={sheet.id}>
+        <div className={styles.evaluationCardSection}>
+          {inProgressSheets.map((sheet) => (
             <AkipCard
+              key={sheet.id}
               title={sheet.title}
               startDate={sheet.date_start}
               endDate={sheet.date_finish}
               url={`/sheets/${sheet.id}`}
             />
-          </div>
-        ))}
+          ))}
+        </div>
 
         <h4>Lembar Kerja Evaluasi Sebelumnya</h4>
 

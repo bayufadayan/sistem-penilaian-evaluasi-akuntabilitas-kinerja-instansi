@@ -290,11 +290,6 @@
 }
 
 
-
-.summarySection {
-  /* margin-block: 16px; */
-}
-
 .summarySection p {
   font-size: small;
   font-weight: 700;
@@ -591,10 +586,6 @@
 
 .staticticAnswer img {
   margin-left: -12px;
-}
-
-.explainComponents {
-  /* background-color: lightblue; */
 }
 
 .explainComponents h5 {
