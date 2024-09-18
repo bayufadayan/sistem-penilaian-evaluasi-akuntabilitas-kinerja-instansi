@@ -3,10 +3,12 @@
 import type React from "react";
 import styles from "@/styles/styles.module.css";
 import axios from "axios";
+import { prisma } from "@/lib/prisma";
 import { useCallback, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { uploadFileToSupabase, supabase } from "@/lib/supabaseClient";
 import { IoIosArrowForward } from "react-icons/io";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { IoSave } from "react-icons/io5";
 import { FaTrashCan } from "react-icons/fa6";
 import { FaCircleCheck } from "react-icons/fa6";
@@ -49,6 +51,14 @@ export default function ScoreInputPage({
   const [toastType, setToastType] = useState("success");
   const [fileIdToDelete, setFileIdToDelete] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [score, setScore] = useState("");
+  const [notes, setNotes] = useState("");
+  const [initialScore, setInitialScore] = useState("");
+  const [initialNotes, setInitialNotes] = useState("");
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchEvaluationSheet = async () => {
@@ -209,6 +219,116 @@ export default function ScoreInputPage({
       closeModal();
     }
   };
+
+  useEffect(() => {
+    if (selectedCriterion) {
+      const savedScore = selectedCriterion.score?.[0]?.score;
+      const savedNotes = selectedCriterion.score?.[0]?.notes;
+
+      if (savedScore !== undefined) {
+        setScore(savedScore);
+        setInitialScore(savedScore);
+      }
+      if (savedNotes !== undefined) {
+        setNotes(savedNotes ?? "");
+        setInitialNotes(savedNotes ?? "");
+      }
+    }
+  }, [selectedCriterion]);
+
+  useEffect(() => {
+    if (score !== initialScore || notes !== initialNotes) {
+      setHasChanges(true);
+    } else {
+      setHasChanges(false);
+    }
+  }, [score, notes, initialScore, initialNotes]);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!session) {
+      showToast("Anda harus login untuk menyimpan data", "error");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const payload = {
+        score,
+        notes,
+        id_users: session.user.id,
+      };
+
+      console.log(`Id user adalah: ${session.user.email}`);
+
+      await axios.patch(
+        `/api/score/${selectedCriterion?.score?.[0]?.id}`,
+        payload
+      );
+      showToast("Data berhasil di-update!", "success");
+
+      setInitialScore(score);
+      setInitialNotes(notes);
+    } catch (error) {
+      showToast("Gagal mengupdate data!", "error");
+    } finally {
+      setIsSaving(false);
+      setHasChanges(false);
+    }
+  };
+
+  const getNextCriterion = () => {
+    if (!selectedCriterion || !subComponent) return null;
+
+    const currentIndex = subComponent.criteria.findIndex(
+      (criterion) => criterion.id === selectedCriterion.id
+    );
+
+    if (
+      currentIndex !== -1 &&
+      currentIndex < subComponent.criteria.length - 1
+    ) {
+      return subComponent.criteria[currentIndex + 1];
+    }
+
+    return null;
+  };
+
+  const handleNextCriterion = () => {
+    const nextCriterion = getNextCriterion();
+
+    if (nextCriterion) {
+      setSelectedCriterion(nextCriterion);
+    } else {
+      showToast("Tidak ada kriteria selanjutnya", "error");
+    }
+  };
+
+  const getPreviousCriterion = () => {
+    if (!selectedCriterion || !subComponent) return null;
+  
+    const currentIndex = subComponent.criteria.findIndex(
+      (criterion) => criterion.id === selectedCriterion.id
+    );
+  
+    if (currentIndex > 0) {
+      return subComponent.criteria[currentIndex - 1];
+    }
+  
+    return null;
+  };
+  
+  const handlePreviousCriterion = () => {
+    const previousCriterion = getPreviousCriterion();
+  
+    if (previousCriterion) {
+      setSelectedCriterion(previousCriterion);
+    } else {
+      showToast("Tidak ada kriteria sebelumnya", "error");
+    }
+  };
+  
 
   return (
     <div className={styles.lkeContentContainer}>
@@ -384,75 +504,77 @@ export default function ScoreInputPage({
           </div>
 
           <div className={styles.criteriaContent}>
-            <div className={styles.contentLeftMenu}>
-              <p>Pilihan Kriteria:</p>
+            <div className={`${styles.contentLeftMenu} `}>
+              <div className="sticky top-24 transition-all duration-300 ease-in-out">
+                <p>Pilihan Kriteria:</p>
 
-              <div className={`${styles.criteriaListContainer}`}>
-                {(subComponent?.criteria ?? []).length > 0 ? (
-                  subComponent?.criteria
-                    .sort(
-                      (a: Criteria, b: Criteria) =>
-                        a.criteria_number - b.criteria_number
-                    )
-                    .map((criterion) => (
-                      <button
-                        type="button"
-                        key={criterion.id}
-                        className={`${
-                          selectedCriterion?.id === criterion.id
-                            ? "bg-blue-900 text-white"
-                            : "hover:bg-blue-200 hover:text-blue-900"
-                        } ${styles.theCriteria} cursor-pointer`}
-                        onClick={() => setSelectedCriterion(criterion)}
-                      >
-                        <div
-                          className={`${styles.criteriaNumber} ${
+                <div className={`${styles.criteriaListContainer}`}>
+                  {(subComponent?.criteria ?? []).length > 0 ? (
+                    subComponent?.criteria
+                      .sort(
+                        (a: Criteria, b: Criteria) =>
+                          a.criteria_number - b.criteria_number
+                      )
+                      .map((criterion) => (
+                        <button
+                          type="button"
+                          key={criterion.id}
+                          className={`${
                             selectedCriterion?.id === criterion.id
-                              ? "bg-white text-blue-900"
-                              : "bg-blue-900 text-white"
-                          }`}
+                              ? "bg-blue-900 text-white"
+                              : "hover:bg-blue-200 hover:text-blue-900"
+                          } ${styles.theCriteria} cursor-pointer transition duration-300 ease-in-out`}
+                          onClick={() => setSelectedCriterion(criterion)}
                         >
-                          {criterion.criteria_number}
-                        </div>
-                        <p>{criterion.name}</p>
-                        <IoIosArrowForward className="text-xl" />
-                      </button>
-                    ))
-                ) : (
-                  <p className="text-gray-500 italic text-center">
-                    Tidak ada data criteria
-                  </p>
-                )}
-              </div>
+                          <div
+                            className={`${styles.criteriaNumber} ${
+                              selectedCriterion?.id === criterion.id
+                                ? "bg-white text-blue-900"
+                                : "bg-blue-900 text-white"
+                            }`}
+                          >
+                            {criterion.criteria_number}
+                          </div>
+                          <p>{criterion.name}</p>
+                          <IoIosArrowForward className="text-xl" />
+                        </button>
+                      ))
+                  ) : (
+                    <p className="text-gray-500 italic text-center">
+                      Tidak ada data criteria
+                    </p>
+                  )}
+                </div>
 
-              <div
-                className={`${styles.nextScoreExplain} ${styles.nextButton}`}
-              >
-                <button type="button">
-                  <p className={styles.marginTop}>Selanjutnya</p>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="45"
-                    height="45"
-                    viewBox="0 0 45 45"
-                    fill="none"
-                  >
-                    <title>Arrow</title>
-                    <rect width="45" height="45" rx="22.5" fill="#01499F" />
-                    <path
-                      d="M19 30L26.5 22.5L19 15"
-                      stroke="white"
-                      stroke-width="3"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
+                <div
+                  className={`${styles.nextScoreExplain} ${styles.nextButton}`}
+                >
+                  <button type="button">
+                    <p className={styles.marginTop}>Selanjutnya</p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="45"
+                      height="45"
+                      viewBox="0 0 45 45"
+                      fill="none"
+                    >
+                      <title>Arrow</title>
+                      <rect width="45" height="45" rx="22.5" fill="#01499F" />
+                      <path
+                        d="M19 30L26.5 22.5L19 15"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
             <div className={styles.criteriaFormContainer}>
-              <form>
+              <form onSubmit={handleSave}>
                 <input
                   type="text"
                   value={selectedCriterion?.score?.[0]?.id}
@@ -498,8 +620,10 @@ export default function ScoreInputPage({
                           type="radio"
                           name="score"
                           id="score100"
-                          value={"100"}
+                          value="100"
                           className="hidden peer"
+                          checked={score === "100"}
+                          onChange={() => setScore("100")}
                         />
                         <label
                           htmlFor="score100"
@@ -513,8 +637,10 @@ export default function ScoreInputPage({
                           type="radio"
                           name="score"
                           id="score90"
-                          value={"90"}
+                          value="90"
                           className="hidden peer"
+                          checked={score === "90"}
+                          onChange={() => setScore("90")}
                         />
                         <label
                           htmlFor="score90"
@@ -528,8 +654,10 @@ export default function ScoreInputPage({
                           type="radio"
                           name="score"
                           id="score80"
-                          value={"80"}
+                          value="80"
                           className="hidden peer"
+                          checked={score === "80"}
+                          onChange={() => setScore("80")}
                         />
                         <label
                           htmlFor="score80"
@@ -543,8 +671,10 @@ export default function ScoreInputPage({
                           type="radio"
                           name="score"
                           id="score70"
-                          value={"70"}
+                          value="70"
                           className="hidden peer"
+                          checked={score === "70"}
+                          onChange={() => setScore("70")}
                         />
                         <label
                           htmlFor="score70"
@@ -558,8 +688,10 @@ export default function ScoreInputPage({
                           type="radio"
                           name="score"
                           id="score60"
-                          value={"60"}
+                          value="60"
                           className="hidden peer"
+                          checked={score === "60"}
+                          onChange={() => setScore("60")}
                         />
                         <label
                           htmlFor="score60"
@@ -573,8 +705,10 @@ export default function ScoreInputPage({
                           type="radio"
                           name="score"
                           id="score50"
-                          value={"50"}
+                          value="50"
                           className="hidden peer"
+                          checked={score === "50"}
+                          onChange={() => setScore("50")}
                         />
                         <label
                           htmlFor="score50"
@@ -588,8 +722,10 @@ export default function ScoreInputPage({
                           type="radio"
                           name="score"
                           id="score30"
-                          value={"30"}
+                          value="30"
                           className="hidden peer"
+                          checked={score === "30"}
+                          onChange={() => setScore("30")}
                         />
                         <label
                           htmlFor="score30"
@@ -603,8 +739,10 @@ export default function ScoreInputPage({
                           type="radio"
                           name="score"
                           id="score0"
-                          value={"0"}
+                          value="0"
                           className="hidden peer"
+                          checked={score === "0"}
+                          onChange={() => setScore("0")}
                         />
                         <label
                           htmlFor="score0"
@@ -625,7 +763,9 @@ export default function ScoreInputPage({
                     name="noteField"
                     id={styles.noteField}
                     placeholder="Masukan Catatan Anda"
-                    className="py-1"
+                    className="py-1 focus:ring-blue-500 focus:border-blue-500"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
                   />
                 </div>
 
@@ -680,31 +820,32 @@ export default function ScoreInputPage({
                         )}
                       </button>
                       {isDeleting && (
-                      <button
-                        type="button"
-                        onClick={handleButtonClick}
-                        className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 transition-transform duration-150"
-                        disabled
-                      >
-                      <div className="flex items-center">
-                        <svg
-                          aria-hidden="true"
-                          className="w-6 h-6 text-gray-200 animate-spin dark:text-white-600 fill-red-400 mr-2"
-                          viewBox="0 0 100 101"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                        <button
+                          type="button"
+                          onClick={handleButtonClick}
+                          className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 transition-transform duration-150"
+                          disabled
                         >
-                          <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor"
-                          />
-                          <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="currentFill"
-                          />
-                        </svg>
-                        <span>Menghapus...</span>
-                      </div></button>
+                          <div className="flex items-center">
+                            <svg
+                              aria-hidden="true"
+                              className="w-6 h-6 text-gray-200 animate-spin dark:text-white-600 fill-red-400 mr-2"
+                              viewBox="0 0 100 101"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor"
+                              />
+                              <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="currentFill"
+                              />
+                            </svg>
+                            <span>Menghapus...</span>
+                          </div>
+                        </button>
                       )}
                     </div>
 
@@ -772,19 +913,56 @@ export default function ScoreInputPage({
                   </div>
                 </div>
 
-                <div className="flex justify-start items-center">
+                <div className="flex justify-between items-center mt-4">
                   <button
-                    type="button"
-                    className="flex justify-center items-center gap-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    type="submit"
+                    className={`flex justify-center items-center gap-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none ${
+                      hasChanges && !isSaving
+                        ? "bg-blue-700 hover:bg-blue-800"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                    disabled={!hasChanges || isSaving}
                   >
-                    <IoSave /> Simpan
+                    {isSaving ? (
+                      <div className="flex items-center justify-center">
+                        <svg
+                          aria-hidden="true"
+                          className="w-6 h-6 text-gray-200 animate-spin dark:text-white-600 fill-blue-600 mr-2"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill"
+                          />
+                        </svg>
+                      </div>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2"><IoSave /> Simpan</span>
+                    )}
+
                   </button>
-                  <button
-                    type="button"
-                    className="flex justify-center items-center gap-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
-                  >
-                    Lanjut <FaArrowRight />
-                  </button>
+                  <div className="flex">
+                    <button
+                      type="button"
+                      onClick={handlePreviousCriterion}
+                      className="flex justify-center items-center gap-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                    >
+                      <FaArrowLeft /> Kembali
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextCriterion}
+                      className="flex justify-center items-center gap-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                    >
+                      Lanjut <FaArrowRight />
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>

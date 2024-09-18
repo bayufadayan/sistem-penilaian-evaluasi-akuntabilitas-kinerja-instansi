@@ -931,6 +931,7 @@
   flex-direction: column;
 }
 
+
 .contentLeftMenu p {
   font-weight: 600;
   margin-bottom: 8px;
@@ -1050,6 +1051,14 @@
   max-height: 150px;
   font-size: 16px;
   font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+#noteField:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  background-color: #fff;
+  transform: scale(1.01);
 }
 
 .criteriaEvidenceField {

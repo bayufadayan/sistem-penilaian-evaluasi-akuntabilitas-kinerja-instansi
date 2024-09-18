@@ -39,7 +39,7 @@ export const DELETE = async (
 
   const serializedUser = {
     ...user,
-    nip: user.nip.toString(), // Convert BigInt nip to string
+    nip: user.nip.toString(), 
   };
   return NextResponse.json(serializedUser, { status: 200 });
 };
