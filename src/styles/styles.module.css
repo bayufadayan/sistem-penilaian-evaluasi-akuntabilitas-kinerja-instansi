@@ -1050,10 +1050,10 @@
   padding: 10px;
   border: none;
   outline: none;
-  max-height: 150px;
   font-size: 16px;
   font-weight: 500;
   transition: all 0.3s ease;
+  overflow: auto;
 }
 
 #noteField:focus {

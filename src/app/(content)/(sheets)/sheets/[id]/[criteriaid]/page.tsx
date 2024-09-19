@@ -57,7 +57,9 @@ export default function ScoreInputPage({
   const [initialScore, setInitialScore] = useState("");
   const [initialNotes, setInitialNotes] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
-  const [lastSelectedCriterionId, setLastSelectedCriterionId] = useState<number | null>(null);
+  const [lastSelectedCriterionId, setLastSelectedCriterionId] = useState<
+    number | null
+  >(null);
 
   const { data: session } = useSession();
 
@@ -92,7 +94,6 @@ export default function ScoreInputPage({
       }
     }
   }, [subComponent, lastSelectedCriterionId]);
-  
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -276,41 +277,46 @@ export default function ScoreInputPage({
       showToast("Anda harus login untuk menyimpan data", "error");
       return;
     }
-  
+
     setIsSaving(true);
-  
+
     // Simpan ID kriteria yang dipilih saat ini
     if (selectedCriterion) {
       setLastSelectedCriterionId(selectedCriterion.id);
     }
-  
+
     try {
       // Proses simpan data
-      const user = await axios.get(`/api/users/getbyemail/${session.user.email}`);
+      const user = await axios.get(
+        `/api/users/getbyemail/${session.user.email}`
+      );
       const userId = user?.data?.id;
-  
+
       const payload = {
         score,
         notes,
         id_users: Number.parseInt(userId),
       };
-  
-      await axios.patch(`/api/score/${selectedCriterion?.score?.[0]?.id}`, payload);
-  
+
+      await axios.patch(
+        `/api/score/${selectedCriterion?.score?.[0]?.id}`,
+        payload
+      );
+
       showToast("Data berhasil di-update!", "success");
-  
+
       // Setelah simpan data, fetch data lagi
       const updatedResponse = await axios.get(`/api/subcomponents/${id}`);
       setSubComponent(updatedResponse.data);
-  
-      // Cari kriteria berdasarkan lastSelectedCriterionId
+
       const newCriterion = updatedResponse.data.criteria.find(
-        (criterion: CriteriaWithScore) => criterion.id === lastSelectedCriterionId
+        (criterion: CriteriaWithScore) =>
+          criterion.id === lastSelectedCriterionId
       );
       if (newCriterion) {
         setSelectedCriterion(newCriterion);
       }
-  
+
       setInitialScore(score);
       setInitialNotes(notes);
       setScore(score);
@@ -322,7 +328,6 @@ export default function ScoreInputPage({
       setHasChanges(false);
     }
   };
-  
 
   const getNextCriterion = () => {
     if (!selectedCriterion || !subComponent) return null;
@@ -374,6 +379,105 @@ export default function ScoreInputPage({
       showToast("Tidak ada kriteria sebelumnya", "error");
     }
   };
+
+  // Inisialisasi Var Skor
+  let nilaiAvgOlah: number | null = null;
+  let percentage: number | null = 0;
+  let grade: string | null = null;
+  let nilai: string | null | number = null;
+
+  // PENERAPAN RUMUS UNTUK HITUNG NILAI
+  function calculatenilaiAvgOlah(
+    subComponent: SubComponentWithCriteria
+  ): number {
+    const scores = subComponent.criteria.map((criterion) => {
+      const scoreValue = criterion.score?.[0]?.score || 0;
+      return Number(scoreValue);
+    });
+
+    const totalScore = scores.reduce((acc, score) => acc + score, 0);
+    const averageScore = scores.length > 0 ? totalScore / scores.length : 0;
+
+    return (averageScore * subComponent.weight) / 100;
+  }
+
+  function calculatePercentage(nilaiAvgOlah: number, weight: number): number {
+    if (weight === 0) return 0;
+    return (nilaiAvgOlah / weight) * 100;
+  }
+
+  function calculateGrade(percentage: number): string {
+    if (percentage === 0) {
+      return "belum diisi";
+    }
+    if (percentage < 30) {
+      return "E";
+    }
+    if (percentage < 40) {
+      return "D";
+    }
+    if (percentage < 50) {
+      return "C";
+    }
+    if (percentage < 60) {
+      return "CC";
+    }
+    if (percentage < 75) {
+      return "B";
+    }
+    if (percentage < 90) {
+      return "BB";
+    }
+    if (percentage < 100) {
+      return "A";
+    }
+    if (percentage === 100) {
+      return "AA";
+    }
+
+    return "Invalid Grade";
+  }
+
+  function calculateNilai(
+    grade: string,
+    bobotSubComponent: number
+  ): number | string {
+    if (grade === "AA") {
+      return 1 * bobotSubComponent;
+    }
+    if (grade === "A") {
+      return 0.9 * bobotSubComponent;
+    }
+    if (grade === "BB") {
+      return 0.8 * bobotSubComponent;
+    }
+    if (grade === "B") {
+      return 0.7 * bobotSubComponent;
+    }
+    if (grade === "CC") {
+      return 0.6 * bobotSubComponent;
+    }
+    if (grade === "C") {
+      return 0.5 * bobotSubComponent;
+    }
+    if (grade === "D") {
+      return 0.3 * bobotSubComponent;
+    }
+    if (grade === "E") {
+      return 0 * bobotSubComponent;
+    }
+    return "Belum Diisi";
+  }
+
+  // Variabel Hasil Skor
+  if (subComponent) {
+    nilaiAvgOlah = calculatenilaiAvgOlah(subComponent);
+    percentage = calculatePercentage(nilaiAvgOlah, subComponent.weight);
+    grade = calculateGrade(percentage);
+    nilai = calculateNilai(grade, subComponent.weight);
+  } else {
+    console.error("SubComponent tidak ditemukan");
+  }
 
   return (
     <div className={styles.lkeContentContainer}>
@@ -522,24 +626,44 @@ export default function ScoreInputPage({
                 <div className="text-lg font-bold text-blue-700 text-center mb-2.5 bg-indigo-100 rounded-lg py-2 border-2 border-blue-400 shadow-sm">
                   Hasil Skor Sub Komponen
                 </div>
-
+                <div hidden>
+                  {" "}
+                  Nilai Asli:{" "}
+                  {nilaiAvgOlah !== null
+                    ? nilaiAvgOlah.toFixed(2)
+                    : "Data belum tersedia"}
+                </div>
                 <div className={styles.criteriaScore}>
                   <div className={styles.scoreAndPersentage}>
                     <div className={styles.scoreCard}>
-                      <h5>persentage</h5>
-                      <h2>93%</h2>
+                      <h5>Persentasi</h5>
+                      <h2>{percentage.toFixed(2)}%</h2>
                     </div>
 
                     <div className={styles.scoreCard}>
                       <h5>Nilai</h5>
-                      <h2>5,4</h2>
+                      <h2>
+                        {nilai !== null
+                          ? typeof nilai === "string"
+                            ? nilai
+                            : nilai.toFixed(2)
+                          : "N/A"}
+                      </h2>
                     </div>
                   </div>
 
                   <div className={styles.gradeContainer}>
                     <div className={styles.gradeCard}>
                       <h5>Grade</h5>
-                      <h1>AA</h1>
+                      {grade ? (
+                        grade === "belum diisi" ? (
+                          <p className="my-5 mx-2">{grade}</p>
+                        ) : (
+                          <h1>{grade}</h1>
+                        )
+                      ) : (
+                        <h1>N/A</h1>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -559,10 +683,12 @@ export default function ScoreInputPage({
 
           <div className={styles.criteriaContent}>
             <div className={`${styles.contentLeftMenu} `}>
-            <div className="sticky top-24 transition-all duration-300 ease-in-out">
+              <div className="sticky top-24 transition-all duration-300 ease-in-out">
                 <p>Pilihan Kriteria:</p>
 
-                <div className={`${styles.criteriaListContainer} overflow-y-auto max-h-[60vh] rounded`}>
+                <div
+                  className={`${styles.criteriaListContainer} overflow-y-auto max-h-[60vh] rounded`}
+                >
                   {(subComponent?.criteria ?? []).length > 0 ? (
                     subComponent?.criteria
                       .sort(
