@@ -56,8 +56,8 @@ export default function SidebarUser({
         </div>
       </div>
 
-      <Link href="#">
-        <button type="button">Selesai</button>
+      <Link href={`/sheets/${evaluationId}/summary`}>
+        <button type="button">Hasil Akhir LKE</button>
       </Link>
     </div>
   );

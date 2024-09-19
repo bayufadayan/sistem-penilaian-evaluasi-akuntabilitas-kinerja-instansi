@@ -7,25 +7,28 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInFormSchema } from "@/lib/form-schema";
 import type { z } from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import styles from "@/styles/login.module.css";
 
 const LoginPage: FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: session, status } = useSession();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.back();
+      console.log(callbackUrl);
+      router.push(callbackUrl);
     }
-  }, [router, status]);
+  }, [callbackUrl, router, status]);
 
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
@@ -38,12 +41,12 @@ const LoginPage: FC = () => {
         redirect: false,
         email: values.email,
         password: values.password,
-        callbackUrl: "/",
+        callbackUrl
       });
 
       if (!res?.error) {
         setIsError(false);
-        router.push("/");
+        router.push(callbackUrl);
       } else {
         setErrorMessage("Email atau password salah");
         setIsError(true);

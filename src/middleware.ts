@@ -24,6 +24,12 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(homeUrl);
     }
 
+    if (!token) {
+        const redirectUrl = new URL("/login", req.url);
+        redirectUrl.searchParams.set('callbackUrl', req.url);
+        return NextResponse.redirect(redirectUrl);
+      }
+
     return NextResponse.next();
 }
 

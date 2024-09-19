@@ -57,6 +57,7 @@ export default function ScoreInputPage({
   const [initialScore, setInitialScore] = useState("");
   const [initialNotes, setInitialNotes] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
+  const [lastSelectedCriterionId, setLastSelectedCriterionId] = useState<number | null>(null);
 
   const { data: session } = useSession();
 
@@ -77,9 +78,21 @@ export default function ScoreInputPage({
 
   useEffect(() => {
     if (subComponent?.criteria && subComponent.criteria.length > 0) {
-      setSelectedCriterion(subComponent.criteria[0]);
+      if (lastSelectedCriterionId) {
+        const foundCriterion = subComponent.criteria.find(
+          (criterion) => criterion.id === lastSelectedCriterionId
+        );
+        if (foundCriterion) {
+          setSelectedCriterion(foundCriterion);
+        } else {
+          setSelectedCriterion(subComponent.criteria[0]);
+        }
+      } else {
+        setSelectedCriterion(subComponent.criteria[0]);
+      }
     }
-  }, [subComponent]);
+  }, [subComponent, lastSelectedCriterionId]);
+  
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -98,6 +111,15 @@ export default function ScoreInputPage({
     ) as HTMLInputElement;
     if (fileInput) {
       fileInput.click();
+    }
+  };
+
+  const handleHiddenSubmit = () => {
+    const hiddenSubmitButton = document.getElementById(
+      "hiddenSubmitButton"
+    ) as HTMLButtonElement;
+    if (hiddenSubmitButton) {
+      hiddenSubmitButton.click();
     }
   };
 
@@ -130,7 +152,6 @@ export default function ScoreInputPage({
 
         await axios.post("/api/evidence", newEvidence);
 
-        // alert("File berhasil diunggah dan data berhasil disimpan di database!");
         showToast(
           "File berhasil diunggah dan data disimpan di database!",
           "success"
@@ -139,7 +160,6 @@ export default function ScoreInputPage({
       }
     } catch (error) {
       const errorMessage = error;
-      // alert(`Gagal mengunggah file: ${errorMessage}`);
       showToast(`Gagal mengunggah file: ${errorMessage}`, "error");
     } finally {
       setIsLoading(false);
@@ -244,32 +264,57 @@ export default function ScoreInputPage({
     }
   }, [score, notes, initialScore, initialNotes]);
 
+  useEffect(() => {
+    if (selectedCriterion) {
+      setLastSelectedCriterionId(selectedCriterion.id);
+    }
+  }, [selectedCriterion]);
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session) {
       showToast("Anda harus login untuk menyimpan data", "error");
       return;
     }
-
+  
     setIsSaving(true);
-
+  
+    // Simpan ID kriteria yang dipilih saat ini
+    if (selectedCriterion) {
+      setLastSelectedCriterionId(selectedCriterion.id);
+    }
+  
     try {
+      // Proses simpan data
+      const user = await axios.get(`/api/users/getbyemail/${session.user.email}`);
+      const userId = user?.data?.id;
+  
       const payload = {
         score,
         notes,
-        id_users: session.user.id,
+        id_users: Number.parseInt(userId),
       };
-
-      console.log(`Id user adalah: ${session.user.email}`);
-
-      await axios.patch(
-        `/api/score/${selectedCriterion?.score?.[0]?.id}`,
-        payload
-      );
+  
+      await axios.patch(`/api/score/${selectedCriterion?.score?.[0]?.id}`, payload);
+  
       showToast("Data berhasil di-update!", "success");
-
+  
+      // Setelah simpan data, fetch data lagi
+      const updatedResponse = await axios.get(`/api/subcomponents/${id}`);
+      setSubComponent(updatedResponse.data);
+  
+      // Cari kriteria berdasarkan lastSelectedCriterionId
+      const newCriterion = updatedResponse.data.criteria.find(
+        (criterion: CriteriaWithScore) => criterion.id === lastSelectedCriterionId
+      );
+      if (newCriterion) {
+        setSelectedCriterion(newCriterion); // Pilih kriteria yang sama setelah update
+      }
+  
       setInitialScore(score);
       setInitialNotes(notes);
+      setScore(score);
+      setNotes(notes);
     } catch (error) {
       showToast("Gagal mengupdate data!", "error");
     } finally {
@@ -277,6 +322,7 @@ export default function ScoreInputPage({
       setHasChanges(false);
     }
   };
+  
 
   const getNextCriterion = () => {
     if (!selectedCriterion || !subComponent) return null;
@@ -307,28 +353,27 @@ export default function ScoreInputPage({
 
   const getPreviousCriterion = () => {
     if (!selectedCriterion || !subComponent) return null;
-  
+
     const currentIndex = subComponent.criteria.findIndex(
       (criterion) => criterion.id === selectedCriterion.id
     );
-  
+
     if (currentIndex > 0) {
       return subComponent.criteria[currentIndex - 1];
     }
-  
+
     return null;
   };
-  
+
   const handlePreviousCriterion = () => {
     const previousCriterion = getPreviousCriterion();
-  
+
     if (previousCriterion) {
       setSelectedCriterion(previousCriterion);
     } else {
       showToast("Tidak ada kriteria sebelumnya", "error");
     }
   };
-  
 
   return (
     <div className={styles.lkeContentContainer}>
@@ -444,9 +489,14 @@ export default function ScoreInputPage({
                   <h1 className="text-3xl">
                     {subComponent?.component.name.toUpperCase()}
                   </h1>
-                  <div className={styles.componentWeight}>
-                    Bobot komponen:{" "}
-                    <span>{subComponent?.component.weight.toFixed(2)}</span>
+                  <div className="flex gap-1">
+                    <div className="bg-red-200 py-1 px-2 text-sm w-fit text-red-700 rounded font-bold">
+                      Bobot komponen:{" "}
+                      <span>{subComponent?.component.weight.toFixed(2)}</span>
+                    </div>
+                    <div className={styles.componentWeight}>
+                      Nilai Komponen: <span>24.6</span>
+                    </div>
                   </div>
                 </div>
 
@@ -468,7 +518,11 @@ export default function ScoreInputPage({
                 </div>
               </div>
 
-              <div className={styles.criteriaScoreContainer}>
+              <div className={`${styles.criteriaScoreContainer}`}>
+                <div className="text-lg font-bold text-blue-700 text-center mb-2.5 bg-indigo-100 rounded-lg py-2 border-2 border-blue-400 shadow-sm">
+                  Hasil Skor Sub Komponen
+                </div>
+
                 <div className={styles.criteriaScore}>
                   <div className={styles.scoreAndPersentage}>
                     <div className={styles.scoreCard}>
@@ -523,7 +577,9 @@ export default function ScoreInputPage({
                             selectedCriterion?.id === criterion.id
                               ? "bg-blue-900 text-white"
                               : "hover:bg-blue-200 hover:text-blue-900"
-                          } ${styles.theCriteria} cursor-pointer transition duration-300 ease-in-out`}
+                          } ${
+                            styles.theCriteria
+                          } cursor-pointer transition duration-300 ease-in-out`}
                           onClick={() => setSelectedCriterion(criterion)}
                         >
                           <div
@@ -546,29 +602,59 @@ export default function ScoreInputPage({
                   )}
                 </div>
 
-                <div
-                  className={`${styles.nextScoreExplain} ${styles.nextButton}`}
-                >
-                  <button type="button">
-                    <p className={styles.marginTop}>Selanjutnya</p>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="45"
-                      height="45"
-                      viewBox="0 0 45 45"
-                      fill="none"
-                    >
-                      <title>Arrow</title>
-                      <rect width="45" height="45" rx="22.5" fill="#01499F" />
-                      <path
-                        d="M19 30L26.5 22.5L19 15"
-                        stroke="white"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                <div className="flex justify-between items-center mt-4">
+                  <button
+                    type="button"
+                    onClick={handleHiddenSubmit}
+                    className={`flex justify-center items-center gap-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none ${
+                      hasChanges && !isSaving
+                        ? "bg-blue-700 hover:bg-blue-800"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                    disabled={!hasChanges || isSaving}
+                  >
+                    {isSaving ? (
+                      <div className="flex items-center justify-center">
+                        <svg
+                          aria-hidden="true"
+                          className="w-6 h-6 text-gray-200 animate-spin dark:text-white-600 fill-blue-600 mr-2"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill"
+                          />
+                        </svg>{" "}
+                        Menyimpan...
+                      </div>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        <IoSave /> Simpan
+                      </span>
+                    )}
                   </button>
+                  <div className="flex">
+                    <button
+                      type="button"
+                      onClick={handlePreviousCriterion}
+                      className="flex justify-center items-center gap-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                    >
+                      <FaArrowLeft /> Kembali
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextCriterion}
+                      className="flex justify-center items-center gap-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
+                    >
+                      Lanjut <FaArrowRight />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -769,7 +855,7 @@ export default function ScoreInputPage({
                   />
                 </div>
 
-                <div className={styles.criteriaEvidenceField}>
+                <div className={`${styles.criteriaEvidenceField} mb-12`}>
                   <div className={styles.title}>
                     <p
                       className={`${styles.criteriaFormSubtitle} font-semibold`}
@@ -916,53 +1002,12 @@ export default function ScoreInputPage({
                 <div className="flex justify-between items-center mt-4">
                   <button
                     type="submit"
-                    className={`flex justify-center items-center gap-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none ${
-                      hasChanges && !isSaving
-                        ? "bg-blue-700 hover:bg-blue-800"
-                        : "bg-gray-400 cursor-not-allowed"
-                    }`}
+                    id="hiddenSubmitButton"
                     disabled={!hasChanges || isSaving}
+                    hidden
                   >
-                    {isSaving ? (
-                      <div className="flex items-center justify-center">
-                        <svg
-                          aria-hidden="true"
-                          className="w-6 h-6 text-gray-200 animate-spin dark:text-white-600 fill-blue-600 mr-2"
-                          viewBox="0 0 100 101"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                            fill="currentColor"
-                          />
-                          <path
-                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                            fill="currentFill"
-                          />
-                        </svg>
-                      </div>
-                    ) : (
-                      <span className="flex items-center justify-center gap-2"><IoSave /> Simpan</span>
-                    )}
-
+                    Simpan
                   </button>
-                  <div className="flex">
-                    <button
-                      type="button"
-                      onClick={handlePreviousCriterion}
-                      className="flex justify-center items-center gap-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
-                    >
-                      <FaArrowLeft /> Kembali
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleNextCriterion}
-                      className="flex justify-center items-center gap-2 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"
-                    >
-                      Lanjut <FaArrowRight />
-                    </button>
-                  </div>
                 </div>
               </form>
             </div>
