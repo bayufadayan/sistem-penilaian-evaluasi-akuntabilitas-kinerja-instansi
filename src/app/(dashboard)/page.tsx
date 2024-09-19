@@ -23,7 +23,7 @@ export default function Home() {
   const [inProgressSheets, setInProgressSheets] = useState<EvaluationSheet[]>(
     []
   );
-  const [previousSheets, setPreviousSheets] = useState<EvaluationSheet[]>([]);
+  const [completedSheets, setCompletedSheets] = useState<EvaluationSheet[]>([]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -34,16 +34,13 @@ export default function Home() {
       const res = await fetch("/api/evaluations");
       const sheets: EvaluationSheet[] = await res.json();
 
-      const currentYear = new Date().getFullYear();
       const inProgress = sheets.filter(
         (sheet) => sheet.status === "IN_PROGRESS"
       );
-      const previous = sheets.filter(
-        (sheet) => new Date(sheet.date_finish).getFullYear() < currentYear
-      );
+      const completed = sheets.filter((sheet) => sheet.status === "COMPLETED");
 
       setInProgressSheets(inProgress);
-      setPreviousSheets(previous);
+      setCompletedSheets(completed);
     };
 
     fetchSheets();
@@ -54,29 +51,40 @@ export default function Home() {
       <div className={styles.evaluationCardContainer}>
         <h4>Lembar Kerja Evaluasi Tersedia</h4>
         <div className={styles.evaluationCardSection}>
-          {inProgressSheets.map((sheet) => (
-            <AkipCard
-              key={sheet.id}
-              title={sheet.title}
-              startDate={sheet.date_start}
-              endDate={sheet.date_finish}
-              url={`/sheets/${sheet.id}`}
-            />
-          ))}
+          {inProgressSheets.length === 0 ? (
+            <div className={styles.evaluationCardSection}>
+              <p>Tidak ada LKE ditemukan</p>
+            </div>
+          ) : (
+            inProgressSheets.map((sheet) => (
+              <AkipCard
+                key={sheet.id}
+                title={sheet.title}
+                startDate={sheet.date_start}
+                endDate={sheet.date_finish}
+                url={`/sheets/${sheet.id}`}
+              />
+            ))
+          )}
         </div>
 
-        <h4>Lembar Kerja Evaluasi Sebelumnya</h4>
-
-        {previousSheets.map((sheet) => (
-          <div className={styles.evaluationCardSection} key={sheet.id}>
-            <AkipCard
-              title={sheet.title}
-              startDate={sheet.date_start}
-              endDate={sheet.date_finish}
-              url={`/sheets/${sheet.id}`}
-            />
+        <h4>Lembar Kerja Evaluasi Selesai</h4>
+        {completedSheets.length === 0 ? (
+          <div className={styles.evaluationCardSection}>
+            <p>Tidak ada LKE ditemukan</p>
           </div>
-        ))}
+        ) : (
+          completedSheets.map((sheet) => (
+            <div className={styles.evaluationCardSection} key={sheet.id}>
+              <AkipCard
+                title={sheet.title}
+                startDate={sheet.date_start}
+                endDate={sheet.date_finish}
+                url={`/sheets/${sheet.id}`}
+              />
+            </div>
+          ))
+        )}
       </div>
       <div className={styles.summaryCard}>
         <div className={styles.title}>

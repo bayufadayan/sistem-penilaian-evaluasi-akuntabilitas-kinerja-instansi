@@ -308,7 +308,7 @@ export default function ScoreInputPage({
         (criterion: CriteriaWithScore) => criterion.id === lastSelectedCriterionId
       );
       if (newCriterion) {
-        setSelectedCriterion(newCriterion); // Pilih kriteria yang sama setelah update
+        setSelectedCriterion(newCriterion);
       }
   
       setInitialScore(score);
@@ -559,10 +559,10 @@ export default function ScoreInputPage({
 
           <div className={styles.criteriaContent}>
             <div className={`${styles.contentLeftMenu} `}>
-              <div className="sticky top-24 transition-all duration-300 ease-in-out">
+            <div className="sticky top-24 transition-all duration-300 ease-in-out">
                 <p>Pilihan Kriteria:</p>
 
-                <div className={`${styles.criteriaListContainer}`}>
+                <div className={`${styles.criteriaListContainer} overflow-y-auto max-h-[60vh] rounded`}>
                   {(subComponent?.criteria ?? []).length > 0 ? (
                     subComponent?.criteria
                       .sort(

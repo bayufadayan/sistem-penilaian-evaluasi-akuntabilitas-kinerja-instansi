@@ -124,6 +124,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .evaluationCardContainer h4{
@@ -132,7 +133,9 @@
 
 .evaluationCardSection {
   display: flex;
+  flex-wrap: wrap;
   gap: 32px;
+  margin-bottom: 30px;
 }
 
 .evaluationCard {
@@ -142,7 +145,6 @@
   height: 180px;
   width: 315px;
   position: relative;
-  margin-bottom: 30px;
   cursor: pointer;
 }
 
@@ -940,7 +942,7 @@
 .criteriaListContainer {
   background-color: white;
   padding: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
   display: flex;
   flex-direction: column;
   border-radius: 10px;
