@@ -17,7 +17,12 @@ export const GET = async (
         components: {
           where: { id_LKE: id },
           include: {
-            subComponents: true,
+            componentScore: true,
+            subComponents: {
+              include: {
+                subComponentScore: true,
+              },
+            },
           },
         },
       },
