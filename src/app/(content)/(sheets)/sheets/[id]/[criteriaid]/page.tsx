@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import type React from "react";
+import { prisma } from "@/lib/prisma";
 import styles from "@/styles/styles.module.css";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
@@ -58,7 +59,10 @@ export default function ScoreInputPage({
   const [initialScore, setInitialScore] = useState("");
   const [initialNotes, setInitialNotes] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
-  const [lastSelectedCriterionId, setLastSelectedCriterionId] = useState<number | null>(null);
+  const [lastSelectedCriterionId, setLastSelectedCriterionId] = useState<
+    number | null
+  >(null);
+  const [componentScore, setComponentScore] = useState<number | null>(null);
 
   const { data: session } = useSession();
 
@@ -276,33 +280,33 @@ export default function ScoreInputPage({
       showToast("Anda harus login untuk menyimpan data", "error");
       return;
     }
-  
+
     setIsSaving(true);
-  
+
     if (selectedCriterion) {
       setLastSelectedCriterionId(selectedCriterion.id);
     }
-  
+
     try {
       const user = await axios.get(
         `/api/users/getbyemail/${session.user.email}`
       );
       const userId = user?.data?.id;
-  
+
       const payload = {
         score,
         notes,
         id_users: Number.parseInt(userId),
       };
-  
+
       await axios.patch(
         `/api/score/${selectedCriterion?.score?.[0]?.id}`,
         payload
       );
-  
+
       const updatedResponse = await axios.get(`/api/subcomponents/${id}`);
       setSubComponent(updatedResponse.data);
-  
+
       const newCriterion = updatedResponse.data.criteria.find(
         (criterion: CriteriaWithScore) =>
           criterion.id === lastSelectedCriterionId
@@ -310,7 +314,7 @@ export default function ScoreInputPage({
       if (newCriterion) {
         setSelectedCriterion(newCriterion);
       }
-  
+
       showToast("Data berhasil di-update!", "success");
     } catch (error) {
       showToast("Gagal mengupdate data!", "error");
@@ -319,7 +323,6 @@ export default function ScoreInputPage({
       setHasChanges(false);
     }
   };
-  
 
   const getNextCriterion = () => {
     if (!selectedCriterion || !subComponent) return null;
@@ -456,50 +459,96 @@ export default function ScoreInputPage({
   // Variabel Hasil Skor
   if (subComponent) {
     nilaiAvgOlah = parseFloat(calculatenilaiAvgOlah(subComponent).toFixed(2));
-    percentage = parseFloat(calculatePercentage(nilaiAvgOlah, subComponent.weight).toFixed(2));
+    percentage = parseFloat(
+      calculatePercentage(nilaiAvgOlah, subComponent.weight).toFixed(2)
+    );
     grade = calculateGrade(percentage);
     nilai = parseFloat(calculateNilai(grade, subComponent.weight).toFixed(2));
   } else {
     console.error("SubComponent tidak ditemukan");
-  }  
+  }
 
-const updateSubComponentScore = useCallback(async () => {
-  if (!selectedCriterion || !subComponent) return;
+  const updateSubComponentScore = useCallback(async () => {
+    if (!selectedCriterion || !subComponent) return;
 
-  try {
-    const payload = {
-      nilaiAvgOlah,
-      persentase: percentage,
-      grade,
-      nilai,
-    };
+    try {
+      const payload = {
+        nilaiAvgOlah,
+        persentase: percentage,
+        grade,
+        nilai,
+      };
 
-    const response = await axios.patch(
-      `/api/calculateScore/subcomponentscore/${subComponent.id}`,
-      payload
-    );
+      const response = await axios.patch(
+        `/api/calculateScore/subcomponentscore/${subComponent.id}`,
+        payload
+      );
 
-    if (response && response.status === 200) {
-      showToast("Nilai subkomponen berhasil diupdate!", "success");
-    } else if (!response) {
-      console.error("SubComponentScore tidak ditemukan atau kosong");
-      showToast("SubComponentScore tidak ditemukan atau kosong", "error");
-    } else {
-      showToast("Gagal mengupdate nilai subkomponen", "error");
+      if (response && response.status === 200) {
+        showToast("Nilai subkomponen berhasil diupdate!", "success");
+      } else if (!response) {
+        console.error("SubComponentScore tidak ditemukan atau kosong");
+        showToast("SubComponentScore tidak ditemukan atau kosong", "error");
+      } else {
+        showToast("Gagal mengupdate nilai subkomponen", "error");
+      }
+    } catch (error) {
+      console.error("Error updating subcomponent score:", error);
+      showToast("Terjadi kesalahan saat mengupdate nilai subkomponen", "error");
     }
-  } catch (error) {
-    console.error("Error updating subcomponent score:", error);
-    showToast("Terjadi kesalahan saat mengupdate nilai subkomponen", "error");
-  }
-}, [selectedCriterion, subComponent, nilaiAvgOlah, percentage, grade, nilai]);
+  }, [selectedCriterion, subComponent, nilaiAvgOlah, percentage, grade, nilai]);
 
-useEffect(() => {
-  if (nilaiAvgOlah !== null && percentage !== null && grade !== null && nilai !== null) {
-    updateSubComponentScore();
-  }
-}, [nilaiAvgOlah, percentage, grade, nilai, updateSubComponentScore]);
+  useEffect(() => {
+    if (
+      nilaiAvgOlah !== null &&
+      percentage !== null &&
+      grade !== null &&
+      nilai !== null
+    ) {
+      updateSubComponentScore();
+    }
+  }, [nilaiAvgOlah, percentage, grade, nilai, updateSubComponentScore]);
 
+  // Nilai Component
+  const updateComponentScore = useCallback(async (componentId: number) => {
+    try {
+      const response = await axios.patch(`/api/calculateScore/componentscore/${componentId}`, {
+        nilai: await calculateComponentScore(componentId),
+      });
+
+      if (response.status === 200) {
+        setComponentScore(response.data.nilai);
+        showToast(
+          `Nilai komponen berhasil diperbarui: ${response.data.nilai}`,
+          "success"
+        );
+      } else {
+        showToast("Gagal memperbarui nilai komponen", "error");
+      }
+    } catch (error) {
+      console.error("Error updating component score:", error);
+      showToast("Terjadi kesalahan saat memperbarui nilai komponen", "error");
+    }
+  }, []);
+
+  const calculateComponentScore = async (componentId: number) => {
+    try {
+      const response = await axios.get(`/api/components/${componentId}`);
+      const componentScore = response.data.componentScore;
   
+      return componentScore;
+    } catch (error) {
+      console.error("Error calculating component score:", error);
+      return 0;
+    }
+  };
+  
+
+  useEffect(() => {
+    if (subComponent && subComponent.component) {
+      updateComponentScore(subComponent.component.id);
+    }
+  }, [subComponent, updateComponentScore]);
 
   return (
     <div className={styles.lkeContentContainer}>
@@ -621,7 +670,12 @@ useEffect(() => {
                       <span>{subComponent?.component.weight.toFixed(2)}</span>
                     </div>
                     <div className={styles.componentWeight}>
-                      Nilai Komponen: <span>no</span>
+                      Nilai Komponen:{" "}
+                      <span>
+                        {componentScore !== null
+                          ? componentScore.toFixed(2)
+                          : "Belum tersedia"}
+                      </span>
                     </div>
                   </div>
                 </div>
