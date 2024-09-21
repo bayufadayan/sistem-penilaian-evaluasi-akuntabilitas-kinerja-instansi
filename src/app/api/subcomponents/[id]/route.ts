@@ -48,10 +48,11 @@ export const GET = async (
       include: {
         criteria: {
           include: {
-            score: true, 
+            score: true,
           },
         },
         component: true,
+        subComponentScore: true,
       },
     });
 

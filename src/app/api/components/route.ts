@@ -16,6 +16,13 @@ export const POST = async (request: Request) => {
         }
     });
 
-    return NextResponse.json(component, { status: 201 });
+    const componentScore = await prisma.componentScore.create({
+        data: {
+            nilai: null,
+            id_components: component.id,
+        },
+    });
+
+    return NextResponse.json({component, componentScore}, { status: 201 });
 }
 

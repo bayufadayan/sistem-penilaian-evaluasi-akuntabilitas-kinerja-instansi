@@ -258,7 +258,6 @@
 
 .reminderContainer {
   display: flex;
-  color: #ed1b24;
   font-size: small;
   align-items: center;
 }
@@ -272,11 +271,9 @@
 .dateContainer {
   display: flex;
   border-radius: 10px;
-  border: 1px solid #622026;
-  background: rgba(223, 73, 88, 0.25);
+  border: 1.5px solid;
   padding: 15px 0px;
   font-weight: 700;
-  color: #622026;
   text-align: center;
   margin-bottom: 4px;
   justify-content: center;

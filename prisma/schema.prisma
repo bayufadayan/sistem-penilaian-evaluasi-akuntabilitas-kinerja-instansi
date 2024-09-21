@@ -65,14 +65,15 @@ model User {
 }
 
 model EvaluationSheet {
-  id          String           @id @default(cuid())
-  title       String
-  date_start  DateTime
-  date_finish DateTime
-  description String
-  status      StatusEvaluation @default(PENDING)
-  year        String
-  components  Component[]
+  id                   String                 @id @default(cuid())
+  title                String
+  date_start           DateTime
+  date_finish          DateTime
+  description          String
+  status               StatusEvaluation       @default(PENDING)
+  year                 String
+  components           Component[]
+  evaluationSheetScore EvaluationSheetScore[]
 }
 
 model Component {
@@ -86,17 +87,19 @@ model Component {
   team             Team?            @relation(fields: [id_team], references: [id])
   evaluation       EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
   subComponents    SubComponent[]
+  componentScore   ComponentScore[]
 }
 
 model SubComponent {
-  id                  Int        @id @default(autoincrement())
+  id                  Int                 @id @default(autoincrement())
   name                String
   description         String?
   weight              Float
-  subcomponent_number Int        @default(0)
+  subcomponent_number Int                 @default(0)
   id_components       Int
-  component           Component  @relation(fields: [id_components], references: [id], onDelete: Cascade)
+  component           Component           @relation(fields: [id_components], references: [id], onDelete: Cascade)
   criteria            Criteria[]
+  subComponentScore   SubComponentScore[]
 }
 
 model Criteria {
@@ -139,4 +142,29 @@ model ExplainingScore {
   pilihan    String
   nilai      String
   penjelasan String
+}
+
+model SubComponentScore {
+  id               Int          @id @default(autoincrement())
+  nilaiAvgOlah     Float?
+  nilai            Float?
+  persentase       Float?
+  grade            String?
+  id_subcomponents Int
+  subComponent     SubComponent @relation(fields: [id_subcomponents], references: [id], onDelete: Cascade)
+}
+
+model ComponentScore {
+  id            Int       @id @default(autoincrement())
+  nilai         Float?
+  id_components Int
+  component     Component @relation(fields: [id_components], references: [id], onDelete: Cascade)
+}
+
+model EvaluationSheetScore {
+  id         Int              @id @default(autoincrement())
+  nilai      Float?
+  grade      String?
+  id_LKE     String
+  evaluation EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
 }

@@ -12,9 +12,21 @@ export const POST = async (request: Request) => {
             weight: Number(body.weight),
             subcomponent_number: Number(body.subcomponent_number),
             id_components: Number(body.id_components),
-        }
+        },
     });
 
-    return NextResponse.json(subcomponent, { status: 201 });
-}
+    const subComponentScore = await prisma.subComponentScore.create({
+        data: {
+            nilaiAvgOlah: null,
+            nilai: null,
+            persentase: null,
+            grade: null,
+            id_subcomponents: subcomponent.id,
+        },
+    });
 
+    return NextResponse.json(
+        { subcomponent, subComponentScore },
+        { status: 201 }
+    );
+};

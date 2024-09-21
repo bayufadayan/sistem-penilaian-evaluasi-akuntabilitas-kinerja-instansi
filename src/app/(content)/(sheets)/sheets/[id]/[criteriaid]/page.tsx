@@ -3,7 +3,6 @@
 import type React from "react";
 import styles from "@/styles/styles.module.css";
 import axios from "axios";
-import { prisma } from "@/lib/prisma";
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { uploadFileToSupabase, supabase } from "@/lib/supabaseClient";
@@ -21,6 +20,7 @@ import type {
   Component,
   Evidence,
   Score,
+  SubComponentScore,
 } from "@prisma/client";
 
 type CriteriaWithScore = Criteria & {
@@ -30,6 +30,7 @@ type CriteriaWithScore = Criteria & {
 type SubComponentWithCriteria = SubComponent & {
   criteria: CriteriaWithScore[];
   component: Component;
+  SubComponentScore: SubComponentScore[];
 };
 
 export default function ScoreInputPage({
@@ -57,9 +58,7 @@ export default function ScoreInputPage({
   const [initialScore, setInitialScore] = useState("");
   const [initialNotes, setInitialNotes] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
-  const [lastSelectedCriterionId, setLastSelectedCriterionId] = useState<
-    number | null
-  >(null);
+  const [lastSelectedCriterionId, setLastSelectedCriterionId] = useState<number | null>(null);
 
   const { data: session } = useSession();
 
@@ -277,38 +276,33 @@ export default function ScoreInputPage({
       showToast("Anda harus login untuk menyimpan data", "error");
       return;
     }
-
+  
     setIsSaving(true);
-
-    // Simpan ID kriteria yang dipilih saat ini
+  
     if (selectedCriterion) {
       setLastSelectedCriterionId(selectedCriterion.id);
     }
-
+  
     try {
-      // Proses simpan data
       const user = await axios.get(
         `/api/users/getbyemail/${session.user.email}`
       );
       const userId = user?.data?.id;
-
+  
       const payload = {
         score,
         notes,
         id_users: Number.parseInt(userId),
       };
-
+  
       await axios.patch(
         `/api/score/${selectedCriterion?.score?.[0]?.id}`,
         payload
       );
-
-      showToast("Data berhasil di-update!", "success");
-
-      // Setelah simpan data, fetch data lagi
+  
       const updatedResponse = await axios.get(`/api/subcomponents/${id}`);
       setSubComponent(updatedResponse.data);
-
+  
       const newCriterion = updatedResponse.data.criteria.find(
         (criterion: CriteriaWithScore) =>
           criterion.id === lastSelectedCriterionId
@@ -316,11 +310,8 @@ export default function ScoreInputPage({
       if (newCriterion) {
         setSelectedCriterion(newCriterion);
       }
-
-      setInitialScore(score);
-      setInitialNotes(notes);
-      setScore(score);
-      setNotes(notes);
+  
+      showToast("Data berhasil di-update!", "success");
     } catch (error) {
       showToast("Gagal mengupdate data!", "error");
     } finally {
@@ -328,6 +319,7 @@ export default function ScoreInputPage({
       setHasChanges(false);
     }
   };
+  
 
   const getNextCriterion = () => {
     if (!selectedCriterion || !subComponent) return null;
@@ -384,7 +376,7 @@ export default function ScoreInputPage({
   let nilaiAvgOlah: number | null = null;
   let percentage: number | null = 0;
   let grade: string | null = null;
-  let nilai: string | null | number = null;
+  let nilai: null | number = null;
 
   // PENERAPAN RUMUS UNTUK HITUNG NILAI
   function calculatenilaiAvgOlah(
@@ -438,46 +430,76 @@ export default function ScoreInputPage({
     return "Invalid Grade";
   }
 
-  function calculateNilai(
-    grade: string,
-    bobotSubComponent: number
-  ): number | string {
-    if (grade === "AA") {
-      return 1 * bobotSubComponent;
+  function calculateNilai(grade: string, weight: number): number {
+    switch (grade) {
+      case "AA":
+        return 1 * weight;
+      case "A":
+        return 0.9 * weight;
+      case "BB":
+        return 0.8 * weight;
+      case "B":
+        return 0.7 * weight;
+      case "CC":
+        return 0.6 * weight;
+      case "C":
+        return 0.5 * weight;
+      case "D":
+        return 0.3 * weight;
+      case "E":
+        return 0 * weight;
+      default:
+        return 0;
     }
-    if (grade === "A") {
-      return 0.9 * bobotSubComponent;
-    }
-    if (grade === "BB") {
-      return 0.8 * bobotSubComponent;
-    }
-    if (grade === "B") {
-      return 0.7 * bobotSubComponent;
-    }
-    if (grade === "CC") {
-      return 0.6 * bobotSubComponent;
-    }
-    if (grade === "C") {
-      return 0.5 * bobotSubComponent;
-    }
-    if (grade === "D") {
-      return 0.3 * bobotSubComponent;
-    }
-    if (grade === "E") {
-      return 0 * bobotSubComponent;
-    }
-    return "Belum Diisi";
   }
 
   // Variabel Hasil Skor
   if (subComponent) {
-    nilaiAvgOlah = calculatenilaiAvgOlah(subComponent);
-    percentage = calculatePercentage(nilaiAvgOlah, subComponent.weight);
+    nilaiAvgOlah = parseFloat(calculatenilaiAvgOlah(subComponent).toFixed(2));
+    percentage = parseFloat(calculatePercentage(nilaiAvgOlah, subComponent.weight).toFixed(2));
     grade = calculateGrade(percentage);
-    nilai = calculateNilai(grade, subComponent.weight);
+    nilai = parseFloat(calculateNilai(grade, subComponent.weight).toFixed(2));
   } else {
     console.error("SubComponent tidak ditemukan");
+  }  
+
+const updateSubComponentScore = useCallback(async () => {
+  if (!selectedCriterion || !subComponent) return;
+
+  try {
+    const payload = {
+      nilaiAvgOlah,
+      persentase: percentage,
+      grade,
+      nilai,
+    };
+
+    const response = await axios.patch(
+      `/api/calculateScore/subcomponentscore/${subComponent.id}`,
+      payload
+    );
+
+    if (response && response.status === 200) {
+      showToast("Nilai subkomponen berhasil diupdate!", "success");
+    } else if (!response) {
+      console.error("SubComponentScore tidak ditemukan atau kosong");
+      showToast("SubComponentScore tidak ditemukan atau kosong", "error");
+    } else {
+      showToast("Gagal mengupdate nilai subkomponen", "error");
+    }
+  } catch (error) {
+    console.error("Error updating subcomponent score:", error);
+    showToast("Terjadi kesalahan saat mengupdate nilai subkomponen", "error");
   }
+}, [selectedCriterion, subComponent, nilaiAvgOlah, percentage, grade, nilai]);
+
+useEffect(() => {
+  if (nilaiAvgOlah !== null && percentage !== null && grade !== null && nilai !== null) {
+    updateSubComponentScore();
+  }
+}, [nilaiAvgOlah, percentage, grade, nilai, updateSubComponentScore]);
+
+  
 
   return (
     <div className={styles.lkeContentContainer}>
@@ -599,7 +621,7 @@ export default function ScoreInputPage({
                       <span>{subComponent?.component.weight.toFixed(2)}</span>
                     </div>
                     <div className={styles.componentWeight}>
-                      Nilai Komponen: <span>24.6</span>
+                      Nilai Komponen: <span>no</span>
                     </div>
                   </div>
                 </div>

@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "SubComponentScore" ALTER COLUMN "nilaiAvgOlah" DROP NOT NULL,
+ALTER COLUMN "nilai" DROP NOT NULL,
+ALTER COLUMN "persentase" DROP NOT NULL,
+ALTER COLUMN "grade" DROP NOT NULL;

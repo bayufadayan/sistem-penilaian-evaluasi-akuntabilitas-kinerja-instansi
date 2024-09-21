@@ -16,7 +16,15 @@ export const POST = async (request: Request) => {
     },
   });
 
-  return NextResponse.json(evaluationSheet, { status: 201 });
+  const evaluationSheetScore = await prisma.evaluationSheetScore.create({
+    data: {
+        nilai: null,
+        grade: null,
+        id_LKE: evaluationSheet.id,
+    },
+});
+
+  return NextResponse.json({evaluationSheet, evaluationSheetScore}, { status: 201 });
 };
 
 export const GET = async () => {
