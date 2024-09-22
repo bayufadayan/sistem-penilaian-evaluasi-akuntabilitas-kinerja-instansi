@@ -1,16 +1,14 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
+import { IoTrash } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import AdminDeleteButton from "../../components/buttons/adminDeleteButton";
 
 type EvaluationSheet = {
   id: string;
   title: string;
   date_start: Date;
   date_finish: Date;
-  description: string;
-  status: string;
   year: string;
 };
 
@@ -21,16 +19,15 @@ export default function DeleteEvaluation({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const router = useRouter();
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleDelete = async (userId: string) => {
+  const handleDelete = async (evaluationId: string) => {
     setIsLoading(true);
-    await axios.delete(`/../api/evaluations/${userId}`);
+    await axios.delete(`/../api/evaluations/${evaluationId}`);
     router.refresh();
     setIsLoading(false);
     setIsModalOpen(false);
@@ -38,9 +35,16 @@ export default function DeleteEvaluation({
 
   return (
     <>
-      <AdminDeleteButton handleProps={handleModalToggle} />
+      <button
+        type="button"
+        className="flex items-center gap-2 px-4 py-2 bg-white text-red-600 rounded-lg shadow-md hover:bg-red-100 transition-all duration-200"
+        onClick={handleModalToggle}
+      >
+        <IoTrash className="w-5 h-5" />
+        <span className="font-semibold">Hapus</span>
+      </button>
 
-      {/* Main modal */}
+      {/* Main Modal */}
       {isModalOpen && (
         <div
           id="popup-modal"

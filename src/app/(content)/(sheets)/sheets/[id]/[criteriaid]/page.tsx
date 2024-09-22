@@ -458,16 +458,17 @@ export default function ScoreInputPage({
 
   // Variabel Hasil Skor
   if (subComponent) {
-    nilaiAvgOlah = parseFloat(calculatenilaiAvgOlah(subComponent).toFixed(2));
-    percentage = parseFloat(
+    nilaiAvgOlah = Number.parseFloat(calculatenilaiAvgOlah(subComponent).toFixed(2));
+    percentage = Number.parseFloat(
       calculatePercentage(nilaiAvgOlah, subComponent.weight).toFixed(2)
     );
     grade = calculateGrade(percentage);
-    nilai = parseFloat(calculateNilai(grade, subComponent.weight).toFixed(2));
+    nilai = Number.parseFloat(calculateNilai(grade, subComponent.weight).toFixed(2));
   } else {
     console.error("SubComponent tidak ditemukan");
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const updateSubComponentScore = useCallback(async () => {
     if (!selectedCriterion || !subComponent) return;
 
@@ -510,7 +511,8 @@ export default function ScoreInputPage({
   }, [nilaiAvgOlah, percentage, grade, nilai, updateSubComponentScore]);
 
   // Nilai Component
-  const updateComponentScore = useCallback(async (componentId: number) => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    const updateComponentScore = useCallback(async (componentId: number) => {
     try {
       const response = await axios.patch(`/api/calculateScore/componentscore/${componentId}`, {
         nilai: await calculateComponentScore(componentId),
@@ -545,7 +547,7 @@ export default function ScoreInputPage({
   
 
   useEffect(() => {
-    if (subComponent && subComponent.component) {
+    if (subComponent?.component) {
       updateComponentScore(subComponent.component.id);
     }
   }, [subComponent, updateComponentScore]);

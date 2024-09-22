@@ -86,7 +86,6 @@ export default function UpdateEvaluationPage({
           <div className="text-center">
             <svg
               aria-hidden="true"
-              role="status"
               className="inline w-4 h-4 me-3 text-white animate-spin"
               viewBox="0 0 100 101"
               fill="none"
@@ -177,7 +176,6 @@ export default function UpdateEvaluationPage({
                 id="description"
                 className="px-5 py-2 textarea textarea-bordered rounded-lg w-full"
                 placeholder="Enter event description"
-                required
               />
             </div>
 
@@ -237,7 +235,6 @@ export default function UpdateEvaluationPage({
             >
               <svg
                 aria-hidden="true"
-                role="status"
                 className="inline w-4 h-4 me-3 text-white animate-spin"
                 viewBox="0 0 100 101"
                 fill="none"

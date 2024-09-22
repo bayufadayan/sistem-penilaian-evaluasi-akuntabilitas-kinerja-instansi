@@ -1,15 +1,16 @@
 import Link from "next/link";
 import ComponentCard from "./component";
 import styles from "@/styles/styles.module.css";
+import type { Component } from "@prisma/client";
 // import React, { useEffect, useState } from "react";
 
-interface Component {
-  id: number;
-  name: string;
-  description: string;
-  weight: number;
-  subComponents: SubComponent[];
-}
+// interface Component {
+//   id: number;
+//   name: string;
+//   description: string;
+//   weight: number;
+//   subComponents: SubComponent[];
+// }
 
 interface SubComponent {
   id: number;
@@ -45,7 +46,7 @@ export default function SidebarUser({
         <h5 className="font-bold opacity-50">Daftar Komponen Tersedia</h5>
 
         <div className={styles.lkeComponentsSection}>
-          {components.map((component) => (
+          {components.sort((a, b) => a.component_number - b.component_number).map((component) => (
             <ComponentCard
               key={component.id}
               component={component}

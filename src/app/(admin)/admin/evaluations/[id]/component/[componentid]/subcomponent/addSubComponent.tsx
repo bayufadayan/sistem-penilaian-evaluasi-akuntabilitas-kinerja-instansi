@@ -2,13 +2,16 @@
 import { useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import type { SubComponent } from "@prisma/client";
 
-export default function AddCriteria({ subComponents }: { subComponents : SubComponent[] }) {
+export default function AddSubComponent({
+  componentId,
+}: {
+  componentId: string;
+}) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [criteriaNumber, setCriteriaNumber] = useState("");
-  const [idSubComponents, setIdSubComponents] = useState("");
+  const [weight, setWeight] = useState("");
+  const [subcomponenNumber, setSubComponentNumber] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,17 +20,18 @@ export default function AddCriteria({ subComponents }: { subComponents : SubComp
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await axios.post("/api/criterias", {
+    await axios.post("/api/subcomponents", {
       name: name,
       description: description,
-      criteria_number: criteriaNumber,
-      id_subcomponents: Number(idSubComponents),
+      weight: weight,
+      subcomponent_number: subcomponenNumber,
+      id_components: componentId,
     });
     setIsLoading(false);
     setName("");
     setDescription("");
-    setCriteriaNumber("");
-    setIdSubComponents("");
+    setWeight("");
+    setSubComponentNumber("");
     router.refresh();
     setIsOpen(false);
   };
@@ -49,44 +53,50 @@ export default function AddCriteria({ subComponents }: { subComponents : SubComp
           fill="currentColor"
           className="size-6"
         >
-          <title hidden>Tambah Kriteria</title>
+          <title>Plus</title>
           <path
             fillRule="evenodd"
             d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
             clipRule="evenodd"
           />
         </svg>{" "}
-        <strong className="font-semibold">Tambah Kriteria</strong>
+        Tambah Sub Komponen
       </button>
 
       <div className={isOpen ? "modal modal-open" : "modal"}>
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Tambah Kriteria Baru</h3>
+          <h3 className="font-bold text-lg">Tambah Sub Komponen Baru</h3>
           <form onSubmit={handleSubmit}>
             <div className="form-control w-full">
-              <label className="label font-bold">Nomor Kriteria</label>
+              <label className="label font-bold" htmlFor="">
+                Nomor Sub Komponen
+              </label>
               <input
                 type="number"
-                value={criteriaNumber}
-                onChange={(e) => setCriteriaNumber(e.target.value)}
+                value={subcomponenNumber}
+                onChange={(e) => setSubComponentNumber(e.target.value)}
                 className="input input-bordered"
-                placeholder="Nama Kriteria"
+                placeholder="Nomor Sub Komponen"
                 required
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Nama Kriteria</label>
+              <label className="label font-bold" htmlFor="">
+                Nama Sub Komponen
+              </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
-                placeholder="Nama Kriteria"
+                placeholder="Nama Sub Komponen"
                 required
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Deskripsi</label>
+              <label className="label font-bold" htmlFor="">
+                Deskripsi
+              </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -94,29 +104,19 @@ export default function AddCriteria({ subComponents }: { subComponents : SubComp
                 placeholder="Deskripsi"
               />
             </div>
-            <div className="col-span-1">
-              <label
-                htmlFor="idTeam"
-                className="label font-bold"
-              >
-                Team
+            <div className="form-control w-full">
+              <label className="label font-bold" htmlFor="">
+                Bobot
               </label>
-              <select
-                value={idSubComponents}
-                onChange={(e) => setIdSubComponents(e.target.value)}
-                id="idSubComponents"
-                className="select select-bordered w-full"
+              <input
+                type="number"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="input input-bordered"
+                placeholder="0.00"
                 required
-              >
-                <option value="">Select Sub-Components</option>
-                {subComponents.map((subComponent) => (
-                  <option value={subComponent.id} key={subComponent.id}>
-                    {subComponent.name}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
-          
 
             <div className="modal-action">
               <button type="button" className="btn" onClick={handleModal}>

@@ -11,6 +11,7 @@ export default function CreateEvaluationPage() {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
   const [year, setYear] = useState("");
+  const [color, setColor] = useState("");
 
   const router = useRouter();
 
@@ -24,6 +25,7 @@ export default function CreateEvaluationPage() {
       description: description,
       status: status,
       year: year,
+      color: color,
     });
     setIsLoading(false);
     setTitle("");
@@ -32,6 +34,7 @@ export default function CreateEvaluationPage() {
     setDescription("");
     setStatus("");
     setYear("");
+    setColor("");
     router.replace(`/admin/evaluations?timestamp=${new Date().getTime()}`);
   };
 
@@ -42,10 +45,112 @@ export default function CreateEvaluationPage() {
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 mb-4 grid-cols-2">
             <div className="col-span-2">
-              <label
-                htmlFor="title"
-                className="label font-bold"
-              >
+              <p className="label font-bold">Pilih Warna Cover</p>
+              <ul className="flex gap-2 bg-blue-50 rounded-lg px-4 py-4 w-fit">
+                <li className="p-4 bg-red-600 text-red-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverRed"
+                    value="bg-red-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-orange-600 text-orange-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverOrange"
+                    value="bg-orange-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-yellow-500 text-yellow-500 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverYellow"
+                    value="bg-yellow-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-lime-600 text-lime-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverLime"
+                    value="bg-lime-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-green-600 text-green-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverGreen"
+                    value="bg-green-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-blue-600 text-blue-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverBlue"
+                    value="bg-blue-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-indigo-600 text-indigo-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverIndigo"
+                    value="bg-indigo-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-violet-600 text-violet-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverViolet"
+                    value="bg-violet-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-purple-600 text-purple-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverPurple"
+                    value="bg-purple-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-pink-600 text-pink-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverPink"
+                    value="bg-pink-600"
+                    className="hidden peer"
+                  />
+                </li>
+                <li className="p-4 bg-zinc-600 text-zinc-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
+                  <input
+                    type="radio"
+                    name="cover"
+                    id="coverZinc"
+                    value="bg-zinc-600"
+                    // className="hidden peer"
+                  />
+                </li>
+              </ul>
+            </div>
+
+            <div className="col-span-2">
+              <label htmlFor="title" className="label font-bold">
                 Title
               </label>
               <input
@@ -60,10 +165,7 @@ export default function CreateEvaluationPage() {
             </div>
 
             <div className="col-span-1">
-              <label
-                htmlFor="dateStart"
-                className="label font-bold"
-              >
+              <label htmlFor="dateStart" className="label font-bold">
                 Start Date
               </label>
               <input
@@ -77,10 +179,7 @@ export default function CreateEvaluationPage() {
             </div>
 
             <div className="col-span-1">
-              <label
-                htmlFor="dateFinish"
-                className="label font-bold"
-              >
+              <label htmlFor="dateFinish" className="label font-bold">
                 Finish Date
               </label>
               <input
@@ -94,10 +193,7 @@ export default function CreateEvaluationPage() {
             </div>
 
             <div className="col-span-2">
-              <label
-                htmlFor="description"
-                className="label font-bold"
-              >
+              <label htmlFor="description" className="label font-bold">
                 Description
               </label>
               <textarea
@@ -110,10 +206,7 @@ export default function CreateEvaluationPage() {
             </div>
 
             <div className="col-span-1">
-              <label
-                htmlFor="status"
-                className="label font-bold"
-              >
+              <label htmlFor="status" className="label font-bold">
                 Status
               </label>
               <select
@@ -123,7 +216,9 @@ export default function CreateEvaluationPage() {
                 className="input input-bordered w-full"
               >
                 <option value="">Select status</option>
-                <option value="PENDING" selected>PENDING</option>
+                <option value="PENDING" selected>
+                  PENDING
+                </option>
                 <option value="IN_PROGRESS">IN_PROGRESS</option>
                 <option value="COMPLETED">COMPLETED</option>
                 <option value="CANCELLED">CANCELLED</option>
@@ -131,10 +226,7 @@ export default function CreateEvaluationPage() {
             </div>
 
             <div className="col-span-1">
-              <label
-                htmlFor="year"
-                className="label font-bold"
-              >
+              <label htmlFor="year" className="label font-bold">
                 Year
               </label>
               <input
@@ -176,7 +268,6 @@ export default function CreateEvaluationPage() {
             >
               <svg
                 aria-hidden="true"
-                role="status"
                 className="inline w-4 h-4 me-3 text-white animate-spin"
                 viewBox="0 0 100 101"
                 fill="none"

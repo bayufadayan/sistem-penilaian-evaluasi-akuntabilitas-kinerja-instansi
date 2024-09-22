@@ -2,21 +2,21 @@
 import { useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import type { Team, EvaluationSheet } from "@prisma/client";
+import type { Team } from "@prisma/client";
 
 export default function AddComponents({
   teams,
-  evaluationSheets,
+  id_LKE,
 }: {
   teams: Team[];
-  evaluationSheets: EvaluationSheet[];
+  id_LKE: string;
 }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [weight, setWeight] = useState("");
   const [componentNumber, setComponentNumber] = useState("");
   const [idTeam, setIdTeam] = useState("");
-  const [idEvaluationSheet, setIdEvaluationSheet] = useState("");
+  const [color, setColor] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,21 +25,23 @@ export default function AddComponents({
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
     await axios.post("/api/components", {
       name: name,
       description: description,
       weight: weight,
       component_number: componentNumber,
       id_team: idTeam,
-      id_LKE: idEvaluationSheet,
+      id_LKE: id_LKE,  
     });
+
     setIsLoading(false);
     setName("");
     setDescription("");
     setWeight("");
     setComponentNumber("");
     setIdTeam("");
-    setIdEvaluationSheet("");
+    setColor("");
     router.refresh();
     setIsOpen(false);
   };
@@ -61,7 +63,7 @@ export default function AddComponents({
           fill="currentColor"
           className="size-6"
         >
-          <title hidden>Tambah Komponen</title>
+          <title>Plus</title>
           <path
             fillRule="evenodd"
             d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
@@ -73,10 +75,21 @@ export default function AddComponents({
 
       <div className={isOpen ? "modal modal-open" : "modal"}>
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Tambah Komponen Baru</h3>
+          <h3 className="font-bold text-xl">Tambah Komponen Baru</h3>
           <form onSubmit={handleSubmit}>
+          <div className="form-control w-full">
+              <label className="label font-bold" htmlFor="">Nomor Komponen</label>
+              <input
+                type="number"
+                value={componentNumber}
+                onChange={(e) => setComponentNumber(e.target.value)}
+                className="input input-bordered"
+                placeholder="0"
+                required
+              />
+            </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Nama Komponen</label>
+              <label className="label font-bold" htmlFor="">Nama Komponen</label>
               <input
                 type="text"
                 value={name}
@@ -87,7 +100,7 @@ export default function AddComponents({
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Deskripsi</label>
+              <label className="label font-bold" htmlFor="">Deskripsi</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -96,7 +109,7 @@ export default function AddComponents({
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Bobot</label>
+              <label className="label font-bold" htmlFor="">Bobot</label>
               <input
                 type="number"
                 value={weight}
@@ -106,71 +119,26 @@ export default function AddComponents({
                 required
               />
             </div>
+            
             <div className="form-control w-full">
-              <label className="label font-bold">Nomor Komponen</label>
-              <input
-                type="number"
-                value={componentNumber}
-                onChange={(e) => setComponentNumber(e.target.value)}
-                className="input input-bordered"
-                placeholder="0.00"
+              <label className="label font-bold" htmlFor="idTeam">Team</label>
+              <select
+                value={idTeam}
+                onChange={(e) => setIdTeam(e.target.value)}
+                id="idTeam"
+                className="input input-bordered w-full"
                 required
-              />
-            </div>
-            <div className="form-control w-full">
-              <div className="grid grid-cols-2 gap-4">
-                {" "}
-                {/* Membagi menjadi dua kolom */}
-                <div className="col-span-1">
-                  <label
-                    htmlFor="idTeam"
-                    className="label font-bold"
-                  >
-                    Team
-                  </label>
-                  <select
-                    value={idTeam}
-                    onChange={(e) => setIdTeam(e.target.value)}
-                    id="idTeam"
-                    className="input input-bordered w-full"
-                    required
-                  >
-                    <option value="">Select team</option>
-                    {teams.map((team) => (
-                      <option value={team.id} key={team.id}>
-                        {team.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="col-span-1">
-                  <label
-                    htmlFor="idEvaluationSheet"
-                    className="label font-bold"
-                  >
-                    LKE
-                  </label>
-                  <select
-                    value={idEvaluationSheet}
-                    onChange={(e) => setIdEvaluationSheet(e.target.value)}
-                    id="idEvaluationSheet"
-                    className="input input-bordered w-full"
-                    required
-                  >
-                    <option value="">Select LKE</option>
-                    {evaluationSheets.map((evaluationSheet) => (
-                      <option
-                        value={evaluationSheet.id}
-                        key={evaluationSheet.id}
-                      >
-                        {evaluationSheet.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+              >
+                <option value="">Select team</option>
+                {teams.map((team) => (
+                  <option value={team.id} key={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
+            {/* id_LKE tidak ditampilkan, karena sudah diambil dari URL */}
             <div className="modal-action">
               <button type="button" className="btn" onClick={handleModal}>
                 Close

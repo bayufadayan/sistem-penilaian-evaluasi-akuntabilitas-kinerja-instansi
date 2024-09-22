@@ -1,21 +1,21 @@
 "use client";
 import { useState, type SyntheticEvent } from "react";
-import type { SubComponent, Component } from "@prisma/client";
+import type { Criteria} from "@prisma/client";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-export default function UpdateSubComponent({
-  subComponent,
-  components,
+export default function UpdateCriteria({
+  criteria,
+  subComponentId,
 }: {
-  subComponent: SubComponent;
-  components: Component[];
+  criteria: Criteria;
+  subComponentId: string;
 }) {
-  const [name, setName] = useState(subComponent.name);
-  const [description, setDescription] = useState(subComponent.description);
-  const [weight, setWeight] = useState(subComponent.weight);
-  const [subComponentNumber, setSubComponentNumber] = useState(subComponent.subcomponent_number);
-  const [idComponents, setIdComponents] = useState(subComponent.id_components);
+  const [name, setName] = useState(criteria.name);
+  const [description, setDescription] = useState(criteria.description);
+  const [criteriaNumber, setCriteriaNumber] = useState(
+    criteria.criteria_number
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,12 +24,11 @@ export default function UpdateSubComponent({
   const handleUpdate = async (e: SyntheticEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await axios.patch(`/api/subcomponents/${subComponent.id}`, {
+    await axios.patch(`/api/criterias/${criteria.id}`, {
       name: name,
       description: description,
-      weight: weight,
-      subComponentNumber: subComponentNumber,
-      id_components: idComponents,
+      setCriteriaNumber: criteriaNumber,
+      id_subcomponents: Number(subComponentId),
     });
     setIsLoading(false);
     router.refresh();
@@ -62,71 +61,46 @@ export default function UpdateSubComponent({
 
       <div className={isOpen ? "modal modal-open" : "modal"}>
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Tambah Sub Komponen Baru</h3>
+          <h3 className="font-bold text-lg">Tambah Kriteria Baru</h3>
           <form onSubmit={handleUpdate}>
             <div className="form-control w-full">
-              <label className="label font-bold">Nomor Sub Komponen</label>
+              <label className="label font-bold" htmlFor="">
+                Nomor Kriteria
+              </label>
               <input
-                type="text"
-                value={subComponentNumber}
-                onChange={(e) => setSubComponentNumber(Number.parseInt(e.target.value))}
+                type="number"
+                value={criteriaNumber}
+                onChange={(e) =>
+                  setCriteriaNumber(Number.parseInt(e.target.value))
+                }
                 className="input input-bordered"
-                placeholder="Nomor Komponen"
+                placeholder="Nama Kriteria"
                 required
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Nama Sub Komponen</label>
+              <label className="label font-bold" htmlFor="">
+                Nama Kriteria
+              </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
-                placeholder="Nama Sub Komponen"
+                placeholder="Nama Kriteria"
                 required
               />
             </div>
             <div className="form-control w-full">
-              <label className="label font-bold">Deskripsi</label>
+              <label className="label font-bold" htmlFor="">
+                Deskripsi
+              </label>
               <textarea
                 value={description ?? "Tidak ada deskripsi"}
                 onChange={(e) => setDescription(e.target.value)}
                 className="px-5 py-2 textarea textarea-bordered"
                 placeholder="Deskripsi"
               />
-            </div>
-            <div className="form-control w-full">
-              <label className="label font-bold">Weight</label>
-              <input
-                type="number"
-                value={weight}
-                onChange={(e) => setWeight(Number.parseFloat(e.target.value))}
-                className="input input-bordered"
-                placeholder="0.00"
-                required
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                htmlFor="idTeam"
-                className="label font-bold"
-              >
-                Team
-              </label>
-              <select
-                value={idComponents}
-                onChange={(e) => setIdComponents(Number.parseInt(e.target.value))}
-                id="idComponent"
-                className="select select-bordered w-full"
-                required
-              >
-                <option value="">Select Components</option>
-                {components.map((component) => (
-                  <option value={component.id} key={component.id}>
-                    {component.name}
-                  </option>
-                ))}
-              </select>
             </div>
 
             <div className="modal-action">

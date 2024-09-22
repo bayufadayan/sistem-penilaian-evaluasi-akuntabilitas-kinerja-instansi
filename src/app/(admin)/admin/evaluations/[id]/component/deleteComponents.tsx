@@ -105,7 +105,6 @@ export default function DeleteComponent({ component }: { component: Component })
                 >
                   <svg
                     aria-hidden="true"
-                    role="status"
                     className="inline w-4 h-4 me-3 text-white animate-spin"
                     viewBox="0 0 100 101"
                     fill="none"

@@ -2,10 +2,11 @@ import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import AdminAddButton from "../../components/adminAddButton";
-import { AiOutlineFileDone } from "react-icons/ai"; // Contoh ikon dari react-icons
+import { AiOutlineFileDone } from "react-icons/ai";
 import { BsCardChecklist } from "react-icons/bs";
-// import AdminEditButton from "../../components/buttons/adminEditButton";
-// import DeleteEvaluation from "./deleteEvaluation";
+import EditEvaluation from "./editEvaluation";
+import DeleteEvaluation from "./deleteEvaluation";
+import { FiExternalLink } from "react-icons/fi";
 
 const getEvalSheets = async () => {
   const res = await prisma.evaluationSheet.findMany({
@@ -37,7 +38,6 @@ const getEvalSheets = async () => {
 export default async function EvaluationPage() {
   const [evalsheets] = await Promise.all([getEvalSheets()]);
 
-  // Fungsi untuk memformat tanggal
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("id-ID", {
       day: "2-digit",
@@ -50,7 +50,7 @@ export default async function EvaluationPage() {
     <div>
       {/* Breadcrumb */}
       <div className="mb-4 text-gray-500">
-        <Link href="#" className="text-blue-600">
+        <Link href="/admin" className="text-blue-600">
           Dashboard
         </Link>
         / Lembar Kerja Evaluasi
@@ -58,7 +58,7 @@ export default async function EvaluationPage() {
 
       {/* Manajemen User */}
       <div className="flex justify-between items-center mb-1">
-        <h1 className="text-2xl font-semibold mb-4">Manajemen Tim</h1>
+        <h1 className="text-2xl font-semibold mb-4">Manajemen LKE</h1>
         <AdminAddButton props="/admin/evaluations/create/" label="Tambah LKE" />
       </div>
 
@@ -66,63 +66,72 @@ export default async function EvaluationPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {evalsheets.length > 0 ? (
           evalsheets.map((evalsheet) => (
-            <Link
-              href={`/admin/evaluations/edit/${evalsheet.id}`}
+            <div
               key={evalsheet.id}
+              className={`relative p-6 rounded-lg shadow-md ${evalsheet.color} hover:shadow-lg transition-shadow duration-300 flex flex-col h-full`}
             >
-              <div
-                className={`relative p-6 rounded-lg shadow-md ${evalsheet.color} hover:shadow-lg transition-shadow duration-300 flex flex-col h-full`}
-              >
-                {/* Ikon transparan di background */}
-                <div className="absolute inset-0 flex items-center justify-end opacity-30 text-white text-8xl font-bold right-10">
-                  {evalsheet.status === "COMPLETED" ? (
-                    <AiOutlineFileDone />
-                  ) : (
-                    <BsCardChecklist />
-                  )}
+              <div className="absolute inset-0 flex items-center justify-end opacity-30 text-white text-9xl font-bold right-5">
+                {evalsheet.status === "COMPLETED" ? (
+                  <AiOutlineFileDone />
+                ) : (
+                  <BsCardChecklist />
+                )}
+              </div>
+
+              {/* Konten Kartu */}
+              <div className="relative flex flex-col flex-grow">
+                <div className="text-left text-2xl font-bold text-white">
+                  {evalsheet.title.toUpperCase()}
+                </div>
+                <hr className="border-1 border-white/20 my-1 mb-2"/>
+                <p className="text-white opacity-80 flex-grow italic">
+                  {evalsheet.description === ""
+                    ? "Tidak ada Deskripsi"
+                    : evalsheet.description}
+                </p>
+                <p className="text-white mt-2">
+                  Mulai: <b>{formatDate(evalsheet.date_start)}</b>
+                </p>
+                <p className="text-white">
+                  Selesai: <b>{formatDate(evalsheet.date_finish)}</b>
+                </p>
+
+                <div className="rounded p-1 bg-white font-semibold mt-3 text-center w-2/3">
+                  <p
+                    className={`font-medium text-sm ${
+                      evalsheet.status === "COMPLETED"
+                        ? "text-green-600"
+                        : evalsheet.status === "PENDING"
+                        ? "text-yellow-600"
+                        : evalsheet.status === "IN_PROGRESS"
+                        ? "text-blue-600"
+                        : evalsheet.status === "CANCELLED"
+                        ? "text-red-600"
+                        : "text-gray-900"
+                    }`}
+                  >
+                    Status: {evalsheet.status}
+                  </p>
                 </div>
 
-                {/* Konten Kartu */}
-                <div className="relative z-10 flex flex-col flex-grow">
-                  <div className="text-left mb-4 text-2xl font-bold text-white">
-                    {evalsheet.title.toUpperCase()}
-                  </div>
-                  <p className="text-white opacity-80 flex-grow">
-                    {evalsheet.description === ""
-                      ? "Tidak ada Deskripsi"
-                      : evalsheet.description}
-                  </p>
-                  <p className="text-white mt-2">
-                    Mulai: <b>{formatDate(evalsheet.date_start)}</b>
-                  </p>
-                  <p className="text-white">
-                    Selesai: <b>{formatDate(evalsheet.date_finish)}</b>
-                  </p>
-
-                  <div className="rounded p-1 bg-white font-semibold mt-3 text-center w-1/2">
-                    <p
-                      className={`font-medium text-sm ${
-                        evalsheet.status === "COMPLETED"
-                          ? "text-green-600"
-                          : evalsheet.status === "PENDING"
-                          ? "text-yellow-600"
-                          : evalsheet.status === "IN_PROGRESS"
-                          ? "text-blue-600"
-                          : evalsheet.status === "CANCELLED"
-                          ? "text-red-600"
-                          : "text-gray-900"
-                      }`}
+                {/* Edit dan Delete Button */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <EditEvaluation
+                    editUrl={`/admin/evaluations/edit/${evalsheet.id}`}
+                  />
+                  <DeleteEvaluation evaluationSheet={evalsheet} />
+                  <Link href={`/admin/evaluations/${evalsheet.id}/component`}>
+                    <button
+                      type="button"
+                      className="flex items-center gap-2 px-4 py-2 border-2 border-white/50 text-slate-200 rounded-lg shadow-md hover:bg-white/25 transition-all duration-200 h-full"
                     >
-                      Status: {evalsheet.status}
-                    </p>
-                  </div>
-
-                  <div>
-                    tes button
-                  </div>
+                      <FiExternalLink className="w-5 h-5" />
+                      <span className="font-semibold">Lihat</span>
+                    </button>
+                  </Link>
                 </div>
               </div>
-            </Link>
+            </div>
           ))
         ) : (
           <p className="text-gray-200">Data tidak ditemukan</p>

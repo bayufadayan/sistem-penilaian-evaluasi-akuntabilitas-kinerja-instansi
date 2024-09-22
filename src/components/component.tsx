@@ -7,6 +7,7 @@ interface Component {
   name: string;
   description: string;
   weight: number;
+  component_number: number;
   subComponents: SubComponent[];
 }
 
