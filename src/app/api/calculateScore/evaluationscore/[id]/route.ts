@@ -17,7 +17,6 @@ export const PATCH = async (
             );
         }
 
-        // Pastikan nilai dan grade dikirim dan dalam format yang benar
         if (typeof body.nilai !== "number" || typeof body.grade !== "string") {
             return NextResponse.json(
                 { error: "Nilai atau grade tidak valid" },

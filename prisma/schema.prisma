@@ -72,6 +72,7 @@ model EvaluationSheet {
   description          String
   status               StatusEvaluation       @default(PENDING)
   year                 String
+  color                String                 @default("bg-green-600")
   components           Component[]
   evaluationSheetScore EvaluationSheetScore[]
 }

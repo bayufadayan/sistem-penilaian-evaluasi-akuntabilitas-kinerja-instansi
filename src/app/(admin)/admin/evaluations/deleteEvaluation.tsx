@@ -5,7 +5,7 @@ import axios from "axios";
 import AdminDeleteButton from "../../components/buttons/adminDeleteButton";
 
 type EvaluationSheet = {
-  id: number;
+  id: string;
   title: string;
   date_start: Date;
   date_finish: Date;
@@ -14,7 +14,11 @@ type EvaluationSheet = {
   year: string;
 };
 
-export default function DeleteEvaluation({ evaluationSheet }: { evaluationSheet: EvaluationSheet }) {
+export default function DeleteEvaluation({
+  evaluationSheet,
+}: {
+  evaluationSheet: EvaluationSheet;
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,7 +28,7 @@ export default function DeleteEvaluation({ evaluationSheet }: { evaluationSheet:
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleDelete = async (userId: number) => {
+  const handleDelete = async (userId: string) => {
     setIsLoading(true);
     await axios.delete(`/../api/evaluations/${userId}`);
     router.refresh();
@@ -108,7 +112,6 @@ export default function DeleteEvaluation({ evaluationSheet }: { evaluationSheet:
                 >
                   <svg
                     aria-hidden="true"
-                    role="status"
                     className="inline w-4 h-4 me-3 text-white animate-spin"
                     viewBox="0 0 100 101"
                     fill="none"
