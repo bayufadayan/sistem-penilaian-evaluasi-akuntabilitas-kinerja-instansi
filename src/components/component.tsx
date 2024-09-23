@@ -1,15 +1,11 @@
 import { useState } from "react";
 import SubComponentListCard from "./subComponent";
 import styles from "@/styles/styles.module.css";
+import type { Component } from "@prisma/client";
 
-interface Component {
-  id: number;
-  name: string;
-  description: string;
-  weight: number;
-  component_number: number;
+type ComponentWithSubComponents = Component & {
   subComponents: SubComponent[];
-}
+};
 
 interface SubComponent {
   id: number;
@@ -24,7 +20,7 @@ export default function ComponentCard({
   subComponents,
   evaluationId,
 }: {
-  component: Component;
+  component: ComponentWithSubComponents;
   subComponents: SubComponent[];
   evaluationId: string
 }) {

@@ -209,13 +209,13 @@ export default function Home() {
             <div className={styles.tempResult}>
               <div className={styles.information}>
                 <div className={styles.scoreInfo}>
-                  <p>Nilai AKuntabilitas Kinerja</p>
+                  <p>Nilai Akuntabilitas Kinerja</p>
                   <p>79,55</p>
                 </div>
 
                 <div className={styles.scoreInfo}>
                   <p>Status Pengisian</p>
-                  <p>45 ASN telah mengisi LKE</p>
+                  <p>Jumlah Kriteria Terisi: <span className="text-blue-800 py-1 px-2 bg-white rounded-md">45/52</span></p>
                 </div>
               </div>
             </div>

@@ -1,14 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { FiUsers, FiLayers, FiClipboard, FiHome } from "react-icons/fi";
-import { MdOutlineAccountCircle } from "react-icons/md"; // Account Management icon
-import { FaRegChartBar } from "react-icons/fa"; // Evaluation Management icon
-import { AiOutlineTeam } from "react-icons/ai"; // Team Management icon
+import { FiHome } from "react-icons/fi";
+import { MdOutlineAccountCircle } from "react-icons/md";
+import { FaRegChartBar } from "react-icons/fa";
+import { AiOutlineTeam } from "react-icons/ai";
+import { LuClipboardCheck } from "react-icons/lu";
 
 export default function AdminSidebar() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   return (
     <>
       <button
@@ -109,6 +107,15 @@ export default function AdminSidebar() {
                 >
                   <FaRegChartBar className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
                   <span className="ml-3">Manajemen LKE AKIP</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/admin/scores"
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <LuClipboardCheck className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white mb-1" />
+                  <span className="ml-3">Manajemen Nilai</span>
                 </Link>
               </li>
             </ul>

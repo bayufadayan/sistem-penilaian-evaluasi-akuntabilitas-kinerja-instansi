@@ -2,21 +2,17 @@ import Link from "next/link";
 import ComponentCard from "./component";
 import styles from "@/styles/styles.module.css";
 import type { Component } from "@prisma/client";
-// import React, { useEffect, useState } from "react";
 
-// interface Component {
-//   id: number;
-//   name: string;
-//   description: string;
-//   weight: number;
-//   subComponents: SubComponent[];
-// }
+type ComponentWithSubComponents = Component & {
+  subComponents: SubComponent[];
+};
 
 interface SubComponent {
   id: number;
   name: string;
   description: string;
   weight: number;
+  subcomponent_number: number;
 }
 
 export default function SidebarUser({
@@ -24,7 +20,7 @@ export default function SidebarUser({
   evaluationTitle,
   evaluationId,
 }: {
-  components: Component[];
+  components: ComponentWithSubComponents[];
   evaluationTitle: string;
   evaluationId: string;
 }) {

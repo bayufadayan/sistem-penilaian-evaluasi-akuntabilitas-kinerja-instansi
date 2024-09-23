@@ -131,18 +131,26 @@ export default function SummaryScore() {
               <h2 className="text-md font-bold text-green-600 mb-2">
                 Nilai LKE
               </h2>
-              <p className="text-3xl font-bold text-green-600">79.55</p>
+              <p className="text-3xl font-bold text-green-600">{totalScore.toFixed(2)}</p>
             </div>
             <FaChartLine className="w-12 h-12 text-green-100" />
           </div>
 
           {/* Card 3 - Grade LKE */}
-          <div className="p-5 bg-white rounded-lg shadow-lg flex items-center justify-between border-l-4 border-yellow-600">
+          <div className="p-5 bg-white rounded-lg shadow-lg flex items-center justify-between border-l-4 border-yellow-500">
             <div>
-              <h2 className="text-md font-bold text-yellow-600 mb-2">
+              <h2 className="text-md font-bold text-yellow-500 mb-2">
                 Grade LKE
               </h2>
-              <p className="text-3xl font-bold text-yellow-600">BB</p>
+              <p className="text-3xl font-bold text-yellow-500">
+                {totalScore >= 90
+                  ? "AA"
+                  : totalScore >= 75
+                  ? "BB"
+                  : totalScore >= 60
+                  ? "B"
+                  : "C"}
+              </p>
             </div>
             <FaStar className="w-12 h-12 text-yellow-100" />
           </div>
@@ -208,7 +216,7 @@ export default function SummaryScore() {
                   </div>
                 </td>
               </tr>
-              <tr className="font-bold bg-yellow-50 text-yellow-700">
+              <tr className="font-bold bg-yellow-50 text-yellow-600">
                 <td
                   colSpan={2}
                   className="px-6 py-2 border-t border-gray-300 text-lg font-bold"
@@ -219,7 +227,7 @@ export default function SummaryScore() {
                   className="px-6 py-2 text-right border-t border-gray-300 text-lg font-bold"
                   colSpan={2}
                 >
-                  <div className="py-2 px-4 bg-yellow-700 text-white rounded w-fit ml-auto mr-5">
+                  <div className="py-2 px-4 bg-yellow-600 text-white rounded w-fit ml-auto mr-5">
                     {totalScore >= 90
                       ? "AA"
                       : totalScore >= 75
@@ -235,9 +243,11 @@ export default function SummaryScore() {
         </div>
 
         <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-4">Chart Komponen Ternormalisasi</h3>
-        <ComponentChart components={components} />
-      </div>
+          <h3 className="text-lg font-semibold mb-4">
+            Chart Komponen Ternormalisasi
+          </h3>
+          <ComponentChart components={components} />
+        </div>
       </div>
     </div>
   );
