@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import DeleteComponent from "./deleteComponents";
 import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";
 import SubComponentLink from "./subComponenLink";
+import UploadExcel from "./uploadExcel";
 
 const getComponents = async (id: string) => {
   const res = await prisma.component.findMany({
@@ -66,7 +67,6 @@ export default async function ManagementAccountPage({
 
   components.sort((a, b) => a.component_number - b.component_number);
 
-  // Menghitung jumlah total bobot
   const totalBobot = components.reduce(
     (acc, component) => acc + component.weight,
     0
@@ -92,7 +92,9 @@ export default async function ManagementAccountPage({
               <h2 className="text-md font-bold text-green-600 mb-2">
                 Jumlah Komponen
               </h2>
-              <p className="text-3xl font-bold text-green-600">{components.length}</p>
+              <p className="text-3xl font-bold text-green-600">
+                {components.length}
+              </p>
             </div>
             <FiBarChart2 className="text-green-600 w-12 h-12" />
           </div>
@@ -110,11 +112,9 @@ export default async function ManagementAccountPage({
           </div>
         </div>
 
-        <div className="mt-6 flex">
+        <div className="mt-6 flex justify-center">
           <AddComponents teams={teams} id_LKE={id} />
-          <button className="btn" type="button">
-            Import Excel
-          </button>
+          <UploadExcel id_LKE={id} />
         </div>
 
         <div className="bg-white shadow-md rounded-lg p-6">
@@ -136,7 +136,10 @@ export default async function ManagementAccountPage({
                 {components.map((component) => (
                   <tr className="border-b" key={component.id}>
                     <td className="py-4">
-                      <SubComponentLink componentId={component.id} length={component.subComponents.length}/>
+                      <SubComponentLink
+                        componentId={component.id}
+                        length={component.subComponents.length}
+                      />
                     </td>
                     <td className="px-4">{component.name.toUpperCase()}</td>
                     <td className="text-green-600">

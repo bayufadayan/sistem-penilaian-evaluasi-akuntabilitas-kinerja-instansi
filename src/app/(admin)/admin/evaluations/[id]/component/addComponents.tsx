@@ -16,7 +16,6 @@ export default function AddComponents({
   const [weight, setWeight] = useState("");
   const [componentNumber, setComponentNumber] = useState("");
   const [idTeam, setIdTeam] = useState("");
-  const [color, setColor] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,7 +40,6 @@ export default function AddComponents({
     setWeight("");
     setComponentNumber("");
     setIdTeam("");
-    setColor("");
     router.refresh();
     setIsOpen(false);
   };
@@ -55,7 +53,7 @@ export default function AddComponents({
       <button
         type="button"
         onClick={handleModal}
-        className="flex flex-row items-center gap-1 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+        className="h-[80%] flex flex-row items-center gap-1 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +136,6 @@ export default function AddComponents({
               </select>
             </div>
 
-            {/* id_LKE tidak ditampilkan, karena sudah diambil dari URL */}
             <div className="modal-action">
               <button type="button" className="btn" onClick={handleModal}>
                 Close

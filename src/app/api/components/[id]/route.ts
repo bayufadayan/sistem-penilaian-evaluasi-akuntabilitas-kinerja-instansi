@@ -43,7 +43,7 @@ export const GET = async (
 ) => {
   try {
     const componentId = Number(params.id);
-    if (isNaN(componentId)) {
+    if (Number.isNaN(componentId)) {
       return NextResponse.json(
         { error: "Invalid component ID" },
         { status: 400 }
@@ -78,7 +78,7 @@ export const GET = async (
       0
     );
 
-    const componentScore = parseFloat(totalSubComponentScore.toFixed(2));
+    const componentScore = Number.parseFloat(totalSubComponentScore.toFixed(2));
 
     return NextResponse.json({ component, componentScore }, { status: 200 });
   } catch (error) {
