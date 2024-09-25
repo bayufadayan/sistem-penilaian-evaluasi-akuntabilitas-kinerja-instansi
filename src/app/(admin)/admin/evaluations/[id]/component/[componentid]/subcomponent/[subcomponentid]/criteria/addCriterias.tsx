@@ -2,6 +2,7 @@
 import { useState, type SyntheticEvent } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import {FaPlus} from "react-icons/fa6";
 
 export default function AddCriteria({
   subComponentId,
@@ -42,22 +43,10 @@ export default function AddCriteria({
       <button
         type="button"
         onClick={handleModal}
-        className="flex flex-row items-center gap-1 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+        className="h-full inline-flex gap-1 items-center px-4 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 active:bg-blue-800 transition-all transform active:scale-95 shadow-md"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="size-6"
-        >
-          <title hidden>Tambah Kriteria</title>
-          <path
-            fillRule="evenodd"
-            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-            clipRule="evenodd"
-          />
-        </svg>{" "}
-        <strong className="font-semibold">Tambah Kriteria</strong>
+        <FaPlus className="w-5 h-5 font-bold"/>
+        Tambah Kriteria
       </button>
 
       <div className={isOpen ? "modal modal-open" : "modal"}>

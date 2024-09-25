@@ -4,6 +4,9 @@ import AddCriteria from "./addCriterias";
 import DeleteCriteria from "./deleteCriterias";
 import UpdateCriteria from "./updateCriterias";
 import { FiBarChart2 } from "react-icons/fi";
+import UploadExcel from "./uploadExcelCriteria";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
 
 const getCriteriasBySubComponentId = async (subcomponentid: string) => {
   const res = await prisma.criteria.findMany({
@@ -44,12 +47,28 @@ export default async function ManagementAccountPage({
       {/* content nya */}
       <div>
         {/* Breadcrumb */}
-        <div className="mb-4 text-gray-500">
-          <Link href="#" className="text-blue-600">
-            Dashboard
-          </Link>{" "}
-          / Manajemen Tim
+        <div className="mb-4 text-gray-500 flex gap-1 items-start">
+          <Link href="/admin" className="text-blue-600">
+            <span className="flex gap-1">
+              <TiHome className="mt-0.5" /> Dashboard
+            </span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          <Link href="/admin/evaluations" className="hover:text-blue-600">
+            <span>Lembar Kerja Evaluasi</span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          <Link href={"admin/evaluations/"} className="hover:text-blue-600">
+            <span>Komponen</span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          <Link href={"admin/evaluations/"} className="hover:text-blue-600">
+            <span>Sub Komponen</span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          <span>Kriteria</span>
         </div>
+
         <h1 className="text-2xl font-semibold">Manajemen Kriteria</h1>
         <p className="text-sm text-gray-500 italic mb-6">
           <b>Sub Komponen:</b>{" "}
@@ -71,11 +90,9 @@ export default async function ManagementAccountPage({
           </div>
         </div>
 
-        <div className="mt-6 flex">
+        <div className="mt-6 flex items-center gap-2">
           <AddCriteria subComponentId={subcomponentid} />
-          <button className="btn" type="button">
-            Import Excel
-          </button>
+          <UploadExcel subComponentId={subcomponentid} />
         </div>
 
         {/* Tabel Konten */}

@@ -7,6 +7,8 @@ import DeleteSubComponent from "./deleteSubComponent";
 import CriteriaLink from "./criteriaLink";
 import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";
 import UploadExcel from "./uploadExcelSub";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
 
 // Ambil sub-komponen berdasarkan `id_component` dari URL
 const getSubComponentsByComponentId = async (componentId: string) => {
@@ -53,14 +55,22 @@ export default async function EvaluationPage({
 
   return (
     <div>
-      <div className="mb-4 text-gray-500">
+      <div className="mb-4 text-gray-500 flex gap-1 items-start">
         <Link href="/admin" className="text-blue-600">
-          Dashboard
+          <span className="flex gap-1">
+            <TiHome className="mt-0.5" /> Dashboard
+          </span>
         </Link>
-        <Link href="#" className="text-blue-600">
-          / Manajemen Komponen
+        <IoIosArrowForward className="h-5 w-5" />
+        <Link href="/admin/evaluations" className="hover:text-blue-600">
+          <span>Lembar Kerja Evaluasi</span>
         </Link>
-        / Manajemen Sub Komponen
+        <IoIosArrowForward className="h-5 w-5" />
+        <Link href={"admin/evaluations/"} className="hover:text-blue-600">
+          <span>Komponen</span>
+        </Link>
+        <IoIosArrowForward className="h-5 w-5" />
+        <span>Sub Komponen</span>
       </div>
 
       <h1 className="text-2xl font-semibold">Manajemen Sub Komponen</h1>
@@ -100,7 +110,7 @@ export default async function EvaluationPage({
 
       <div className="mt-6 flex items-center gap-2">
         <AddSubComponent componentId={componentid} />
-        <UploadExcel componentId={componentid} /> 
+        <UploadExcel componentId={componentid} />
       </div>
 
       <div className="bg-white shadow-md rounded-lg p-6">
@@ -120,7 +130,10 @@ export default async function EvaluationPage({
               {subComponents.map((subComponent) => (
                 <tr className="border-b" key={subComponent.id}>
                   <td className="py-4 px-4">
-                    <CriteriaLink subcomponentId={subComponent.id} length={subComponent.criteria.length}/>
+                    <CriteriaLink
+                      subcomponentId={subComponent.id}
+                      length={subComponent.criteria.length}
+                    />
                   </td>
                   <td className="py-4 px-4">
                     {subComponent.name.toUpperCase()}

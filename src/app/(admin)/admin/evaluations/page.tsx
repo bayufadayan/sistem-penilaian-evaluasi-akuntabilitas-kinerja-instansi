@@ -8,7 +8,7 @@ import EditEvaluation from "./editEvaluation";
 import DeleteEvaluation from "./deleteEvaluation";
 import { FiExternalLink } from "react-icons/fi";
 import { TiHome } from "react-icons/ti";
-import { MdKeyboardArrowRight } from "react-icons/md";
+import { IoIosArrowForward } from "react-icons/io";
 
 const getEvalSheets = async () => {
   const res = await prisma.evaluationSheet.findMany({
@@ -51,11 +51,11 @@ export default async function EvaluationPage() {
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="mb-4 text-gray-500 flex gap-1 items-center">
+      <div className="mb-4 text-gray-500 flex gap-1 items-start">
         <Link href="/admin" className="text-blue-600">
           <span className="flex gap-1"><TiHome className="mt-0.5"/> Dashboard</span>
         </Link>
-        <MdKeyboardArrowRight className="h-6 w-6"/>
+        <IoIosArrowForward className="h-5 w-5"/>
         <span>Lembar Kerja Evaluasi</span>
       </div>
 

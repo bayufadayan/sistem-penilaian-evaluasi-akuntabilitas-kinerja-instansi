@@ -6,6 +6,8 @@ import DeleteComponent from "./deleteComponents";
 import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";
 import SubComponentLink from "./subComponenLink";
 import UploadExcel from "./uploadExcel";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
 
 const getComponents = async (id: string) => {
   const res = await prisma.component.findMany({
@@ -75,11 +77,18 @@ export default async function ManagementAccountPage({
   return (
     <>
       <div>
-        <div className="mb-4 text-gray-500">
+        <div className="mb-4 text-gray-500 flex gap-1 items-start">
           <Link href="/admin" className="text-blue-600">
-            Dashboard
-          </Link>{" "}
-          / Manajemen Komponen
+            <span className="flex gap-1">
+              <TiHome className="mt-0.5" /> Dashboard
+            </span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          <Link href="/admin/evaluations" className="hover:text-blue-600">
+            <span>Lembar Kerja Evaluasi</span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          <span>Komponen</span>
         </div>
 
         <h1 className="text-2xl font-semibold mb-2">
