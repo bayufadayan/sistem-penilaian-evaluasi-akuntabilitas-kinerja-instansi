@@ -7,6 +7,8 @@ import { BsCardChecklist } from "react-icons/bs";
 import EditEvaluation from "./editEvaluation";
 import DeleteEvaluation from "./deleteEvaluation";
 import { FiExternalLink } from "react-icons/fi";
+import { TiHome } from "react-icons/ti";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 const getEvalSheets = async () => {
   const res = await prisma.evaluationSheet.findMany({
@@ -49,11 +51,12 @@ export default async function EvaluationPage() {
   return (
     <div>
       {/* Breadcrumb */}
-      <div className="mb-4 text-gray-500">
+      <div className="mb-4 text-gray-500 flex gap-1 items-center">
         <Link href="/admin" className="text-blue-600">
-          Dashboard
+          <span className="flex gap-1"><TiHome className="mt-0.5"/> Dashboard</span>
         </Link>
-        / Lembar Kerja Evaluasi
+        <MdKeyboardArrowRight className="h-6 w-6"/>
+        <span>Lembar Kerja Evaluasi</span>
       </div>
 
       {/* Manajemen User */}
@@ -83,7 +86,7 @@ export default async function EvaluationPage() {
                 <div className="text-left text-2xl font-bold text-white">
                   {evalsheet.title.toUpperCase()}
                 </div>
-                <hr className="border-1 border-white/20 my-1 mb-2"/>
+                <hr className="border-1 border-white/20 my-1 mb-2" />
                 <p className="text-white opacity-80 flex-grow italic">
                   {evalsheet.description === ""
                     ? "Tidak ada Deskripsi"

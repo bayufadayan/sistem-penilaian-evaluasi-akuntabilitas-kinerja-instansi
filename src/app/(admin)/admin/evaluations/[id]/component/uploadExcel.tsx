@@ -47,6 +47,8 @@ export default function UploadExcel({ id_LKE }: { id_LKE: string }) {
     };
 
     reader.readAsArrayBuffer(file);
+
+    setFile(null)
   };
 
   const sendExcelDataToAPI = async (data: ExcelRow[]) => {
@@ -85,10 +87,10 @@ export default function UploadExcel({ id_LKE }: { id_LKE: string }) {
       <button
         type="button"
         onClick={triggerFileInput}
-        className="h-[80%] flex items-center gap-1 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+        className="h-full inline-flex gap-1 items-center px-4 py-3 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 active:bg-green-800 transition-all transform active:scale-95 shadow-md"
       >
-        <SiGooglesheets className="w-6 h-6"/>
-        <strong className="font-semibold text-md">Import Excel</strong>
+        <SiGooglesheets className="w-5 h-5"/>
+        Import Excel
       </button>
 
       <input

@@ -6,6 +6,7 @@ import UpdateSubComponent from "./updateSubComponent";
 import DeleteSubComponent from "./deleteSubComponent";
 import CriteriaLink from "./criteriaLink";
 import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";
+import UploadExcel from "./uploadExcelSub";
 
 // Ambil sub-komponen berdasarkan `id_component` dari URL
 const getSubComponentsByComponentId = async (componentId: string) => {
@@ -97,11 +98,9 @@ export default async function EvaluationPage({
         </div>
       </div>
 
-      <div className="mt-6 flex">
+      <div className="mt-6 flex items-center gap-2">
         <AddSubComponent componentId={componentid} />
-        <button className="btn" type="button">
-          Import Excel
-        </button>
+        <UploadExcel componentId={componentid} /> 
       </div>
 
       <div className="bg-white shadow-md rounded-lg p-6">
@@ -111,7 +110,7 @@ export default async function EvaluationPage({
               <th className="py-2 px-4 w-44">
                 <FiExternalLink className="w-5 h-5 text-gray-600" />
               </th>
-              <th className="py-2 px-4 w-1/2">NAMA KOMPONEN</th>
+              <th className="py-2 px-4 w-1/2">NAMA SUB KOMPONEN</th>
               <th className="py-2 px-4 min-w-10">BOBOT</th>
               <th className="py-2 px-4">AKSI</th>
             </tr>
@@ -128,7 +127,7 @@ export default async function EvaluationPage({
                   </td>
                   <td className="py-4 px-4">{subComponent.weight}</td>
                   <td className="py-4 px-4">
-                    <span className="flex items-stretch justify-start space-x-2">
+                    <span className="flex items-stretch justify-start space-x-0">
                       {/* Update dan Delete Sub-Komponen */}
                       <UpdateSubComponent
                         subComponent={subComponent}

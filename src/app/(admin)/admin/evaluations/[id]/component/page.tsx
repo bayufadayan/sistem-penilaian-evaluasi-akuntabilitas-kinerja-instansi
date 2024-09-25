@@ -112,7 +112,7 @@ export default async function ManagementAccountPage({
           </div>
         </div>
 
-        <div className="mt-6 flex justify-center">
+        <div className="mt-6 flex items-center gap-2 ">
           <AddComponents teams={teams} id_LKE={id} />
           <UploadExcel id_LKE={id} />
         </div>
