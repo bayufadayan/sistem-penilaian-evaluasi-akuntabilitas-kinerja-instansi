@@ -5,7 +5,7 @@ import axios from "axios";
 import { useDataContext } from "../layout";
 import { FaChartLine, FaStar } from "react-icons/fa";
 import ComponentChart from "./chartComponent";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaFilePdf } from "react-icons/fa";
 import EvaluationReportPDF from "./generatePdfButton";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
@@ -149,9 +149,7 @@ export default function SummaryScore() {
                       fileName={`${evaluationName}_Laporan_Evaluasi_Detail.pdf`}
                       className="flex text-lg font-medium items-center bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-2 rounded shadow-md transform active:scale-95 transition-transform duration-150"
                     >
-                      {({ loading }: { loading: boolean }) => (
-                        <>{loading ? "Loading PDF..." : "Download PDF"}</>
-                      )}
+                      <FaFilePdf/>
                     </PDFDownloadLink>
                   </div>
                 </div>
