@@ -21,6 +21,7 @@ export const GET = async (
             subComponents: {
               include: {
                 subComponentScore: true,
+                criteria: true,
               },
             },
           },

@@ -5,18 +5,41 @@ import axios from "axios";
 import { useDataContext } from "../layout";
 import { FaChartLine, FaStar } from "react-icons/fa";
 import ComponentChart from "./chartComponent";
+import { FaDownload } from "react-icons/fa";
+import EvaluationReportPDF from "./generatePdfButton";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+
+type CriteriaData = {
+  id: number;
+  name: string;
+  description?: string;
+  criteria_number: number;
+};
+
+type SubComponentData = {
+  id: number;
+  name: string;
+  description?: string;
+  weight: number;
+  subcomponent_number: number;
+  criteria: CriteriaData[];
+};
 
 type ComponentData = {
   id: number;
   name: string;
   weight: number;
   componentScore: { nilai: number }[];
+  subComponents: SubComponentData[];
 };
 
 export default function SummaryScore() {
   const { evaluationId } = useDataContext() || {};
   const [components, setComponents] = useState<ComponentData[]>([]);
   const [totalScore, setTotalScore] = useState<number>(0);
+  const [totalSubComponents, setTotalSubComponents] = useState<number>(0);
+  const [totalCriteria, setTotalCriteria] = useState<number>(0);
+  const [evaluationName, setEvaluationName] = useState("");
 
   const saveTotalScore = useCallback(
     async (total: number) => {
@@ -24,7 +47,6 @@ export default function SummaryScore() {
         const grade =
           total >= 90 ? "AA" : total >= 75 ? "BB" : total >= 60 ? "B" : "C";
 
-        // Kirim total score dan grade ke API evaluationscore
         await axios.patch(
           `/api/calculateScore/evaluationscore/${evaluationId}`,
           {
@@ -47,9 +69,8 @@ export default function SummaryScore() {
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/evaluations/${evaluationId}`);
-        const { components } = response.data;
+        const { components, title } = response.data;
 
-        // Hitung total nilai dari semua komponen
         const total = components.reduce(
           (acc: number, component: ComponentData) => {
             const componentTotal = component.componentScore?.[0]?.nilai ?? 0;
@@ -58,10 +79,33 @@ export default function SummaryScore() {
           0
         );
 
+        const totalSubComponents = components.reduce(
+          (acc: number, component: ComponentData) => {
+            return acc + (component.subComponents?.length || 0);
+          },
+          0
+        );
+
+        const totalCriteria = components.reduce(
+          (acc: number, component: ComponentData) => {
+            return (
+              acc +
+              component.subComponents.reduce(
+                (subAcc: number, subComponent: SubComponentData) =>
+                  subAcc + (subComponent.criteria?.length || 0),
+                0
+              )
+            );
+          },
+          0
+        );
+
+        setEvaluationName(title);
         setComponents(components);
         setTotalScore(total);
+        setTotalSubComponents(totalSubComponents);
+        setTotalCriteria(totalCriteria);
 
-        // Simpan total score ke database
         saveTotalScore(total);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -82,9 +126,34 @@ export default function SummaryScore() {
 
           <div className={styles.fillCriteriaHeroContainer}>
             <div className={styles.fillCriteriaHeaderContent}>
-              <div className={styles.criteriaTitleContainer}>
-                <div className={styles.mainTitle}>
-                  <h1 className="text-3xl">Hasil Pengisian AKIP</h1>
+              <div className="flex w-full">
+                <div
+                  className={`${styles.mainTitle} flex justify-between w-full`}
+                >
+                  <h1 className="text-4xl font-bold">Hasil Pengisian AKIP</h1>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      className="flex text-sm font-medium items-center bg-green-500 hover:bg-green-600 active:bg-green-700 text-white py-1 px-2 rounded shadow-md transform active:scale-95 transition-transform duration-150"
+                    >
+                      <FaDownload className="mr-2" />
+                      Download Excel
+                    </button>
+                    <PDFDownloadLink
+                      document={
+                        <EvaluationReportPDF
+                          components={components}
+                          evaluationName={evaluationName}
+                        />
+                      }
+                      fileName={`${evaluationName}_Laporan_Evaluasi_Detail.pdf`}
+                      className="flex text-lg font-medium items-center bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-2 rounded shadow-md transform active:scale-95 transition-transform duration-150"
+                    >
+                      {({ loading }: { loading: boolean }) => (
+                        <>{loading ? "Loading PDF..." : "Download PDF"}</>
+                      )}
+                    </PDFDownloadLink>
+                  </div>
                 </div>
               </div>
             </div>
@@ -113,13 +182,17 @@ export default function SummaryScore() {
                   <p className="text-sm font-semibold text-gray-600">
                     Sub Komponen
                   </p>
-                  <p className="text-xl font-bold text-blue-600">23</p>
+                  <p className="text-xl font-bold text-blue-600">
+                    {totalSubComponents}
+                  </p>
                 </div>
                 <div className="text-center p-2 bg-blue-50 rounded-lg">
                   <p className="text-sm font-semibold text-gray-600">
                     Kriteria
                   </p>
-                  <p className="text-xl font-bold text-blue-600">54</p>
+                  <p className="text-xl font-bold text-blue-600">
+                    {totalCriteria}
+                  </p>
                 </div>
               </div>
             </div>
@@ -131,7 +204,9 @@ export default function SummaryScore() {
               <h2 className="text-md font-bold text-green-600 mb-2">
                 Nilai LKE
               </h2>
-              <p className="text-3xl font-bold text-green-600">{totalScore.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-green-600">
+                {totalScore.toFixed(2)}
+              </p>
             </div>
             <FaChartLine className="w-12 h-12 text-green-100" />
           </div>
@@ -157,7 +232,7 @@ export default function SummaryScore() {
         </div>
 
         <div className="rounded bg-blue-600 text-white font-bold text-lg text-center py-4">
-          <span>Nilai Akhir LKE AKIP</span>
+          <span>Nilai Akhir ({evaluationName})</span>
         </div>
 
         <div className="overflow-x-auto shadow-md sm:rounded-lg">
@@ -243,8 +318,8 @@ export default function SummaryScore() {
         </div>
 
         <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4">
-            Chart Komponen Ternormalisasi
+          <h3 className="text-lg font-bold mb-4">
+            Perbandingan Komponen dengan Maksimal Bobotnya
           </h3>
           <ComponentChart components={components} />
         </div>
