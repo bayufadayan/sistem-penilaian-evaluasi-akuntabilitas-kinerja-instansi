@@ -5,9 +5,9 @@ import axios from "axios";
 import { useDataContext } from "../layout";
 import { FaChartLine, FaStar } from "react-icons/fa";
 import ComponentChart from "./chartComponent";
-import { FaDownload, FaFilePdf } from "react-icons/fa";
-import EvaluationReportPDF from "./generatePdfButton";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import PdfGenerator from "./pdfGenerator";
+import type { ComponentScore, Score } from "@prisma/client";
+import ExcelGenerator from "./excelGenerator";
 
 type CriteriaData = {
   id: number;
@@ -16,7 +16,7 @@ type CriteriaData = {
   criteria_number: number;
 };
 
-type SubComponentData = {
+type SubComponentDetail = {
   id: number;
   name: string;
   description?: string;
@@ -25,21 +25,62 @@ type SubComponentData = {
   criteria: CriteriaData[];
 };
 
-type ComponentData = {
+type CriteriaDetails = {
   id: number;
   name: string;
+  description: string;
+  criteria_number: number;
+  id_subcomponents: number;
+  score: Score[];
+};
+
+// Tipe untuk detail sub-komponen
+type SubComponentsDetail = {
+  id: number;
+  name: string;
+  description: string;
   weight: number;
-  componentScore: { nilai: number }[];
-  subComponents: SubComponentData[];
+  subcomponent_number: number;
+  id_components: number;
+  subComponentScore: SubComponentScore[];
+  criteria: CriteriaDetails[];
+};
+
+// Tipe untuk skor sub-komponen
+type SubComponentScore = {
+  id: number;
+  nilaiAvgOlah: number;
+  nilai: number;
+  persentase: number;
+  grade: string;
+  id_subcomponents: number;
+};
+
+// Tipe untuk detail komponen
+type ComponentDetail = {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
+  component_number: number;
+  id_team: number;
+  id_LKE: string;
+  componentScore: ComponentScore[];
+  subComponents: SubComponentsDetail[];
 };
 
 export default function SummaryScore() {
   const { evaluationId } = useDataContext() || {};
-  const [components, setComponents] = useState<ComponentData[]>([]);
+  const [components, setComponents] = useState<ComponentDetail[]>([]);
   const [totalScore, setTotalScore] = useState<number>(0);
   const [totalSubComponents, setTotalSubComponents] = useState<number>(0);
   const [totalCriteria, setTotalCriteria] = useState<number>(0);
   const [evaluationName, setEvaluationName] = useState("");
+  const [year, setYear] = useState<number>(0);
+  const [dateRange, setDateRange] = useState("");
+  const [dateStart, setDateStart] = useState("");
+  const [dateFinish, setDateFinish] = useState("");
+  const [description, setDescription] = useState("");
 
   const saveTotalScore = useCallback(
     async (total: number) => {
@@ -63,16 +104,53 @@ export default function SummaryScore() {
     [evaluationId]
   );
 
+  // Fungsi untuk memformat dateRange
+  const formatDateRange = useCallback((start: string, finish: string) => {
+    const startDate = new Date(start);
+    const finishDate = new Date(finish);
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    };
+
+    const formattedStart = startDate.toLocaleDateString("id-ID", options);
+    const formattedFinish = finishDate.toLocaleDateString("id-ID", options);
+
+    return `${formattedStart} sampai ${formattedFinish}`;
+  }, []);
+
+  const formatDate = useCallback((date: string) => {
+    const myDate = new Date(date);
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "long",
+    };
+
+    const formattedDate = myDate.toLocaleDateString("id-ID", options);
+
+    return `${formattedDate}`;
+  }, []);
+
   useEffect(() => {
     if (!evaluationId) return;
 
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/evaluations/${evaluationId}`);
-        const { components, title } = response.data;
+        const {
+          components,
+          title,
+          year,
+          date_start,
+          date_finish,
+          description,
+        } = response.data;
 
         const total = components.reduce(
-          (acc: number, component: ComponentData) => {
+          (acc: number, component: ComponentDetail) => {
             const componentTotal = component.componentScore?.[0]?.nilai ?? 0;
             return acc + componentTotal;
           },
@@ -80,18 +158,18 @@ export default function SummaryScore() {
         );
 
         const totalSubComponents = components.reduce(
-          (acc: number, component: ComponentData) => {
+          (acc: number, component: ComponentDetail) => {
             return acc + (component.subComponents?.length || 0);
           },
           0
         );
 
         const totalCriteria = components.reduce(
-          (acc: number, component: ComponentData) => {
+          (acc: number, component: ComponentDetail) => {
             return (
               acc +
               component.subComponents.reduce(
-                (subAcc: number, subComponent: SubComponentData) =>
+                (subAcc: number, subComponent: SubComponentDetail) =>
                   subAcc + (subComponent.criteria?.length || 0),
                 0
               )
@@ -101,6 +179,11 @@ export default function SummaryScore() {
         );
 
         setEvaluationName(title);
+        setYear(year);
+        setDateStart(formatDate(date_start));
+        setDateFinish(formatDate(date_finish));
+        setDescription(description);
+        setDateRange(formatDateRange(date_start, date_finish));
         setComponents(components);
         setTotalScore(total);
         setTotalSubComponents(totalSubComponents);
@@ -113,7 +196,7 @@ export default function SummaryScore() {
     };
 
     fetchData();
-  }, [evaluationId, saveTotalScore]);
+  }, [evaluationId, saveTotalScore, formatDateRange, formatDate]);
 
   return (
     <div className={`${styles.lkeContentContainer} min-h-screen`}>
@@ -132,25 +215,23 @@ export default function SummaryScore() {
                 >
                   <h1 className="text-4xl font-bold">Hasil Pengisian AKIP</h1>
                   <div className="flex gap-2">
-                    <button
-                      type="button"
-                      className="flex text-sm font-medium items-center bg-green-500 hover:bg-green-600 active:bg-green-700 text-white py-1 px-2 rounded shadow-md transform active:scale-95 transition-transform duration-150"
-                    >
-                      <FaDownload className="mr-2" />
-                      Download Excel
-                    </button>
-                    <PDFDownloadLink
-                      document={
-                        <EvaluationReportPDF
-                          components={components}
-                          evaluationName={evaluationName}
-                        />
-                      }
-                      fileName={`${evaluationName}_Laporan_Evaluasi_Detail.pdf`}
-                      className="flex text-lg font-medium items-center bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-2 rounded shadow-md transform active:scale-95 transition-transform duration-150"
-                    >
-                      <FaFilePdf/>
-                    </PDFDownloadLink>
+                    <ExcelGenerator
+                      components={components}
+                      evaluationName={evaluationName}
+                      year={year}
+                    />
+                    <PdfGenerator
+                      components={components}
+                      totalScore={totalScore}
+                      evaluationName={evaluationName}
+                      year={year}
+                      dateRange={dateRange}
+                      title={evaluationName}
+                      description={description}
+                      id={evaluationId}
+                      date_start={dateStart}
+                      date_finish={dateFinish}
+                    />
                   </div>
                 </div>
               </div>

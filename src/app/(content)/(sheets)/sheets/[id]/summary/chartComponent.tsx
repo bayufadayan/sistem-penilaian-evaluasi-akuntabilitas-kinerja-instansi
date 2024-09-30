@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import type { ComponentScore } from "@prisma/client";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -20,14 +21,19 @@ ChartJS.register(
   Legend
 );
 
-type ComponentData = {
+type ComponentDetail = {
+  id: number;
   name: string;
+  description: string;
   weight: number;
-  componentScore: { nilai: number }[];
-};
+  component_number: number;
+  id_team: number;
+  id_LKE: string;
+  componentScore: ComponentScore[];
+}
 
 interface ComponentChartProps {
-  components: ComponentData[];
+  components: ComponentDetail[];
 }
 
 export default function ComponentChart({ components }: ComponentChartProps) {
