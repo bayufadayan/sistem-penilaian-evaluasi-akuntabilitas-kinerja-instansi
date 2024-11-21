@@ -21,7 +21,7 @@ const LoginPage: FC = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -41,7 +41,8 @@ const LoginPage: FC = () => {
         redirect: false,
         email: values.email,
         password: values.password,
-        callbackUrl
+        rememberMe: values.rememberMe,
+        callbackUrl,
       });
 
       if (!res?.error) {
@@ -61,6 +62,7 @@ const LoginPage: FC = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
+    console.log("Form values:", values);
     console.log(values);
     handleLogin(values);
   };
@@ -93,6 +95,7 @@ const LoginPage: FC = () => {
                       type="email"
                       name="email"
                       id="email"
+                      autoComplete="email"
                       className="input-bordered input tracking-widest"
                       required
                     />
@@ -111,7 +114,8 @@ const LoginPage: FC = () => {
                         type={showPassword ? "text" : "password"}
                         name="password"
                         id="password"
-                        className="w-full pr-10"
+                        autoComplete="current-password"
+                        className="w-full pr-10 input-bordered input tracking-widest"
                         required
                       />
                       <div
@@ -165,16 +169,26 @@ const LoginPage: FC = () => {
                 <div className={styles.rememberAndForgot}>
                   <div className={styles.rememberpasswordContainer}>
                     <input
+                      {...form.register("rememberMe")}
                       type="checkbox"
-                      name="remember-password"
+                      name="rememberMe"
                       id="remember-password"
-                      value="true"
+                      // defaultChecked={true}
+                      // checked={form.getValues("rememberMe")}
+                      className="cursor-pointer"
                     />
-                    <label htmlFor="remember-password">Ingat Saya</label>
+                    <label
+                      htmlFor="remember-password"
+                      className="cursor-pointer"
+                    >
+                      Ingat Saya
+                    </label>
                   </div>
 
                   <span>
-                    <a href="/" className="hover:text-blue-800">Lupa Password</a>
+                    <a href="/" className="hover:text-blue-800">
+                      Lupa Password
+                    </a>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"

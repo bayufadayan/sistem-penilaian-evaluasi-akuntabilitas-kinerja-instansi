@@ -7,6 +7,7 @@ export const signInFormSchema = z.object({
   password: z
     .string({ required_error: "Password wajib diisi" })
     .min(8, { message: "Password harus terdiri dari minimal 8 karakter" }),
+  rememberMe: z.boolean().optional(),
 });
 
 export const userFormSchema = z.object({

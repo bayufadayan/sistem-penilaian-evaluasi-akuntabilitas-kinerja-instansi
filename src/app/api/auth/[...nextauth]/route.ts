@@ -19,6 +19,7 @@ export const authOptions: AuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        rememberMe: { label: "Remember Me", type: "checkbox" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
@@ -37,28 +38,51 @@ export const authOptions: AuthOptions = {
         );
         if (!isPasswordValid) throw new Error("Invalid credentials");
 
+        const rememberMe = credentials.rememberMe === "true";
+
         return {
           id: user.id.toString(),
           name: user.name,
           email: user.email,
           role: user.role,
+          rememberMe,
         };
       },
     }),
   ],
   callbacks: {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        async jwt({ token, user }: { token: JWT; user?: any }) {
+    async jwt({
+      token,
+      user,
+    }: {
+      token: JWT;
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      user?: any;
+    }) {
+      console.log("JWT Callback - Token before:", token);
       if (user) {
         token.role = user.role;
         token.id = user.id;
+        token.rememberMe = user.rememberMe;
+        token.accessToken = user.accessToken;
+        console.log("JWT Callback - Token.rememberMe:", token.rememberMe);
       }
+
+      token.exp = token.rememberMe
+        ? Math.floor(Date.now() / 1000) + 90 * 24 * 60 * 60 // 90 hari
+        : // : Math.floor(Date.now() / 1000) + 1 * 24 * 60 * 60; // 1 hari
+          Math.floor(Date.now() / 1000) + 10; // 10 detik
+
+      console.log("JWT Callback - Token after:", token);
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token) {
         session.user.role = token.role as Role;
         session.user.id = token.id as string;
+        if (typeof token.accessToken === "string") {
+          session.user.accessToken = token.accessToken;
+        }
       }
       return session;
     },

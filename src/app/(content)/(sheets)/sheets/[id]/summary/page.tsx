@@ -7,7 +7,6 @@ import { FaChartLine, FaStar } from "react-icons/fa";
 import ComponentChart from "./chartComponent";
 import PdfGenerator from "./pdfGenerator";
 import type { ComponentScore, Score } from "@prisma/client";
-import ExcelGenerator from "./excelGenerator";
 
 type CriteriaData = {
   id: number;
@@ -215,11 +214,11 @@ export default function SummaryScore() {
                 >
                   <h1 className="text-4xl font-bold">Hasil Pengisian AKIP</h1>
                   <div className="flex gap-2">
-                    <ExcelGenerator
+                    {/* <ExcelGenerator
                       components={components}
                       evaluationName={evaluationName}
                       year={year}
-                    />
+                    /> */}
                     <PdfGenerator
                       components={components}
                       totalScore={totalScore}
