@@ -1,16 +1,9 @@
-import type { Metadata } from "next";
+"use client";
+import { SessionProvider } from "next-auth/react";
 import "./globals.css";
 import { Epilogue } from "next/font/google";
 
 const epilogue = Epilogue({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Akip BPMSPH",
-  description: "Aplikasi penilaian kinerja untuk BPMSPH",
-  icons: {
-    icon: "/favicon.ico",
-  },
-};
 
 export default function RootLayout({
   children,
@@ -19,7 +12,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={epilogue.className}>{children}</body>
+      <body className={epilogue.className}>
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }

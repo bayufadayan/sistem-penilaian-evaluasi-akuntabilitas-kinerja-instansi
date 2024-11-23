@@ -1,10 +1,14 @@
 "use client";
 import Link from "next/link";
 import { FiHome } from "react-icons/fi";
+import { signOut } from "next-auth/react";
 import { MdOutlineAccountCircle } from "react-icons/md";
 import { FaRegChartBar } from "react-icons/fa";
 import { AiOutlineTeam } from "react-icons/ai";
 import { LuClipboardCheck } from "react-icons/lu";
+import { IoSettingsOutline } from "react-icons/io5";
+import { MdOutlineManageAccounts } from "react-icons/md";
+import { VscSignOut } from "react-icons/vsc";
 
 export default function AdminSidebar() {
   return (
@@ -36,7 +40,7 @@ export default function AdminSidebar() {
       >
         <div className="h-full px-3 py-4 overflow-y-auto">
           {/* Logo */}
-          <div className="flex items-center mb-6 gap-2">
+          <div className="flex items-center mb-6 mt-2 gap-4 justify-center flex-col">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="30"
@@ -58,8 +62,8 @@ export default function AdminSidebar() {
               </defs>
             </svg>
             <Link href={"/"}>
-              <span className="text-xl font-semibold text-gray-900 dark:text-white">
-                EkaPrime Admin
+              <span className="text-2xl font-semibold text-gray-900 dark:text-white">
+                Admin BPMSPH
               </span>
             </Link>
           </div>
@@ -117,6 +121,40 @@ export default function AdminSidebar() {
                   <LuClipboardCheck className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white mb-1" />
                   <span className="ml-3">Manajemen Nilai</span>
                 </Link>
+              </li>
+            </ul>
+
+            <hr className="opacity-20" />
+
+            <ul className="space-y-2">
+              <h3 className="text-sm font-normal mb-2 text-white">
+                Pengaturan
+              </h3>
+              <li>
+                <Link
+                  href="/admin/accounts"
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <IoSettingsOutline className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <span className="ml-3">Pengaturan Umum</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/admin/teams/"
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <MdOutlineManageAccounts className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                  <span className="ml-3">Akun</span>
+                </Link>
+              </li>
+
+              <li
+                className="px-4 py-2 cursor-pointer rounded-lg bg-red-700 hover:bg-red-600 text-white flex items-center pe-7"
+                onClick={() => signOut()}
+              >
+                <VscSignOut className="w-6 h-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
+                <span className="ml-2 mt-1">Keluar</span>
               </li>
             </ul>
           </div>

@@ -4,7 +4,6 @@ import "../globals.css";
 import AdminNavbar from "./components/adminNavbar";
 import AdminSidebar from "./components/adminSidebar";
 import { Epilogue } from "next/font/google";
-import { SessionProvider } from "next-auth/react";
 
 const epilogue = Epilogue({ subsets: ["latin"] });
 
@@ -21,12 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={epilogue.className}>
-        <SessionProvider>
           <AdminNavbar />
           <AdminSidebar />
 
           <div className="p-8 ml-64 mt-14">{children}</div>
-        </SessionProvider>
       </body>
     </html>
   );

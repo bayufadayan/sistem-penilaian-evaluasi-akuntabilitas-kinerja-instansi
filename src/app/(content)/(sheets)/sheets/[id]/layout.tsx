@@ -1,5 +1,4 @@
 "use client";
-import { SessionProvider } from "next-auth/react";
 import { Inter } from "next/font/google";
 import styles from "@/styles/styles.module.css";
 import { useEffect, useState, createContext, useContext } from "react";
@@ -93,7 +92,6 @@ export default function RootLayout({
   const evaluationDesc = evaluation.description;
 
   return (
-    <SessionProvider>
       <DataContext.Provider
         value={{ myComponents, evaluationName, evaluationId, evaluationDesc }}
       >
@@ -106,6 +104,5 @@ export default function RootLayout({
           {children}
         </main>
       </DataContext.Provider>
-    </SessionProvider>
   );
 }
