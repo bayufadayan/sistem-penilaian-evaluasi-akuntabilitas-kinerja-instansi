@@ -1,31 +1,33 @@
 "use client";
 import { SessionProvider } from "next-auth/react";
-import "../../../../globals.css";
+import "@/app/globals.css";
+import { Inter } from "next/font/google";
 import styles from "@/styles/styles.module.css";
 import { useEffect, useState, createContext, useContext } from "react";
 import SidebarUser from "@/components/sidebarUser";
+import type { Component } from "@prisma/client";
+
 import type React from "react";
 
-interface Component {
-  id: number;
-  name: string;
-  description: string;
-  weight: number;
-  subComponents: SubComponent[];
-}
+const inter = Inter({ subsets: ["latin"] });
 
 interface SubComponent {
   id: number;
   name: string;
   description: string;
   weight: number;
+  subcomponent_number: number;
 }
+
+type ComponentWithSubComponents = Component & {
+  subComponents: SubComponent[];
+};
 
 interface EvaluationSheet {
   id: string;
   title: string;
   description: string;
-  components: Component[];
+  components: ComponentWithSubComponents[];
 }
 
 const DataContext = createContext<{
@@ -60,7 +62,7 @@ export default function RootLayout({
 
   if (!evaluation) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className={`${inter.className} h-screen flex items-center justify-center`}>
         <div className="block max-w-sm p-5 bg-white border border-gray-200 rounded-lg shadow mb-8">
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 flex justify-center items-center gap-3">
             <svg

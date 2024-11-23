@@ -1,95 +1,119 @@
-// "use client";
-// import React from "react";
-// import * as XLSX from "xlsx";
-// import { FaDownload } from "react-icons/fa";
-// import type { ComponentDetail } from "./pdfGenerator"; // Ensure ComponentDetail is correctly exported from your pdfGenerator file
+import React from "react";
+import { createExcelFile } from "@/lib/excelUtils";
+import { FaFileExcel } from "react-icons/fa";
+import type { ComponentScore, Score } from "@prisma/client";
 
-// interface ExcelGeneratorProps {
-//   components: ComponentDetail[];
-//   evaluationName: string;
-//   year: number;
-// }
+type ComponentDetail = {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
+  component_number: number;
+  id_team: number;
+  id_LKE: string;
+  componentScore: ComponentScore[];
+  subComponents: SubComponentsDetail[];
+};
 
-// const ExcelGenerator: React.FC<ExcelGeneratorProps> = ({
-//   components,
-//   evaluationName,
-//   year,
-// }) => {
-//   const downloadExcel = () => {
-//     // Create the workbook and worksheet
-//     const workbook = XLSX.utils.book_new();
+type SubComponentsDetail = {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
+  subcomponent_number: number;
+  id_components: number;
+  subComponentScore: SubComponentScore[];
+  criteria: CriteriaDetails[];
+};
 
-//     const data: (string | number)[][] = []; // Define the array type as (string | number)[][] for better type safety
-//     data.push([
-//       "NO",
-//       "Komponen",
-//       "Bobot",
-//       "Nilai",
-//       "Sub Komponen",
-//       "Bobot Sub Komponen",
-//       "Nilai Sub Komponen",
-//       "Kriteria",
-//       "Nilai Kriteria",
-//     ]);
+type CriteriaDetails = {
+  id: number;
+  name: string;
+  description: string;
+  criteria_number: number;
+  id_subcomponents: number;
+  score: Score[];
+};
 
-//     // Sort components and iterate over them using for...of to satisfy ESLint rules.
-//     components.sort((a, b) => a.component_number - b.component_number);
-//     for (const [index, component] of components.entries()) {
-//       component.subComponents.sort((a, b) => a.subcomponent_number - b.subcomponent_number);
-//       for (const subComponent of component.subComponents) {
-//         subComponent.criteria.sort((a, b) => a.criteria_number - b.criteria_number);
-//         for (const criterion of subComponent.criteria) {
-//           data.push([
-//             index + 1,
-//             component.name, // Display component name
-//             component.weight, // Display component weight
-//             component.componentScore[0]?.nilai || "", // Display score if available
-//             `${String.fromCharCode(64 + subComponent.subcomponent_number)}. ${subComponent.name}`,
-//             subComponent.weight,
-//             `${subComponent.subComponentScore[0]?.nilai} (${subComponent.subComponentScore[0]?.grade})`,
-//             `${criterion.criteria_number}. ${criterion.name}`,
-//             criterion.score[0]?.score || "",
-//           ]);
-//         }
-//       }
-//     }
+type SubComponentScore = {
+  id: number;
+  nilaiAvgOlah: number;
+  nilai: number;
+  persentase: number;
+  grade: string;
+  id_subcomponents: number;
+};
 
-//     const worksheet = XLSX.utils.aoa_to_sheet(data);
+type ExcelGeneratorProps = {
+  components: ComponentDetail[];
+  evaluationName: string;
+  year: number;
+  totalScore: number;
+};
 
-//     // Set the worksheet columns width
-//     const wscols = [
-//       { wch: 5 },  // NO
-//       { wch: 30 }, // Komponen
-//       { wch: 10 }, // Bobot
-//       { wch: 10 }, // Nilai
-//       { wch: 40 }, // Sub Komponen
-//       { wch: 10 }, // Bobot Sub Komponen
-//       { wch: 20 }, // Nilai Sub Komponen
-//       { wch: 50 }, // Kriteria
-//       { wch: 10 }, // Nilai Kriteria
-//     ];
-//     worksheet["!cols"] = wscols;
+const ExcelGenerator: React.FC<ExcelGeneratorProps> = ({
+  components,
+  evaluationName,
+  year,
+}) => {
+  // Fungsi untuk mempersiapkan data Excel
+  const handleExport = () => {
+    // Data terstruktur untuk Excel
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const formattedData: any[] = [];
 
-//     // Add the worksheet to the workbook
-//     XLSX.utils.book_append_sheet(workbook, worksheet, "Hasil Evaluasi");
+    components.forEach((component, compIndex) => {
+      // Tambahkan data Komponen
+      formattedData.push({
+        No: compIndex + 1,
+        "Nama Komponen": component.name,
+        Bobot: component.weight.toFixed(2),
+        Nilai: component.componentScore?.[0]?.nilai?.toFixed(2) ?? "N/A",
+        "Sub Komponen": "",
+        Kriteria: "",
+        "Skor Kriteria": "",
+      });
 
-//     // Generate Excel file and trigger download
-//     XLSX.writeFile(
-//       workbook,
-//       `Hasil_Evaluasi_AKIP_${evaluationName}_${year}.xlsx`
-//     );
-//   };
+      component.subComponents.forEach((subComponent, subIndex) => {
+        // Tambahkan data Sub Komponen
+        formattedData.push({
+          No: `${compIndex + 1}.${subIndex + 1}`,
+          "Nama Komponen": "",
+          Bobot: "",
+          Nilai: "",
+          "Sub Komponen": subComponent.name,
+          Kriteria: "",
+          "Skor Kriteria": "",
+        });
 
-//   return (
-//     <button
-//       onClick={downloadExcel}
-//       type="button"
-//       className="flex text-sm font-medium items-center bg-green-500 hover:bg-green-600 active:bg-green-700 text-white py-1 px-2 rounded shadow-md transform active:scale-95 transition-transform duration-150"
-//     >
-//       <FaDownload className="mr-2" />
-//       Download Excel
-//     </button>
-//   );
-// };
+        subComponent.criteria.forEach((criterion, critIndex) => {
+          // Tambahkan data Kriteria
+          formattedData.push({
+            No: `${compIndex + 1}.${subIndex + 1}.${critIndex + 1}`,
+            "Nama Komponen": "",
+            Bobot: "",
+            Nilai: "",
+            "Sub Komponen": "",
+            Kriteria: criterion.name,
+            "Skor Kriteria": criterion.score?.[0]?.score ?? "N/A",
+          });
+        });
+      });
+    });
 
-// export default ExcelGenerator;
+    // Ekspor data ke Excel
+    createExcelFile(formattedData, `Hasil ${evaluationName} ${year}`, "Sheet1");
+  };
+
+  return (
+    <button
+      onClick={handleExport}
+      className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded flex text-sm font-medium items-center shadow-md transform active:scale-95 transition-transform duration-150"
+    >
+      <FaFileExcel className="mr-2" />
+      Download Excel
+    </button>
+  );
+};
+
+export default ExcelGenerator;

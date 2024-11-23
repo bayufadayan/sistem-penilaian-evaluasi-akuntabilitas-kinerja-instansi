@@ -6,6 +6,7 @@ import { useDataContext } from "../layout";
 import { FaChartLine, FaStar } from "react-icons/fa";
 import ComponentChart from "./chartComponent";
 import PdfGenerator from "./pdfGenerator";
+import ExcelGenerator from "./excelGenerator";
 import type { ComponentScore, Score } from "@prisma/client";
 
 type CriteriaData = {
@@ -214,11 +215,12 @@ export default function SummaryScore() {
                 >
                   <h1 className="text-4xl font-bold">Hasil Pengisian AKIP</h1>
                   <div className="flex gap-2">
-                    {/* <ExcelGenerator
+                    <ExcelGenerator
                       components={components}
                       evaluationName={evaluationName}
                       year={year}
-                    /> */}
+                      totalScore={totalScore}
+                    />
                     <PdfGenerator
                       components={components}
                       totalScore={totalScore}
@@ -248,27 +250,27 @@ export default function SummaryScore() {
                 Detail Informasi
               </h2>
               <div className="grid grid-cols-3 gap-2">
-                <div className="text-center p-2 bg-blue-50 rounded-lg">
+                <div className="text-center p-2 bg-blue-50 rounded-lg flex justify-around flex-col">
                   <p className="text-sm font-semibold text-gray-600">
                     Komponen
                   </p>
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xxl font-bold text-blue-600">
                     {components.length}
                   </p>
                 </div>
-                <div className="text-center p-2 bg-blue-50 rounded-lg">
+                <div className="text-center p-2 bg-blue-50 rounded-lg flex justify-around flex-col">
                   <p className="text-sm font-semibold text-gray-600">
                     Sub Komponen
                   </p>
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xxl font-bold text-blue-600">
                     {totalSubComponents}
                   </p>
                 </div>
-                <div className="text-center p-2 bg-blue-50 rounded-lg">
+                <div className="text-center p-2 bg-blue-50 rounded-lg flex justify-around flex-col">
                   <p className="text-sm font-semibold text-gray-600">
                     Kriteria
                   </p>
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xxl font-bold text-blue-600">
                     {totalCriteria}
                   </p>
                 </div>
