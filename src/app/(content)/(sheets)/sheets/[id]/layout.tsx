@@ -1,6 +1,5 @@
 "use client";
 import { SessionProvider } from "next-auth/react";
-import "@/app/globals.css";
 import { Inter } from "next/font/google";
 import styles from "@/styles/styles.module.css";
 import { useEffect, useState, createContext, useContext } from "react";
