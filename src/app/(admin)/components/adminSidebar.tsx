@@ -148,9 +148,9 @@ export default function AdminSidebar() {
                   <span className="ml-3">Akun</span>
                 </Link>
               </li>
-
+              {/* <hr className="opacity-20" /> */}
               <li
-                className="px-4 py-2 cursor-pointer rounded-lg bg-red-700 hover:bg-red-600 text-white flex items-center pe-7"
+                className="p-2 cursor-pointer rounded-lg hover:bg-red-700 hover:text-white flex items-center text-red-500"
                 onClick={() => signOut()}
               >
                 <VscSignOut className="w-6 h-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />

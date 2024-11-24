@@ -1,6 +1,8 @@
 import DeleteAccount from "./deleteAccount";
 import AdminAddButton from "../../components/adminAddButton";
 import AdminEditButton from "../../components/buttons/adminEditButton";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
@@ -36,11 +38,14 @@ export default async function ManagementAccountPage() {
       {/* content nya */}
       <div>
         {/* Breadcrumb */}
-        <div className="mb-4 text-gray-500">
-          <Link href="#" className="text-blue-600">
-            Dashboard
-          </Link>{" "}
-          / Manajemen Akun
+        <div className="mb-4 text-gray-500 flex gap-1 items-start">
+          <Link href="/admin" className="text-blue-600">
+            <span className="flex gap-1">
+              <TiHome className="mt-0.5" /> Dashboard
+            </span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          Manajemen Akun
         </div>
 
         {/* Manajemen User Bang */}
@@ -49,8 +54,7 @@ export default async function ManagementAccountPage() {
             Manajemen Akun Pengguna
           </h1>
 
-          <AdminAddButton props="/admin/accounts/create/" label="Tambah Akun"/>
-
+          <AdminAddButton props="/admin/accounts/create/" label="Tambah Akun" />
         </div>
 
         {/* Tabel Konten */}
@@ -82,9 +86,11 @@ export default async function ManagementAccountPage() {
                     >
                       {user.status}
                     </td>
-                    <td>{user.team?.name || 'Tidak ada tim'}</td>
+                    <td>{user.team?.name || "Tidak ada tim"}</td>
                     <td>
-                      <AdminEditButton props={`/admin/accounts/edit/${user.id}`}/>
+                      <AdminEditButton
+                        props={`/admin/accounts/edit/${user.id}`}
+                      />
                       <DeleteAccount user={user} />
                     </td>
                   </tr>

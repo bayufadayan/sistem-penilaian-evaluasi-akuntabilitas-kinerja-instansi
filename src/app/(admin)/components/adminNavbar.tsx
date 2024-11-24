@@ -28,7 +28,7 @@ export default function AdminNavbar() {
         <button
           type="button"
           className="btn -ml-3 bg-transparent p-2 border-none shadow-none hover:shadow-md hover:bg-slate-200"
-          onClick={()=>router.back()}
+          onClick={() => router.back()}
         >
           <IoMdArrowBack className="text-3xl" />
         </button>
@@ -95,6 +95,17 @@ export default function AdminNavbar() {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
               <ul className="py-1">
+                <li
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
+                >
+                  <a href="/" className="block w-full h-full">
+                    Beranda
+                  </a>
+                </li>
+
                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                   <a href="/admin/profile">Profile</a>
                 </li>

@@ -61,7 +61,7 @@ export default async function EvaluationPage() {
 
       {/* Manajemen User */}
       <div className="flex justify-between items-center mb-1">
-        <h1 className="text-2xl font-semibold mb-4">Manajemen LKE</h1>
+        <h1 className="text-2xl font-semibold mb-4">Manajemen Lembar Kerja Evaluasi</h1>
         <AdminAddButton props="/admin/evaluations/create/" label="Tambah LKE" />
       </div>
 

@@ -1,6 +1,8 @@
 import AddTeam from "./addTeam";
 import UpdateTeam from "./updateTeam";
 import DeleteTeam from "./deleteTeam";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
@@ -21,14 +23,16 @@ export default async function ManagementAccountPage() {
     <>
       {console.log(teams)}
 
-      {/* content nya */} 
+      {/* content nya */}
       <div>
         {/* Breadcrumb */}
-        <div className="mb-4 text-gray-500">
-          <Link href="#" className="text-blue-600">
-            Dashboard
-          </Link>{" "}
-          / Manajemen Tim
+        <div className="mb-4 text-gray-500 flex gap-1 items-start">
+          <Link href="/admin" className="text-blue-600">
+            <span className="flex gap-1">
+              <TiHome className="mt-0.5" /> Dashboard
+            </span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />Manajemen Tim
         </div>
 
         {/* Manajemen User Bang */}
