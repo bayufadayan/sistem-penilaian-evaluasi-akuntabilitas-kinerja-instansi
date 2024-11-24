@@ -70,8 +70,7 @@ export const authOptions: AuthOptions = {
 
       token.exp = token.rememberMe
         ? Math.floor(Date.now() / 1000) + 90 * 24 * 60 * 60 // 90 hari
-        : // : Math.floor(Date.now() / 1000) + 1 * 24 * 60 * 60; // 1 hari
-          Math.floor(Date.now() / 1000) + 10; // 10 detik
+        : Math.floor(Date.now() / 1000) + 1 * 24 * 60 * 60; // 1 hari
 
       console.log("JWT Callback - Token after:", token);
       return token;
@@ -92,8 +91,5 @@ export const authOptions: AuthOptions = {
   },
 };
 
-export default NextAuth(authOptions);
-
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

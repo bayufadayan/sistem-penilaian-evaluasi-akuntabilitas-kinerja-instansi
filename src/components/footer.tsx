@@ -6,7 +6,7 @@ export default function Footer() {
     <footer>
       <div className={styles.footerContainer}>
         <div className={styles.footerLogo}>
-          <Image src="images/footer-logo.svg" alt="logo instansi" width={136} height={33}/>
+          <Image src="/images/footer-logo.svg" alt="logo instansi" width={136} height={33}/>
         </div>
 
         <div className={styles.copyright}>BPMSPH &copy; 2024. All right reserved</div>

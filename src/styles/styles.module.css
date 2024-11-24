@@ -274,20 +274,26 @@
   border: 1.5px solid;
   padding: 15px 0px;
   font-weight: 700;
-  text-align: center;
+  /* text-align: center; */
   margin-bottom: 4px;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  gap: 5px;
 }
 
 .dateContainer p {
   display: flex;
   gap: 4px;
-  font-size: 18px;
+  font-size: 16px;
   justify-content: center;
-  align-items: center;  
+  align-items: center;
+  max-width: 90%;
 }
 
+.dateContainer p svg{
+  height: 18px;
+  align-self: flex-start;
+}
 
 .summarySection p {
   font-size: small;

@@ -1,4 +1,5 @@
 "use client";
+import "@/app/globals.css";
 import { Inter } from "next/font/google";
 import styles from "@/styles/styles.module.css";
 import { useEffect, useState, createContext, useContext } from "react";
@@ -60,7 +61,9 @@ export default function RootLayout({
 
   if (!evaluation) {
     return (
-      <div className={`${inter.className} h-screen flex items-center justify-center`}>
+      <div
+        className={`${inter.className} h-screen flex items-center justify-center`}
+      >
         <div className="block max-w-sm p-5 bg-white border border-gray-200 rounded-lg shadow mb-8">
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 flex justify-center items-center gap-3">
             <svg
@@ -92,17 +95,17 @@ export default function RootLayout({
   const evaluationDesc = evaluation.description;
 
   return (
-      <DataContext.Provider
-        value={{ myComponents, evaluationName, evaluationId, evaluationDesc }}
-      >
-        <main className={`${styles.mainContainer} ${styles.lkeFilling}`}>
-          <SidebarUser
-            components={evaluation.components}
-            evaluationTitle={evaluation.title}
-            evaluationId={evaluation.id}
-          />
-          {children}
-        </main>
-      </DataContext.Provider>
+    <DataContext.Provider
+      value={{ myComponents, evaluationName, evaluationId, evaluationDesc }}
+    >
+      <main className={`${styles.mainContainer} ${styles.lkeFilling}`}>
+        <SidebarUser
+          components={evaluation.components}
+          evaluationTitle={evaluation.title}
+          evaluationId={evaluation.id}
+        />
+        {children}
+      </main>
+    </DataContext.Provider>
   );
 }

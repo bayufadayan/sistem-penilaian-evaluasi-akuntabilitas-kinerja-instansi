@@ -1,7 +1,8 @@
 "use client";
 import { SessionProvider } from "next-auth/react";
-import "./globals.css";
+import NextTopLoader from "nextjs-toploader";
 import { Epilogue } from "next/font/google";
+import "./globals.css";
 
 const epilogue = Epilogue({ subsets: ["latin"] });
 
@@ -13,7 +14,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={epilogue.className}>
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <NextTopLoader showSpinner={false} />
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

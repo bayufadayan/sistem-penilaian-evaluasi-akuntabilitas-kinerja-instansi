@@ -1,11 +1,7 @@
 // import type { Metadata } from "next";
 "use client";
-import "../globals.css";
 import AdminNavbar from "./components/adminNavbar";
 import AdminSidebar from "./components/adminSidebar";
-import { Epilogue } from "next/font/google";
-
-const epilogue = Epilogue({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -19,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={epilogue.className}>
+      <body>
           <AdminNavbar />
           <AdminSidebar />
 

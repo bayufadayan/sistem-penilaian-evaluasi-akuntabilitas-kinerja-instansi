@@ -4,7 +4,7 @@ import type React from "react";
 import { prisma } from "@/lib/prisma";
 import styles from "@/styles/styles.module.css";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState} from "react";
 import { useSession } from "next-auth/react";
 import { uploadFileToSupabase, supabase } from "@/lib/supabaseClient";
 import { IoIosArrowForward } from "react-icons/io";
@@ -65,6 +65,14 @@ export default function ScoreInputPage({
   const [componentScore, setComponentScore] = useState<number | null>(null);
 
   const { data: session } = useSession();
+
+  useEffect(() => {
+    if (score !== initialScore || notes !== initialNotes) {
+      setHasChanges(true);
+    } else {
+      setHasChanges(false);
+    }
+  }, [score, notes, initialScore, initialNotes]);
 
   useEffect(() => {
     const fetchEvaluationSheet = async () => {
@@ -261,14 +269,6 @@ export default function ScoreInputPage({
   }, [selectedCriterion]);
 
   useEffect(() => {
-    if (score !== initialScore || notes !== initialNotes) {
-      setHasChanges(true);
-    } else {
-      setHasChanges(false);
-    }
-  }, [score, notes, initialScore, initialNotes]);
-
-  useEffect(() => {
     if (selectedCriterion) {
       setLastSelectedCriterionId(selectedCriterion.id);
     }
@@ -458,12 +458,16 @@ export default function ScoreInputPage({
 
   // Variabel Hasil Skor
   if (subComponent) {
-    nilaiAvgOlah = Number.parseFloat(calculatenilaiAvgOlah(subComponent).toFixed(2));
+    nilaiAvgOlah = Number.parseFloat(
+      calculatenilaiAvgOlah(subComponent).toFixed(2)
+    );
     percentage = Number.parseFloat(
       calculatePercentage(nilaiAvgOlah, subComponent.weight).toFixed(2)
     );
     grade = calculateGrade(percentage);
-    nilai = Number.parseFloat(calculateNilai(grade, subComponent.weight).toFixed(2));
+    nilai = Number.parseFloat(
+      calculateNilai(grade, subComponent.weight).toFixed(2)
+    );
   } else {
     console.error("SubComponent tidak ditemukan");
   }
@@ -512,11 +516,14 @@ export default function ScoreInputPage({
 
   // Nilai Component
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    const updateComponentScore = useCallback(async (componentId: number) => {
+  const updateComponentScore = useCallback(async (componentId: number) => {
     try {
-      const response = await axios.patch(`/api/calculateScore/componentscore/${componentId}`, {
-        nilai: await calculateComponentScore(componentId),
-      });
+      const response = await axios.patch(
+        `/api/calculateScore/componentscore/${componentId}`,
+        {
+          nilai: await calculateComponentScore(componentId),
+        }
+      );
 
       if (response.status === 200) {
         setComponentScore(response.data.nilai);
@@ -537,14 +544,13 @@ export default function ScoreInputPage({
     try {
       const response = await axios.get(`/api/components/${componentId}`);
       const componentScore = response.data.componentScore;
-  
+
       return componentScore;
     } catch (error) {
       console.error("Error calculating component score:", error);
       return 0;
     }
   };
-  
 
   useEffect(() => {
     if (subComponent?.component) {
