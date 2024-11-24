@@ -2,8 +2,6 @@ import React from "react";
 import Link from "next/link";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
-import { FiMoreHorizontal } from "react-icons/fi";
-import { FiExternalLink } from "react-icons/fi";
 import ScoreTable from "./scoreTable";
 
 export default function ScoreManagementPage() {

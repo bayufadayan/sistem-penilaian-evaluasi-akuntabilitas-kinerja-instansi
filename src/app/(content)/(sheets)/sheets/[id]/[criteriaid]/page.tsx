@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import type React from "react";
-import { prisma } from "@/lib/prisma";
 import styles from "@/styles/styles.module.css";
 import axios from "axios";
 import { useCallback, useEffect, useState} from "react";

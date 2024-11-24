@@ -110,6 +110,7 @@ export default function DeleteAccount({ user }: { user: User }) {
                 >
                   <svg
                     aria-hidden="true"
+                    // biome-ignore lint/a11y/useSemanticElements: <explanation>
                     role="status"
                     className="inline w-4 h-4 me-3 text-white animate-spin"
                     viewBox="0 0 100 101"

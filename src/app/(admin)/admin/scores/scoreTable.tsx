@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FiExternalLink, FiMoreHorizontal } from "react-icons/fi";
+import { FiExternalLink } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import TableRow from "./tableRow";
 
@@ -38,11 +38,16 @@ export default function ScoreTable() {
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const fetchScores = async (
-        page: number = 1,
-        limit: number = 10,
-        query: string = ""
-    ) => {
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            fetchScores(pagination.currentPage, pagination.pageSize, searchQuery);
+        }, 500); // Debounce pencarian selama 500ms
+
+        return () => clearTimeout(timeout);
+    }, [searchQuery, pagination.currentPage, pagination.pageSize]);
+
+    // Tambahkan default pada parameter agar lebih efisien
+    const fetchScores = async (page = 1, limit = 10, query = "") => {
         setLoading(true);
         try {
             const response = await fetch(
@@ -51,22 +56,14 @@ export default function ScoreTable() {
                 )}`
             );
             const result = await response.json();
-            setScores(result.data);
-            setPagination(result.pagination);
+            setScores(result.data); // Hindari pemberian type annotation berlebih
+            setPagination(result.pagination); // Type diambil otomatis dari inisialisasi
         } catch (error) {
             console.error("Error fetching scores:", error);
         } finally {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            fetchScores(pagination.currentPage, pagination.pageSize, searchQuery);
-        }, 500);
-
-        return () => clearTimeout(timeout);
-    }, [searchQuery, pagination.currentPage]);
 
     const handlePageChange = (newPage: number) => {
         setPagination((prev) => ({ ...prev, currentPage: newPage }));
@@ -98,6 +95,7 @@ export default function ScoreTable() {
         return (
             <div className="flex items-center justify-center gap-2">
                 <button
+                    type="button"
                     disabled={currentPage === 1}
                     onClick={() => handlePageChange(currentPage - 1)}
                     className="px-3 py-2 bg-gray-200 rounded disabled:opacity-50"
@@ -107,6 +105,8 @@ export default function ScoreTable() {
                 {pageNumbers.map((page, index) =>
                     typeof page === "number" ? (
                         <button
+                            type="button"
+                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                             key={index}
                             onClick={() => handlePageChange(page)}
                             className={`px-3 py-2 rounded ${page === currentPage ? "bg-blue-500 text-white" : "bg-gray-200"
@@ -115,12 +115,14 @@ export default function ScoreTable() {
                             {page}
                         </button>
                     ) : (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                         <span key={index} className="px-3 py-2">
                             {page}
                         </span>
                     )
                 )}
                 <button
+                    type="button"
                     disabled={currentPage === totalPages}
                     onClick={() => handlePageChange(currentPage + 1)}
                     className="px-3 py-2 bg-gray-200 rounded disabled:opacity-50"
@@ -128,6 +130,15 @@ export default function ScoreTable() {
                     Selanjutnya
                 </button>
             </div>
+        );
+    };
+
+    const handleScoreUpdate = (updatedScore: Score) => {
+        fetchScores();
+        setScores((prevScores) =>
+            prevScores.map((score) =>
+                score.id === updatedScore.id ? { ...score, ...updatedScore } : score
+            )
         );
     };
 
@@ -180,12 +191,26 @@ export default function ScoreTable() {
                                         <td className="text-center pe-2">
                                             {new Date(score.created_at).toLocaleDateString("id-ID")}
                                         </td>
-                                        <td className="text-blue-500">
+                                        <td className={`${score.score !== '' ? "text-black" : "text-red-500 transition-colors duration-300 animate-pulse"} py-2`}>
                                             {score.criteria?.name || "-"}
                                         </td>
                                         <td className="text-center">{score.evidence_count}</td>
-                                        <td className="text-center">{score.score}</td>
-                                        <TableRow score={score} />
+                                        <td className="text-center">
+                                            <span
+                                                className={`p-2 rounded-lg text-white font-bold ${Number(score.score) >= 80
+                                                    ? "bg-green-600"
+                                                    : Number(score.score) >= 50
+                                                        ? "bg-yellow-600"
+                                                        : score.score === ''
+                                                            ? "bg-gray-600" :
+                                                            "bg-red-600"
+                                                    }`}
+                                            >
+                                                {score.score !== "" ? score.score : 'N/A'}
+                                            </span>
+
+                                        </td>
+                                        <TableRow score={score} onScoreUpdate={handleScoreUpdate} />
                                     </tr>
                                 ))
                             ) : (

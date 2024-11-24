@@ -6,6 +6,7 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoMdArrowBack } from "react-icons/io";
 import { FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import { LuRefreshCcw } from "react-icons/lu";
 
 export default function AdminNavbar() {
   const router = useRouter();
@@ -16,9 +17,6 @@ export default function AdminNavbar() {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // const handleBackButton = () => {
-
-  // }
 
   return (
     <header className="fixed top-0 left-64 w-[calc(100%-16rem)] h-16 bg-white border-b border-gray-200 z-50 flex items-center justify-between px-4">
@@ -27,11 +25,19 @@ export default function AdminNavbar() {
       <div className="flex items-center gap-1">
         <button
           type="button"
-          className="btn -ml-3 bg-transparent p-2 border-none shadow-none hover:shadow-md hover:bg-slate-200"
+          className="btn -ml-3 mr-2 bg-transparent p-2 border-none shadow-none hover:shadow-md hover:bg-slate-200"
           onClick={() => router.back()}
         >
           <IoMdArrowBack className="text-3xl" />
         </button>
+        <button
+          type="button"
+          className="btn -ml-3 mr-2 bg-transparent p-2 border-none shadow-none hover:shadow-md hover:bg-slate-200"
+          onClick={() => document.location.reload()}
+        >
+          <LuRefreshCcw className="text-2xl font-bold" />
+        </button>
+        
         <div className="relative">
           <div className="absolute flex items-center h-full left-2 opacity-40 text-slate-600 active:text-black">
             <FiSearch className="text-2xl font-black" />
@@ -95,6 +101,7 @@ export default function AdminNavbar() {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
               <ul className="py-1">
+                {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
                 <li
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
