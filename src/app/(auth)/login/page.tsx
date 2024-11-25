@@ -186,7 +186,7 @@ const LoginPage: FC = () => {
                   </div>
 
                   <span>
-                    <a href="/" className="hover:text-blue-800">
+                    <a href="/forgot-password" className="hover:text-blue-800">
                       Lupa Password
                     </a>
                     <svg

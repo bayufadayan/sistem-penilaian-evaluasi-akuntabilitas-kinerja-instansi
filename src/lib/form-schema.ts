@@ -76,3 +76,9 @@ export const criteriaSchema = z.object({
     required_error: "ID Sub-komponen wajib diisi",
   }),
 });
+
+export const resetPasswordSchema = z.object({
+  password: z
+    .string({ required_error: "Password wajib diisi" })
+    .min(8, { message: "Password harus terdiri dari minimal 8 karakter" }),
+});

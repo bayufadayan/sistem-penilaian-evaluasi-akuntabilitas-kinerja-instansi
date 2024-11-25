@@ -3,6 +3,7 @@ import { type SyntheticEvent, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import type { Team } from "@prisma/client";
+import Link from "next/link";
 
 
 const fetchTeams = async () => {
@@ -190,13 +191,22 @@ export default function UpdateAccountPage({
               >
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                className="input input-bordered w-full disabled"
-                placeholder="Tidak Dapat merubah password secara instan"
-                disabled
-              />
+              <div className="flex gap-4 items-center">
+                <input
+                  type="password"
+                  id="password"
+                  className="input input-bordered flex-1 w-full p-3 rounded-md border border-gray-300 bg-gray-100 text-gray-600"
+                  placeholder="Tidak dapat merubah password secara instan"
+                  disabled
+                />
+                <Link
+                  href="/forgot-password"
+                  className="px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Ubah Password
+                </Link>
+              </div>
+
             </div>
 
             <div className="col-span-1">

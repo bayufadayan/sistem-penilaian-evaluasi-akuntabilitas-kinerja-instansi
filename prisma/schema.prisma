@@ -49,19 +49,21 @@ model Team {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  password   String
-  nip        BigInt
-  name       String
-  role       Role
-  gender     Gender
-  status     Status
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  id_team    Int
-  team       Team     @relation(fields: [id_team], references: [id], onDelete: Cascade)
-  Score      Score[]
+  id                  Int       @id @default(autoincrement())
+  email               String    @unique
+  password            String
+  nip                 BigInt
+  name                String
+  role                Role
+  gender              Gender
+  status              Status
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+  id_team             Int
+  team                Team      @relation(fields: [id_team], references: [id], onDelete: Cascade)
+  Score               Score[]
+  resetPasswordToken  String?
+  resetPasswordExpire DateTime?
 }
 
 model EvaluationSheet {

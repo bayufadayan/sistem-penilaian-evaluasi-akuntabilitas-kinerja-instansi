@@ -74,8 +74,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) onClose();
+            }}>
+            <div className="flex flex-col bg-white rounded-lg shadow-lg w-full max-w-xl p-6 max-h-[70vh] overflow-y-auto mt-20" >
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Edit Profil</h2>
                 <div className="space-y-4">
 
@@ -90,15 +93,13 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                                 className="w-full p-2 border border-gray-300 rounded-md"
                             />
                             <Link
-
                                 href="/forgot-password"
-                                className="mt-2 px-4 py-2 flex gap-2 items-center justify-center bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                className={`${userDetails.gender === "FEMALE" ? " bg-pink-600 hover:bg-pink-700 focus:ring-pink-500" : "hover:bg-blue-700 focus:ring-blue-500 bg-blue-600"} mt-2 px-4 py-2 flex gap-2 items-center justify-center text-white rounded-md shadow-md focus:outline-none focus:ring-2  focus:ring-offset-2`}
                             >
                                 <IoKeyOutline />Ubah Password
                             </Link>
                         </div>
                     </div>
-
 
                     <div>
                         <label className="block text-sm font-medium text-gray-600">Nama</label>
@@ -120,7 +121,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
                     </div>
-                    <div>
+                    <div className="hidden">
                         <label className="block text-sm font-medium text-gray-600">Role</label>
                         <select
                             name="role"
@@ -144,18 +145,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                             <option value="FEMALE">Perempuan</option>
                         </select>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-600">Status</label>
-                        <select
-                            name="status"
-                            value={formValues.status}
-                            onChange={handleChange}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        >
-                            <option value="ACTIVE">Aktif</option>
-                            <option value="INACTIVE">Tidak Aktif</option>
-                        </select>
-                    </div>
                 </div>
                 <div className="flex justify-end mt-6 gap-2">
                     <button
@@ -173,6 +162,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 </div>
             </div>
         </div>
+
     );
 };
 

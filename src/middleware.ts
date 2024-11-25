@@ -3,44 +3,60 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
-    const token = await getToken({ req });
-    console.log("Token:", token);
+  const token = await getToken({ req });
+  console.log("Middleware Token:", token);
 
-    const { pathname } = req.nextUrl;
+  const { pathname, searchParams } = req.nextUrl;
 
-    if (pathname === "/login" && token) {
-        return NextResponse.redirect(new URL("/", req.url));
+  // 1. Jika akses ke `/login`:
+  if (pathname === "/login") {
+    if (token) {
+      return NextResponse.redirect(new URL("/", req.url));
     }
-    if (pathname === "/login" && !token) {
-        return NextResponse.next();
-    }
-    if (!token && pathname !== "/login") {
-        const loginUrl = new URL("/login", req.url);
-        return NextResponse.redirect(loginUrl);
-    }
-
-    if (pathname.startsWith("/admin") && token?.role !== "ADMIN") {
-        const homeUrl = new URL("/", req.url);
-        return NextResponse.redirect(homeUrl);
-    }
-
-    if (!token) {
-        const redirectUrl = new URL("/login", req.url);
-        redirectUrl.searchParams.set('callbackUrl', req.url);
-        return NextResponse.redirect(redirectUrl);
-      }
-
     return NextResponse.next();
+  }
+
+  // 2. Jika akses ke `/reset-password`:
+  if (pathname === "/reset-password") {
+    const urlToken = searchParams.get("token");
+    console.log("URL Token:", urlToken);
+
+    // Jika tidak ada token di query parameter, arahkan ke /login
+    if (!urlToken) {
+      const loginUrl = new URL("/login", req.url);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // Jika ada token, biarkan akses lanjut
+    return NextResponse.next();
+  }
+
+  // 3. Untuk semua rute lain selain `/login` dan `/reset-password`:
+  if (!token) {
+    const loginUrl = new URL("/login", req.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // 4. Jika akses ke /admin dan role bukan ADMIN:
+  if (pathname.startsWith("/admin") && token?.role !== "ADMIN") {
+    const homeUrl = new URL("/", req.url);
+    return NextResponse.redirect(homeUrl);
+  }
+
+  // 5. Jika semua syarat terpenuhi, lanjutkan request
+  return NextResponse.next();
 }
 
 export const config = {
-    matcher: [
-        "/login",
-        "/admin/:path*",
-        "/hasil-sementara",
-        "/panduan",
-        "/riwayat",
-        "/sheets/:path*",
-        "/",
-    ],
+  matcher: [
+    "/login",
+    "/reset-password",
+    "/admin/:path*",
+    "/hasil-sementara",
+    "/panduan",
+    "/riwayat",
+    "/profile",
+    "/sheets/:path*",
+    "/",
+  ],
 };
