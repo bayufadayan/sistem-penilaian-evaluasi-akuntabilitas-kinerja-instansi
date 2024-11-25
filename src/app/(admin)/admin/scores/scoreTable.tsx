@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import TableRow from "./tableRow";
@@ -27,7 +27,7 @@ type Pagination = {
     pageSize: number;
 };
 
-export default function ScoreTable() {
+export default function ScoreTable({ selectedLKE }: { selectedLKE: string | null }) {
     const [scores, setScores] = useState<Score[]>([]);
     const [pagination, setPagination] = useState<Pagination>({
         totalRecords: 0,
@@ -38,32 +38,38 @@ export default function ScoreTable() {
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
+    const fetchScores = useCallback(
+        async (page = 1, limit = 10, query = "") => {
+            setLoading(true);
+            try {
+                // Jika `selectedLKE` kosong, tidak tambahkan filter `evaluationId`
+                const url = `/api/score?page=${page}&limit=${limit}&search=${encodeURIComponent(
+                    query
+                )}${selectedLKE ? `&evaluationId=${selectedLKE}` : ""}`;
+                const response = await fetch(url);
+                const result = await response.json();
+
+                setScores(result.data);
+                setPagination(result.pagination);
+            } catch (error) {
+                console.error("Error fetching scores:", error);
+            } finally {
+                setLoading(false);
+            }
+        },
+        [selectedLKE] // Dependency array
+    );
+
+
     useEffect(() => {
         const timeout = setTimeout(() => {
             fetchScores(pagination.currentPage, pagination.pageSize, searchQuery);
-        }, 500); // Debounce pencarian selama 500ms
+        }, 500);
 
         return () => clearTimeout(timeout);
-    }, [searchQuery, pagination.currentPage, pagination.pageSize]);
+    }, [selectedLKE, searchQuery, pagination.currentPage, pagination.pageSize, fetchScores]);
 
-    // Tambahkan default pada parameter agar lebih efisien
-    const fetchScores = async (page = 1, limit = 10, query = "") => {
-        setLoading(true);
-        try {
-            const response = await fetch(
-                `/api/score?page=${page}&limit=${limit}&search=${encodeURIComponent(
-                    query
-                )}`
-            );
-            const result = await response.json();
-            setScores(result.data); // Hindari pemberian type annotation berlebih
-            setPagination(result.pagination); // Type diambil otomatis dari inisialisasi
-        } catch (error) {
-            console.error("Error fetching scores:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+
 
     const handlePageChange = (newPage: number) => {
         setPagination((prev) => ({ ...prev, currentPage: newPage }));
@@ -191,7 +197,7 @@ export default function ScoreTable() {
                                         <td className="text-center pe-2">
                                             {new Date(score.created_at).toLocaleDateString("id-ID")}
                                         </td>
-                                        <td className={`${score.score !== '' ? "text-black" : "text-red-500 transition-colors duration-300 animate-pulse"} py-2`}>
+                                        <td className={`${score.score !== '' ? "text-black" : "text-red-600 transition-colors duration-300 animate-pulse font-medium"} py-2`}>
                                             {score.criteria?.name || "-"}
                                         </td>
                                         <td className="text-center">{score.evidence_count}</td>

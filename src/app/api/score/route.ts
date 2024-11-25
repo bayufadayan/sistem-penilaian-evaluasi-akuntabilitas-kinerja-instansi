@@ -8,41 +8,63 @@ export const GET = async (request: Request) => {
         const page = Number(url.searchParams.get("page") || 1);
         const limit = Number(url.searchParams.get("limit") || 10);
         const search = url.searchParams.get("search") || "";
+        const evaluationId = url.searchParams.get("evaluationId"); // Get evaluationId from query
         const offset = (page - 1) * limit;
 
-        // Build where condition for search
-        const whereCondition = search
-            ? {
-                  OR: [
-                      {
+        const whereCondition: Prisma.ScoreWhereInput = {
+            AND: [
+                evaluationId
+                    ? {
                           criteria: {
                               is: {
-                                  name: {
+                                  subComponent: {
+                                      is: {
+                                          component: {
+                                              is: {
+                                                  id_LKE: evaluationId, // Filter berdasarkan LKE
+                                              },
+                                          },
+                                      },
+                                  },
+                              },
+                          },
+                      }
+                    : {},
+                search
+                    ? {
+                          OR: [
+                              {
+                                  criteria: {
+                                      is: {
+                                          name: {
+                                              contains: search,
+                                              mode: Prisma.QueryMode.insensitive,
+                                          },
+                                      },
+                                  },
+                              },
+                              {
+                                  user: {
+                                      is: {
+                                          name: {
+                                              contains: search,
+                                              mode: Prisma.QueryMode.insensitive,
+                                          },
+                                      },
+                                  },
+                              },
+                              {
+                                  notes: {
                                       contains: search,
                                       mode: Prisma.QueryMode.insensitive,
                                   },
                               },
-                          },
-                      },
-                      {
-                          user: {
-                              is: {
-                                  name: {
-                                      contains: search,
-                                      mode: Prisma.QueryMode.insensitive,
-                                  },
-                              },
-                          },
-                      },
-                      {
-                          notes: {
-                              contains: search,
-                              mode: Prisma.QueryMode.insensitive,
-                          },
-                      },
-                  ],
-              }
-            : {};
+                          ],
+                      }
+                    : {},
+            ],
+        };
+        
 
         // Fetch scores with evidence count
         const scores = await prisma.score.findMany({
@@ -60,6 +82,7 @@ export const GET = async (request: Request) => {
                     select: {
                         id: true,
                         name: true,
+                        email: true, // Include user email
                     },
                 },
                 _count: {

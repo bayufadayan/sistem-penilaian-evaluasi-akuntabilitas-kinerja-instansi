@@ -7,35 +7,22 @@ export default function EditScoreModal({
     onClose,
     onSuccess,
     onDelete,
+    evidenceData,
+    onAddEvidence,
+    onDeleteEvidence,
 }: {
     score: { id: number; score: string; notes: string };
     onClose: () => void;
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     onSuccess: (updatedScore: any) => void;
     onDelete: () => void;
+    evidenceData: any[];
+    onAddEvidence: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+    onDeleteEvidence: (evidenceId: number) => void;
 }) {
     const [newScore, setNewScore] = useState(score.score || "");
     const [newNotes, setNewNotes] = useState(score.notes || "");
+    const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [file, setFile] = useState<File | null>(null);
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) setFile(e.target.files[0]);
-    };
-
-    const handleUpload = async () => {
-        if (!file) return;
-
-        try {
-            const formData = new FormData();
-            formData.append("file", file);
-            await axios.post(`/api/evidence/${score.id}`, formData);
-            alert("Evidence uploaded successfully!");
-        } catch (error) {
-            console.error("Error uploading evidence:", error);
-            alert("Failed to upload evidence.");
-        }
-    };
 
     const handleUpdate = async () => {
         setIsLoading(true);
@@ -55,24 +42,18 @@ export default function EditScoreModal({
     };
 
     return (
-        // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
         <div
-            className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 z-50"
+            className="fixed inset-0 flex items-center justify-center pl-40 gap-5 bg-gray-700 bg-opacity-50 z-50 transition-opacity duration-300 ease-in-out"
             onClick={(e) => {
                 if (e.target === e.currentTarget) onClose();
             }}
         >
-            <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-                <h2 className="text-lg font-bold mb-4 text-left">Edit Score</h2>{" "}
-                {/* Judul rata kiri */}
+            <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full transform transition-transform duration-300 ease-in-out">
+                <h2 className="text-lg font-bold mb-4 text-left">Edit Score</h2>
                 {/* Input Score */}
                 <div className="mb-4">
-                    <label
-                        className="text-sm font-medium mb-2 text-left flex justify-between"
-                        htmlFor=""
-                    >
+                    <label className="text-sm font-medium mb-2 text-left flex justify-between">
                         <span className="text-gray-700">Nilai</span>
-                        {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
                         <span
                             className="text-red-600 cursor-pointer hover:bg-red-500 hover:text-white px-2 rounded"
                             onClick={onDelete}
@@ -95,10 +76,10 @@ export default function EditScoreModal({
                                 <label
                                     htmlFor={`score${value}`}
                                     className={`${Number(value) >= 80
-                                            ? "peer-checked:bg-green-600 hover:bg-green-200 hover:text-green-800"
-                                            : Number(value) >= 50
-                                                ? "peer-checked:bg-yellow-600 hover:bg-yellow-200 hover:text-yellow-800"
-                                                : "peer-checked:bg-red-600 hover:bg-red-200 hover:text-red-800"
+                                        ? "peer-checked:bg-green-600 hover:bg-green-200 hover:text-green-800"
+                                        : Number(value) >= 50
+                                            ? "peer-checked:bg-yellow-600 hover:bg-yellow-200 hover:text-yellow-800"
+                                            : "peer-checked:bg-red-600 hover:bg-red-200 hover:text-red-800"
                                         } peer-checked:text-white px-4 py-2 rounded-lg border border-gray-300 text-center cursor-pointer block`}
                                 >
                                     {value}
@@ -118,35 +99,38 @@ export default function EditScoreModal({
                     <textarea
                         id="notes"
                         name="notes"
+                        placeholder="Catatan masih kosong, silakan tulis sesuatu"
                         value={newNotes}
                         onChange={(e) => setNewNotes(e.target.value)}
                         className="w-full border border-gray-400 rounded p-2 text-left focus:ring-blue-500 focus:border-blue-500"
                     />
                 </div>
-                {/* Upload Evidence */}
+                {/* Evidence List */}
                 <div className="mb-4">
-                    <label
-                        className="block text-sm font-medium text-gray-700 mb-2 text-left"
-                        htmlFor="evidence"
-                    >
-                        Upload Evidence
+                    <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
+                        Daftar Evidence
                     </label>
-                    <input
-                        id="evidence"
-                        type="file"
-                        onChange={handleFileChange}
-                        className="text-left"
-                    />
-                    <button
-                        type="button"
-                        onClick={handleUpload}
-                        className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg"
-                    >
-                        Upload
-                    </button>
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-600 mb-2 ">
+                            <span className="font-semibold text-3xl">
+                                {
+                                    evidenceData.filter((evidence) => evidence.id_score === score.id)
+                                        .length
+                                } Evidence
+                            </span>
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => setIsEvidenceModalOpen(true)}
+                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+                        >
+                            Lihat Daftar Evidence
+                        </button>
+                    </div>
                 </div>
                 {/* Action Buttons */}
-                <div className="flex justify-end gap-2">
+                <hr className="opacity-50" />
+                <div className="flex justify-end gap-2 mt-5">
                     <button
                         type="button"
                         onClick={onClose}
@@ -164,6 +148,112 @@ export default function EditScoreModal({
                     </button>
                 </div>
             </div>
+            {isEvidenceModalOpen && (
+                <div
+                    className="justify-center right-4 inset-0 flex items-start bg-opacity-50 z-50 transform transition-transform duration-300 ease-in-out"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) setIsEvidenceModalOpen(false);
+                    }}
+                >
+                    <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+                        <div className="flex justify-between items-center pb-2 gap-3">
+                            <h2 className="text-xl font-bold text-left text-black">
+                                Daftar Evidence
+                            </h2>
+                            <input
+                                id="hiddenFileInput"
+                                type="file"
+                                style={{ display: "none" }}
+                                onChange={onAddEvidence}
+                            />
+
+                            <button
+                                type="button"
+                                onClick={() => document.getElementById("hiddenFileInput")?.click()}
+                                className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 active:scale-95 active:shadow-inner transition-transform duration-150"
+                            >
+                                {isLoading ? "Loading" : "+ Tambah Evidence"}
+                            </button>
+                        </div>
+                        <div className="mt-4">
+                            {(() => {
+                                const filteredEvidence = evidenceData.filter(
+                                    (evidence) => evidence.id_score === score.id
+                                );
+
+                                if (filteredEvidence.length > 0) {
+                                    return filteredEvidence.map((evidence) => (
+                                        <div
+                                            key={evidence.id}
+                                            className="flex justify-between items-center bg-gray-100 p-3 rounded-md shadow mb-3 gap-2"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 bg-blue-100 flex items-center justify-center rounded">
+                                                    {/* Ikon file berdasarkan tipe */}
+                                                    <svg
+                                                        className="w-6 h-6 text-blue-600"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M3 3h18M9 3v18M15 3v18"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                <div className="flex flex-col text-left">
+                                                    <a
+                                                        href={evidence.public_path}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-600 hover:underline font-semibold truncate block max-w-[250px] overflow-hidden"
+                                                        title={evidence.file_name}
+                                                    >
+                                                        {evidence.file_name}
+                                                    </a>
+
+                                                    <p className="text-sm text-gray-500">
+                                                        {(evidence.file_size / 1024).toFixed(2)} KB
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => onDeleteEvidence(evidence.id)}
+                                                className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors duration-150"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </div>
+                                    ));
+                                } else {
+                                    return (
+                                        <p className="text-gray-500 text-sm text-center">
+                                            Tidak ada evidence yang tersedia.
+                                        </p>
+                                    );
+                                }
+                            })()}
+                        </div>
+
+
+
+                        <div className="flex justify-end gap-2 mt-4">
+                            <button
+                                type="button"
+                                onClick={() => setIsEvidenceModalOpen(false)}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

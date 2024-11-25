@@ -86,17 +86,19 @@ export default function Home() {
             <p>Tidak ada LKE ditemukan</p>
           </div>
         ) : (
-          completedSheets.map((sheet) => (
-            <div className={styles.evaluationCardSection} key={sheet.id}>
+          <div className={styles.evaluationCardSection}>
+            {completedSheets.map((sheet) => (
               <AkipCard
+                key={sheet.id}
                 title={sheet.title}
                 startDate={sheet.date_start}
                 endDate={sheet.date_finish}
                 url={`/sheets/${sheet.id}`}
               />
-            </div>
-          ))
+            ))}
+          </div>
         )}
+
       </div>
       <div className={styles.summaryCard}>
         <div className={styles.title}>
@@ -123,11 +125,10 @@ export default function Home() {
         <div className={`${styles.deadlineSection} flex`}>
           <p>Deadline Pengisian LKE</p>
           <div
-            className={`${styles.dateContainer} ${
-              daysRemaining !== null && daysRemaining <= 10
+            className={`${styles.dateContainer} ${daysRemaining !== null && daysRemaining <= 10
                 ? "text-red-900 bg-red-200 border-red-900"
                 : "text-green-900 bg-green-200 border-green-900"
-            }`}
+              }`}
           >
             <p>
               <svg
@@ -167,11 +168,10 @@ export default function Home() {
             </p>
           </div>
           <div
-            className={`${styles.reminderContainer} ${
-              daysRemaining !== null && daysRemaining <= 10
+            className={`${styles.reminderContainer} ${daysRemaining !== null && daysRemaining <= 10
                 ? "text-red-900"
                 : "text-green-900"
-            }`}
+              }`}
           >
             <p>
               <svg

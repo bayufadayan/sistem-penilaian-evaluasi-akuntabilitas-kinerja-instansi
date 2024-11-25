@@ -8,6 +8,11 @@ import { IoMdClose } from "react-icons/io";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import EditScoreModal from "./editScoreModal";
+import { uploadFileToSupabase, supabase } from "@/lib/supabaseClient";
+import DetailModal from "./detailModal";
+import axios from "axios";
+
+import type { Evidence } from "@prisma/client";
 
 export const PATCH = async (
     request: Request,
@@ -53,10 +58,15 @@ export default function TableRow({ score,
     const [isModalOpen, setIsModalOpen] = useState(false);
     const submenuRef = useRef<HTMLDivElement>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [evidenceData, setEvidenceData] = useState<Evidence[]>([]);
+    const [, setFile] = useState<File | null>(null);
+    const [notification, setNotification] = useState<{ type: string; message: string } | null>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [details, setDetails] = useState(null);
     const router = useRouter();
 
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const handleEditSuccess = async(updatedScore: any) => {
+    const handleEditSuccess = async (updatedScore: any) => {
         try {
             // Fetch data lengkap untuk score yang baru saja di-update
             const response = await fetch(`/api/score/${updatedScore.id}`);
@@ -75,6 +85,19 @@ export default function TableRow({ score,
     const toggleSubmenu = () => {
         setIsSubmenuOpen(!isSubmenuOpen);
     };
+
+    const fetchEvidence = useCallback(async () => {
+        try {
+            const response = await axios.get("/api/evidence");
+            setEvidenceData(response.data.evidence);
+        } catch (error) {
+            console.error("Error fetching evidence:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchEvidence();
+    }, [fetchEvidence]);
 
     const closeSubmenu = useCallback((e: MouseEvent) => {
         if (submenuRef.current && !submenuRef.current.contains(e.target as Node)) {
@@ -133,6 +156,72 @@ export default function TableRow({ score,
         }
     };
 
+    const handleUpload = async (selectedFile: File) => {
+        setIsLoading(true);
+        try {
+            // Unggah file ke Supabase
+            const data = await uploadFileToSupabase(selectedFile);
+            if (data) {
+                const fileName = selectedFile.name;
+                const fileType = selectedFile.type;
+                const fileSize = selectedFile.size;
+                const filePath = data.path;
+                const dateUploadedAt = new Date().toISOString();
+
+                // Dapatkan public URL dari Supabase
+                const { data: publicData } = supabase.storage
+                    .from("evidence")
+                    .getPublicUrl(filePath);
+
+                const publicUrl = publicData?.publicUrl || "";
+
+                // Metadata evidence
+                const newEvidence = {
+                    file_name: fileName,
+                    file_type: fileType,
+                    file_size: fileSize,
+                    file_path: filePath,
+                    public_path: publicUrl,
+                    date_uploaded_at: dateUploadedAt,
+                    id_score: score.id,
+                };
+
+                // Simpan metadata ke database
+                await axios.post("/api/evidence", newEvidence);
+
+                // Refresh daftar evidence
+                fetchEvidence();
+
+                // Notifikasi sukses
+                setNotification({ type: "success", message: "File berhasil diunggah!" });
+            }
+        } catch (error) {
+            // Notifikasi error
+            setNotification({ type: "error", message: `Gagal mengunggah file. Coba lagi. ${error}` });
+        } finally {
+            setIsLoading(false);
+            setTimeout(() => setNotification(null), 3000);
+        }
+    };
+
+    const fetchDetails = async () => {
+        try {
+            const response = await fetch(`/api/score/${score.id}/detail`);
+            const result = await response.json();
+            if (response.ok) {
+                setDetails(result);
+                setIsDetailModalOpen(true);
+            } else {
+                console.error("Failed to fetch details:", result.error);
+            }
+        } catch (error) {
+            console.error("Error fetching details:", error);
+        }
+    };
+
+
+
+
 
     return (
         <td className="text-right relative">
@@ -154,7 +243,7 @@ export default function TableRow({ score,
                         <li>
                             <button
                                 type="button"
-                                onClick={() => alert(`Detail for ${score.id}`)}
+                                onClick={fetchDetails}
                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                             >
                                 <span className="flex items-center gap-2">
@@ -181,8 +270,22 @@ export default function TableRow({ score,
                                     onClose={() => setIsEditModalOpen(false)}
                                     onSuccess={handleEditSuccess}
                                     onDelete={handleDeleteScore}
+                                    evidenceData={evidenceData}
+                                    onAddEvidence={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        const selectedFile = event.target.files?.[0] || null;
+                                        setFile(selectedFile);
+
+                                        if (selectedFile) {
+                                            await handleUpload(selectedFile);
+                                        }
+                                    }}
+                                    onDeleteEvidence={(evidenceId) => {
+                                        console.log("Deleting evidence:", evidenceId);
+                                    }}
                                 />
+
                             )}
+
                         </li>
                         <li>
                             <button
@@ -298,6 +401,26 @@ export default function TableRow({ score,
                         </div>
                     </div>
                 </div>
+            )}
+
+            {notification && (
+                <div
+                    className={`fixed top-4 right-4 px-4 py-2 rounded shadow-lg z-50 transition-transform duration-300 ${notification.type === "success"
+                        ? "bg-green-500 text-white"
+                        : "bg-red-500 text-white"
+                        }`}
+                >
+                    {notification.message}
+                </div>
+            )}
+
+
+            {isDetailModalOpen && details && (
+                <DetailModal
+                    details={details}
+                    onClose={() => setIsDetailModalOpen(false)}
+                    isLoading={isLoading}
+                />
             )}
 
         </td>
