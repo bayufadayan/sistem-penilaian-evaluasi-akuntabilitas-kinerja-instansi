@@ -169,3 +169,17 @@ model EvaluationSheetScore {
   id_LKE     String
   evaluation EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
 }
+
+model Settings {
+  id               Int      @id @default(autoincrement())
+  appName          String
+  appLogoLogin     String
+  appLogoDashboard String
+  favicon          String
+  adminEmail       String
+  adminMailPass    String
+  adminPhone       String
+  guideLink        String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}

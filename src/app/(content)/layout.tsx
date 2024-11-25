@@ -26,9 +26,9 @@ export default function RootLayout({
 
         <div>{children}</div>
 
-        <div className="ml-72">
-          <Footer />
-        </div>
+
+        <Footer />
+
       </body>
     </html>
   );

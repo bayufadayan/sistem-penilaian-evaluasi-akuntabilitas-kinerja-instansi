@@ -132,7 +132,7 @@ export default function AdminSidebar() {
               </h3>
               <li>
                 <Link
-                  href="/admin/accounts"
+                  href="/admin/settings"
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <IoSettingsOutline className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
@@ -141,11 +141,11 @@ export default function AdminSidebar() {
               </li>
               <li>
                 <Link
-                  href="/admin/teams/"
+                  href="/admin/myprofile/"
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <MdOutlineManageAccounts className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                  <span className="ml-3">Akun</span>
+                  <span className="ml-3">Akun Saya</span>
                 </Link>
               </li>
               {/* <hr className="opacity-20" /> */}
@@ -154,7 +154,7 @@ export default function AdminSidebar() {
                 onClick={() => signOut()}
               >
                 <VscSignOut className="w-6 h-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
-                <span className="ml-2 mt-1">Keluar</span>
+                <span className="ml-3 mt-1">Keluar</span>
               </li>
             </ul>
           </div>

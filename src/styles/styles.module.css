@@ -57,11 +57,9 @@
   font-size: medium;
 }
 
-.heroImage{
-  background: var(
-    --Primary-Gradient,
-    linear-gradient(104deg, #01499f 0%, #1c73db 100%)
-  );
+.heroImage {
+  background: var(--Primary-Gradient,
+      linear-gradient(104deg, #01499f 0%, #1c73db 100%));
   padding: 0px 100px;
   height: 100%;
   overflow: hidden;
@@ -127,7 +125,7 @@
   flex-wrap: wrap;
 }
 
-.evaluationCardContainer h4{
+.evaluationCardContainer h4 {
   font-weight: 700;
 }
 
@@ -240,10 +238,8 @@
   padding: 15px 10px;
   font-weight: 600;
   border-radius: 10px;
-  background: var(
-    --Primary-Gradient,
-    linear-gradient(104deg, #01499f 0%, #1c73db 100%)
-  );
+  background: var(--Primary-Gradient,
+      linear-gradient(104deg, #01499f 0%, #1c73db 100%));
   border: none;
   color: white;
   font-size: 15px;
@@ -262,7 +258,7 @@
   align-items: center;
 }
 
-.reminderContainer p{
+.reminderContainer p {
   display: flex;
   justify-content: center;
   gap: 4px;
@@ -290,7 +286,7 @@
   max-width: 90%;
 }
 
-.dateContainer p svg{
+.dateContainer p svg {
   height: 18px;
   align-self: flex-start;
 }
@@ -309,7 +305,7 @@
   justify-content: space-between;
 }
 
-.tempResult .infomation{
+.tempResult .infomation {
   display: flex;
   flex-direction: column;
   gap: 100px;
@@ -368,13 +364,18 @@
 }
 
 .buttonSection a:nth-child(1) button {
-  background: var(
-    --Primary-Gradient,
-    linear-gradient(104deg, #01499f 0%, #1c73db 100%)
-  );
+  background: var(--Primary-Gradient,
+      linear-gradient(104deg, #01499f 0%, #1c73db 100%));
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.buttonSection a:nth-child(1) button:hover,
+.buttonSection a:nth-child(2) button:hover,
+.progressSection button:hover {
+  transform: scale(0.95);
+  transition: all ease 200ms;
 }
 
 .buttonSection a:nth-child(2) button {
@@ -559,7 +560,7 @@
   /* gap: 8px; */
 }
 
-.lkeContentHeader h1{
+.lkeContentHeader h1 {
   font-weight: 700;
 }
 
@@ -666,7 +667,7 @@
   font-weight: 700;
 }
 
-  /* .theMenu:hover {
+/* .theMenu:hover {
     background-color: #01499f;
     color: #fff;
   } */
@@ -992,7 +993,7 @@
   font-weight: 700;
 }
 
-.criteriaFormContainer form{
+.criteriaFormContainer form {
   margin-top: 28px;
   display: flex;
   flex-direction: column;
@@ -1004,7 +1005,7 @@
   flex-direction: column;
 }
 
-.criteriaFormSubtitle form{
+.criteriaFormSubtitle form {
   font-size: 14px;
   margin-bottom: 10px;
   font-weight: 500;
@@ -1102,7 +1103,7 @@
   transition: transform 300ms ease;
 }
 
-.addNewEvidence:hover{
+.addNewEvidence:hover {
   background-color: #0e55be;
 }
 
@@ -1177,7 +1178,7 @@
   display: flex;
   flex-wrap: wrap;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 .tooltipContainer:hover .tooltipText {

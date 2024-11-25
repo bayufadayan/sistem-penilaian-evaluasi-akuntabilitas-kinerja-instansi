@@ -1,9 +1,9 @@
 import React from "react";
-import "@/styles/styles.module.css"
+import styles from "@/styles/styles.module.css"
 
 export default function HistoryPage() {
   return (
-    <main className="main-container">
+    <main className={styles.mainContainer}>
       <div className="mt-10">HistoryPage</div>
     </main>
   );
