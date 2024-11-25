@@ -1,6 +1,9 @@
 import AdminNavbar from "./components/adminNavbar";
 import AdminSidebar from "./components/adminSidebar";
 import { pageTitles } from "@/lib/pageTitles";
+import { Epilogue } from "next/font/google";
+
+const epilogue = Epilogue({ subsets: ["latin"] });
 
 export async function generateMetadata() {
   const title = await pageTitles.admin();
@@ -17,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={epilogue.className}>
           <AdminNavbar />
           <AdminSidebar />
 

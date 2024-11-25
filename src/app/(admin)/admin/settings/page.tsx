@@ -43,6 +43,10 @@ const AdminSettingPage = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
 
+    useEffect(() => {
+        document.title = "Pengaturan Aplikasi";
+    });
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setSettings((prev) => ({

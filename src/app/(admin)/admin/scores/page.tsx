@@ -11,7 +11,6 @@ export default function ScoreManagementPage() {
   );
   const [selectedLKE, setSelectedLKE] = useState<string | null>(null);
 
-  // Fetch LKE data
   useEffect(() => {
     const fetchEvaluations = async () => {
       try {
@@ -31,7 +30,9 @@ export default function ScoreManagementPage() {
     setSelectedLKE(value === "" ? null : value);
   };
 
-
+  useEffect(() => {
+    document.title = "Manajemen Nilai";
+  });
 
   return (
     <div>
@@ -62,7 +63,7 @@ export default function ScoreManagementPage() {
               Pilih Lembar Kerja Evaluasi
             </option>
             <option value="">
-              Semua 
+              Semua
             </option>
             {evaluations.map((evaluation) => (
               <option key={evaluation.id} value={evaluation.id}>
@@ -73,7 +74,7 @@ export default function ScoreManagementPage() {
         </form>
       </div>
 
-      <ScoreTable selectedLKE={selectedLKE}/>
+      <ScoreTable selectedLKE={selectedLKE} />
 
     </div>
   );

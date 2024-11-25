@@ -4,7 +4,16 @@ import AdminEditButton from "../../components/buttons/adminEditButton";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
+import { pageTitles } from "@/lib/pageTitles";
 import { prisma } from "@/lib/prisma";
+
+export async function generateMetadata() {
+  const title = await pageTitles.adminAccount();
+  return {
+    title,
+    description: "Mengelola Data Akun user",
+  };
+}
 
 const getUsers = async () => {
   const res = await prisma.user.findMany({

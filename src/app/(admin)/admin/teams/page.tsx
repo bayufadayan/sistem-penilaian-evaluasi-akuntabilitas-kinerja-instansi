@@ -5,6 +5,15 @@ import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { pageTitles } from "@/lib/pageTitles";
+
+export async function generateMetadata() {
+  const title = await pageTitles.adminTeam();
+  return {
+    title,
+    description: "Mengelola Tim",
+  };
+}
 
 const getTeams = async () => {
   const res = await prisma.team.findMany({

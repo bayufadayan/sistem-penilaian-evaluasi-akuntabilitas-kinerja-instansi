@@ -9,6 +9,15 @@ import DeleteEvaluation from "./deleteEvaluation";
 import { FiExternalLink } from "react-icons/fi";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
+import { pageTitles } from "@/lib/pageTitles";
+
+export async function generateMetadata() {
+  const title = await pageTitles.adminLKE();
+  return {
+    title,
+    description: "Membuat Mengatur Lembar Kerja Evaluasi",
+  };
+}
 
 const getEvalSheets = async () => {
   const res = await prisma.evaluationSheet.findMany({

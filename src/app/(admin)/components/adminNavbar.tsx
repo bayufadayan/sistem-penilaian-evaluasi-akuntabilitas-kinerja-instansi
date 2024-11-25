@@ -114,7 +114,7 @@ export default function AdminNavbar() {
                 </li>
 
                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  <a href="/admin/profile">Profile</a>
+                  <a href="/admin/myprofile">Profile</a>
                 </li>
                 {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
                 <li
