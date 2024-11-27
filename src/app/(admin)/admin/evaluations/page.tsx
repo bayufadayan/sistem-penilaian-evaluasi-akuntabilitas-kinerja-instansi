@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 const AdminAddButton = dynamic(() => import("../../components/adminAddButton"), { ssr: false });
 const EditEvaluation = dynamic(() => import("./editEvaluation"), { ssr: false });
 const DeleteEvaluation = dynamic(() => import("./deleteEvaluation"), { ssr: false });
+const GenerateTemplateButton = dynamic(() => import("./generateTemplateButton"), { ssr: false });
 
 export async function generateMetadata() {
   const title = await pageTitles.adminLKE();
@@ -64,16 +65,19 @@ export default async function EvaluationPage() {
       {/* Breadcrumb */}
       <div className="mb-4 text-gray-500 flex gap-1 items-start">
         <Link href="/admin" className="text-blue-600">
-          <span className="flex gap-1"><TiHome className="mt-0.5"/> Dashboard</span>
+          <span className="flex gap-1"><TiHome className="mt-0.5" /> Dashboard</span>
         </Link>
-        <IoIosArrowForward className="h-5 w-5"/>
+        <IoIosArrowForward className="h-5 w-5" />
         <span>Lembar Kerja Evaluasi</span>
       </div>
 
       {/* Manajemen User */}
       <div className="flex justify-between items-center mb-1">
         <h1 className="text-2xl font-semibold mb-4">Manajemen Lembar Kerja Evaluasi</h1>
-        <AdminAddButton props="/admin/evaluations/create/" label="Tambah LKE" />
+        <div className="flex flex-row items-start justify-center">
+          <AdminAddButton props="/admin/evaluations/create/" label="Tambah LKE" />
+          <GenerateTemplateButton />
+        </div>
       </div>
 
       {/* Kumpulan Kartu */}
@@ -112,17 +116,16 @@ export default async function EvaluationPage() {
 
                 <div className="rounded p-1 bg-white font-semibold mt-3 text-center w-2/3">
                   <p
-                    className={`font-medium text-sm ${
-                      evalsheet.status === "COMPLETED"
+                    className={`font-medium text-sm ${evalsheet.status === "COMPLETED"
                         ? "text-green-600"
                         : evalsheet.status === "PENDING"
-                        ? "text-yellow-600"
-                        : evalsheet.status === "IN_PROGRESS"
-                        ? "text-blue-600"
-                        : evalsheet.status === "CANCELLED"
-                        ? "text-red-600"
-                        : "text-gray-900"
-                    }`}
+                          ? "text-yellow-600"
+                          : evalsheet.status === "IN_PROGRESS"
+                            ? "text-blue-600"
+                            : evalsheet.status === "CANCELLED"
+                              ? "text-red-600"
+                              : "text-gray-900"
+                      }`}
                   >
                     Status: {evalsheet.status}
                   </p>
