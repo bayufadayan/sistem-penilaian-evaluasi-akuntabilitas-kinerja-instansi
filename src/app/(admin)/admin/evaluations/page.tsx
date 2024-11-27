@@ -1,15 +1,17 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import AdminAddButton from "../../components/adminAddButton";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { BsCardChecklist } from "react-icons/bs";
-import EditEvaluation from "./editEvaluation";
-import DeleteEvaluation from "./deleteEvaluation";
 import { FiExternalLink } from "react-icons/fi";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import { pageTitles } from "@/lib/pageTitles";
+import dynamic from "next/dynamic";
+
+const AdminAddButton = dynamic(() => import("../../components/adminAddButton"), { ssr: false });
+const EditEvaluation = dynamic(() => import("./editEvaluation"), { ssr: false });
+const DeleteEvaluation = dynamic(() => import("./deleteEvaluation"), { ssr: false });
 
 export async function generateMetadata() {
   const title = await pageTitles.adminLKE();

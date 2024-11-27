@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { EvaluationSheet } from "@prisma/client";
+import {createActivityLog} from "@/lib/activityLog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 const prisma = new PrismaClient();
 
 export const POST = async (request: Request) => {
@@ -18,13 +21,29 @@ export const POST = async (request: Request) => {
 
   const evaluationSheetScore = await prisma.evaluationSheetScore.create({
     data: {
-        nilai: null,
-        grade: null,
-        id_LKE: evaluationSheet.id,
+      nilai: null,
+      grade: null,
+      id_LKE: evaluationSheet.id,
     },
-});
+  });
 
-  return NextResponse.json({evaluationSheet, evaluationSheetScore}, { status: 201 });
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const activityLog = createActivityLog(
+    "LKE AKIP baru dibuat",
+    "User",
+    0,
+    Number(session.user.id)
+  );
+  return NextResponse.json(
+    { evaluationSheet, evaluationSheetScore, activityLog },
+    { status: 201 }
+  );
 };
 
 export const GET = async () => {

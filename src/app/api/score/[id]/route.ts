@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {createActivityLog} from "@/lib/activityLog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const PATCH = async (
   request: Request,
@@ -38,7 +41,21 @@ export const PATCH = async (
       },
     });
 
-    return NextResponse.json(updatedScore, { status: 200 });
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user || !session.user.id) {
+      return NextResponse.json(
+        { message: "User not authenticated" },
+        { status: 401 }
+      );
+    }
+    const activityLog = createActivityLog(
+      "Skor Kriteria diupdate",
+      "Skor",
+      body.id,
+      Number(session.user.id)
+    );
+
+    return NextResponse.json({ updatedScore, activityLog }, { status: 200 });
   } catch (error) {
     console.error("Error updating score:", error);
     return NextResponse.json(

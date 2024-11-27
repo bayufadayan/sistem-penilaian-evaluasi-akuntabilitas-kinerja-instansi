@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { User } from "@prisma/client";
 const prisma = new PrismaClient();
+import {createActivityLog} from "@/lib/activityLog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const GET = async (
   req: NextRequest,
@@ -36,12 +39,20 @@ export const DELETE = async (
       id: Number(params.id),
     },
   });
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const activityLog = createActivityLog("Akun dihapus", "User", user.id, Number(session.user.id))
 
   const serializedUser = {
     ...user,
     nip: user.nip.toString(), 
   };
-  return NextResponse.json(serializedUser, { status: 200 });
+  return NextResponse.json({serializedUser, activityLog}, { status: 200 });
 };
 
 export const PATCH = async (
@@ -63,10 +74,19 @@ export const PATCH = async (
       id_team: body.id_team,
     },
   });
+
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const activityLog = createActivityLog("Akun diperbarui", "User", user.id, Number(session.user.id))
   
   const responseUser = {
     ...user,
     nip: user.nip.toString(),
 };
-return NextResponse.json(responseUser, { status: 201 });
+return NextResponse.json({responseUser, activityLog}, { status: 201 });
 };

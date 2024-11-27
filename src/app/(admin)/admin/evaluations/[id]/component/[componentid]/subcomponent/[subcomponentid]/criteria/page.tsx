@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import AddCriteria from "./addCriterias";
-import DeleteCriteria from "./deleteCriterias";
-import UpdateCriteria from "./updateCriterias";
 import { FiBarChart2 } from "react-icons/fi";
-import UploadExcel from "./uploadExcelCriteria";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
+import dynamic from "next/dynamic";
+
+const AddCriteria = dynamic(() => import("./addCriterias"), { ssr: false });
+const DeleteCriteria = dynamic(() => import("./deleteCriterias"), { ssr: false });
+const UpdateCriteria = dynamic(() => import("./updateCriterias"), { ssr: false });
+const UploadExcel = dynamic(() => import("./uploadExcelCriteria"), { ssr: false });
 
 const getCriteriasBySubComponentId = async (subcomponentid: string) => {
   const res = await prisma.criteria.findMany({

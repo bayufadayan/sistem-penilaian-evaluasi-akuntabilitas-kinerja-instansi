@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
-import ScoreTable from "./scoreTable";
+import dynamic from "next/dynamic";
+
+const ScoreTable = dynamic(() => import("./scoreTable"), { ssr: false });
 
 export default function ScoreManagementPage() {
   const [evaluations, setEvaluations] = useState<{ id: string; title: string }[]>(

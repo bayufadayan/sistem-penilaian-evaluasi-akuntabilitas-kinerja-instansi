@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { Team } from "@prisma/client";
+import {createActivityLog} from "@/lib/activityLog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 const prisma = new PrismaClient();
 
 export const POST = async (request: Request) => {
@@ -11,7 +14,21 @@ export const POST = async (request: Request) => {
     },
   });
 
-  return NextResponse.json(team, { status: 201 });
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const activityLog = createActivityLog(
+    "Tim baru di buat",
+    "User",
+    body.id,
+    Number(session.user.id)
+  );
+
+  return NextResponse.json({team, activityLog}, { status: 201 });
 };
 
 export const GET = async () => {

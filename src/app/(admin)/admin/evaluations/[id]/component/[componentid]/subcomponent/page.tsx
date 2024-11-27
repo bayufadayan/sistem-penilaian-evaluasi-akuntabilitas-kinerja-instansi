@@ -1,16 +1,17 @@
 import React from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { prisma } from "@/lib/prisma";
-import AddSubComponent from "./addSubComponent";
-import UpdateSubComponent from "./updateSubComponent";
-import DeleteSubComponent from "./deleteSubComponent";
-import CriteriaLink from "./criteriaLink";
 import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";
-import UploadExcel from "./uploadExcelSub";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 
-// Ambil sub-komponen berdasarkan `id_component` dari URL
+const AddSubComponent = dynamic(() => import("./addSubComponent"), { ssr: false });
+const UpdateSubComponent = dynamic(() => import("./updateSubComponent"), { ssr: false });
+const DeleteSubComponent = dynamic(() => import("./deleteSubComponent"), { ssr: false });
+const CriteriaLink = dynamic(() => import("./criteriaLink"), { ssr: false });
+const UploadExcel = dynamic(() => import("./uploadExcelSub"), { ssr: false });
+
 const getSubComponentsByComponentId = async (componentId: string) => {
   const res = await prisma.subComponent.findMany({
     where: {

@@ -1,13 +1,15 @@
-import AddComponents from "./addComponents";
-import UpdateComponent from "./updateComponents";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import DeleteComponent from "./deleteComponents";
-import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";
-import SubComponentLink from "./subComponenLink";
-import UploadExcel from "./uploadExcel";
+import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";;
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
+
+const AddComponents = dynamic(() => import("./addComponents"), { ssr: false });
+const UpdateComponent = dynamic(() => import("./updateComponents"), { ssr: false });
+const DeleteComponent = dynamic(() => import("./deleteComponents"), { ssr: false });
+const SubComponentLink = dynamic(() => import("./subComponenLink"), { ssr: false });
+const UploadExcel = dynamic(() => import("./uploadExcel"), { ssr: false });
 
 const getComponents = async (id: string) => {
   const res = await prisma.component.findMany({

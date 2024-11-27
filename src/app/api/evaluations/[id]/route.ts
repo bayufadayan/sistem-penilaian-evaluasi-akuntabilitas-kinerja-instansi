@@ -2,6 +2,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { EvaluationSheet } from "@prisma/client";
+import { createActivityLog } from "@/lib/activityLog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 const prisma = new PrismaClient();
 
 export const GET = async (
@@ -24,7 +27,7 @@ export const GET = async (
                 criteria: {
                   include: {
                     score: true,
-                  }
+                  },
                 },
               },
             },
@@ -59,7 +62,21 @@ export const DELETE = async (
     },
   });
 
-  return NextResponse.json(evaluationSheet, { status: 200 });
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const activityLog = createActivityLog(
+    `{LKE AKIP ${params.id}}`,
+    "Evaluations",
+    0,
+    Number(session.user.id)
+  );
+
+  return NextResponse.json({ evaluationSheet, activityLog }, { status: 200 });
 };
 
 export const PATCH = async (
@@ -81,5 +98,19 @@ export const PATCH = async (
     },
   });
 
-  return NextResponse.json(evaluationSheet, { status: 201 });
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const activityLog = createActivityLog(
+    "LKE AKIP diupdate",
+    "Evaluations",
+    0,
+    Number(session.user.id)
+  );
+
+  return NextResponse.json({ evaluationSheet, activityLog }, { status: 201 });
 };

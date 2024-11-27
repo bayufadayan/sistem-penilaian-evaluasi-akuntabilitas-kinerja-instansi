@@ -59,7 +59,7 @@ export const authOptions: AuthOptions = {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       user?: any;
     }) {
-      console.log("JWT Callback - Token before:", token);
+      
       if (user) {
         token.role = user.role;
         token.id = user.id;
@@ -72,7 +72,6 @@ export const authOptions: AuthOptions = {
         ? Math.floor(Date.now() / 1000) + 90 * 24 * 60 * 60 // 90 hari
         : Math.floor(Date.now() / 1000) + 1 * 24 * 60 * 60; // 1 hari
 
-      console.log("JWT Callback - Token after:", token);
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {

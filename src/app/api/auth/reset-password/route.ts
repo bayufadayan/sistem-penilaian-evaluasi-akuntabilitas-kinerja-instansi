@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import bcrypt from 'bcryptjs';
+import { createActivityLog } from "@/lib/activityLog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import bcrypt from "bcryptjs";
 
 export const POST = async (request: Request) => {
   try {
@@ -31,6 +34,15 @@ export const POST = async (request: Request) => {
         resetPasswordExpire: null,
       },
     });
+
+    const session = await getServerSession(authOptions);
+    const sessionUserId = Number(session?.user?.id) || null;
+    await createActivityLog(
+      "Password Akun diReset",
+      "User",
+      user.id,
+      sessionUserId,
+    );
 
     return NextResponse.json(
       { message: "Password reset successfully." },

@@ -4,17 +4,16 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Seeder Settings (Yang sudah ada sebelumnya)
   await prisma.settings.upsert({
     where: { id: 1 },
     update: {},
     create: {
-      appName: "Eka Prime",
+      appName: "AKIP App",
       appLogoLogin: "/images/logo-login.png",
       appLogoDashboard: "/images/logo-dashboard.png",
       favicon: "/images/favicon.ico",
-      adminEmail: "admin.akip.bpmsph@gmail.com",
-      adminMailPass: "securepassword",
+      adminEmail: "ekaprime.akip.bpmsph@gmail.com",
+      adminMailPass: "lxtwdclvxitqfdhp",
       adminPhone: "85716042693",
       guideLink:
         "https://drive.google.com/file/d/1coCWbbDnbF9qgk_tFUp-cRIrwP_Ko7Os/view?usp=drive_link",
@@ -23,7 +22,6 @@ async function main() {
 
   console.log("Settings seeded.");
 
-  // Seeder Team
   const generalTeam = await prisma.team.upsert({
     where: { name: "General" },
     update: {},
@@ -34,7 +32,6 @@ async function main() {
 
   console.log("Team seeded:", generalTeam);
 
-  // Seeder Users
   const users = [
     {
       email: "admin@gmail.com",

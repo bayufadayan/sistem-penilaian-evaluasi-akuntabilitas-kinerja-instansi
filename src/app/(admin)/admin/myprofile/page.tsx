@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import EditProfileModal from "./editProfileModal";
+
+const EditProfileModal = dynamic(() => import("./editProfileModal"), { ssr: false });
 
 function MyProfilePage() {
   const { data: session } = useSession();

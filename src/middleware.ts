@@ -21,13 +21,11 @@ export async function middleware(req: NextRequest) {
     const urlToken = searchParams.get("token");
     console.log("URL Token:", urlToken);
 
-    // Jika tidak ada token di query parameter, arahkan ke /login
     if (!urlToken) {
       const loginUrl = new URL("/login", req.url);
       return NextResponse.redirect(loginUrl);
     }
 
-    // Jika ada token, biarkan akses lanjut
     return NextResponse.next();
   }
 

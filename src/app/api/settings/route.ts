@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import {createActivityLog} from "@/lib/activityLog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const prisma = new PrismaClient();
 
@@ -56,7 +59,21 @@ export const POST = async (request: Request) => {
       },
     });
 
-    return NextResponse.json(updatedSettings, { status: 200 });
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user || !session.user.id) {
+      return NextResponse.json(
+        { message: "User not authenticated" },
+        { status: 401 }
+      );
+    }
+    const activityLog = createActivityLog(
+      "Pengaturan diupdate",
+      "User",
+      0,
+      Number(session.user.id)
+    );
+
+    return NextResponse.json({updatedSettings, activityLog}, { status: 200 });
   } catch (error) {
     console.error("Failed to save settings:", error);
     return NextResponse.json(

@@ -2,6 +2,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { Component } from "@prisma/client";
+import { createActivityLog } from "@/lib/activityLog";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 const prisma = new PrismaClient();
 
 export const DELETE = async (
@@ -14,7 +17,21 @@ export const DELETE = async (
     },
   });
 
-  return NextResponse.json(component, { status: 200 });
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const activityLog = createActivityLog(
+    "Komponen dihapus",
+    "Components",
+    component.id,
+    Number(session.user.id)
+  );
+
+  return NextResponse.json({ component, activityLog }, { status: 200 });
 };
 
 export const PATCH = async (
@@ -34,7 +51,21 @@ export const PATCH = async (
       id_LKE: body.id_LKE,
     },
   });
-  return NextResponse.json(component, { status: 200 });
+
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json(
+      { message: "User not authenticated" },
+      { status: 401 }
+    );
+  }
+  const activityLog = createActivityLog(
+    "Komponen Diupdate",
+    "User",
+    component.id,
+    Number(session.user.id)
+  );
+  return NextResponse.json({ component, activityLog }, { status: 200 });
 };
 
 export const GET = async (
@@ -58,7 +89,7 @@ export const GET = async (
             subComponentScore: true,
           },
         },
-        componentScore: true, 
+        componentScore: true,
       },
     });
 

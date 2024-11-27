@@ -17,9 +17,14 @@ export default function ResetPasswordPage() {
     const [isPasswordUpdated, setIsPasswordUpdated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [countdown, setCountdown] = useState(5);
+    const [showPassword, setShowPassword] = useState(false);
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
     const router = useRouter();
+
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
+    };
 
     const handleSignOutAndRedirect = useCallback(async () => {
         await signOut({ redirect: false });
@@ -88,13 +93,21 @@ export default function ResetPasswordPage() {
                 {!isPasswordUpdated ? (
                     <>
                         <form onSubmit={handleSubmit}>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter new password"
-                                className="w-full p-2 border rounded mb-4"
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Enter new password"
+                                    className="w-full p-2 border rounded mb-4"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 bottom-5"
+                                >
+                                    {showPassword ? "Hide" : "Show"}
+                                </button>
+                            </div>
                             <button
                                 type="submit"
                                 className="w-full bg-blue-600 text-white py-2 rounded flex justify-center items-center hover:bg-blue-400"

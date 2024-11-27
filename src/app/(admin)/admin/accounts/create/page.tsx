@@ -28,6 +28,7 @@ const UserForm: FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [isEmailNotAvailable, setIsEmailNotAvailable] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -92,14 +93,18 @@ const UserForm: FC = () => {
     }
   }, [isEmailNotAvailable]);
 
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <div>
       {isEmailNotAvailable && (
         <div
           id="toast-danger"
-          className={`fixed right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-lg border border-red-300 transition-all duration-500 ease-in-out transform ${
-            isEmailNotAvailable ? "animate-slideIn" : "animate-slideOut"
-          }`}
+          className={`fixed right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-lg border border-red-300 transition-all duration-500 ease-in-out transform ${isEmailNotAvailable ? "animate-slideIn" : "animate-slideOut"
+            }`}
           role="alert"
         >
           <div className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 text-red-500 bg-red-100 rounded-full shadow-md">
@@ -201,14 +206,23 @@ const UserForm: FC = () => {
             <label htmlFor="password" className="label font-bold">
               Password
             </label>
-            <input
-              {...register("password")}
-              type="password"
-              id="password"
-              className="input input-bordered w-full"
-              placeholder="Enter password"
-              required
-            />
+            <div className="relative">
+              <input
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className="input input-bordered w-full"
+                placeholder="Enter password"
+                required
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-error">{errors.password.message}</p>
             )}
@@ -261,7 +275,7 @@ const UserForm: FC = () => {
               className="select select-bordered w-full"
             >
               <option value="">Select Status</option>
-              <option value="ACTIVE">Active</option>
+              <option value="ACTIVE" selected>Active</option>
               <option value="INACTIVE">Inactive</option>
             </select>
             {errors.status && (

@@ -1,11 +1,14 @@
-import AddTeam from "./addTeam";
-import UpdateTeam from "./updateTeam";
-import DeleteTeam from "./deleteTeam";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { pageTitles } from "@/lib/pageTitles";
+import dynamic from "next/dynamic";
+import { Suspense } from "react"
+
+const AddTeam = dynamic(() => import("./addTeam"), { ssr: false });
+const UpdateTeam = dynamic(() => import("./updateTeam"), { ssr: false });
+const DeleteTeam = dynamic(() => import("./deleteTeam"), { ssr: false });
 
 export async function generateMetadata() {
   const title = await pageTitles.adminTeam();
@@ -25,13 +28,11 @@ const getTeams = async () => {
   return res;
 };
 
-export default async function ManagementAccountPage() {
+export default async function ManagementTeamPage() {
   const [teams] = await Promise.all([getTeams()]);
 
   return (
     <>
-      {console.log(teams)}
-
       {/* content nya */}
       <div>
         {/* Breadcrumb */}
@@ -48,7 +49,9 @@ export default async function ManagementAccountPage() {
         <div className="flex justify-between items-center mb-1">
           <h1 className="text-2xl font-semibold mb-4">Manajemen Tim</h1>
 
-          <AddTeam teams={teams} />
+          <Suspense fallback={<div>Loading Add Team...</div>}>
+            <AddTeam teams={teams} />
+          </Suspense>
         </div>
 
         {/* Tabel Konten */}
@@ -78,8 +81,16 @@ export default async function ManagementAccountPage() {
                     </td>
                     <td>
                       <span className="flex items-stretch justify-start space-x-0">
-                        <UpdateTeam team={team} />
-                        <DeleteTeam team={team} />
+                        <Suspense fallback={<div>Loading Update Team...</div>}>
+                          <UpdateTeam team={team} />
+                        </Suspense>
+                        {
+                          team.name !== 'General' && (
+                            <Suspense fallback={<div>Loading Delete Team...</div>}>
+                              <DeleteTeam team={team} />
+                            </Suspense>
+                          )
+                        }
                       </span>
                     </td>
                   </tr>

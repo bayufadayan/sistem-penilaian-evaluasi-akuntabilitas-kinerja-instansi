@@ -1,22 +1,39 @@
 "use client";
-import { useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 import { FaUserTie } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoMdArrowBack } from "react-icons/io";
 import { FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { LuRefreshCcw } from "react-icons/lu";
+import AdminNavbarDropdown from "./adminNavbarDropdown";
 
 export default function AdminNavbar() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 left-64 w-[calc(100%-16rem)] h-16 bg-white border-b border-gray-200 z-50 flex items-center justify-between px-4">
@@ -37,7 +54,7 @@ export default function AdminNavbar() {
         >
           <LuRefreshCcw className="text-2xl font-bold" />
         </button>
-        
+
         <div className="relative">
           <div className="absolute flex items-center h-full left-2 opacity-40 text-slate-600 active:text-black">
             <FiSearch className="text-2xl font-black" />
@@ -99,31 +116,8 @@ export default function AdminNavbar() {
 
           {/* Dropdown Menu */}
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
-              <ul className="py-1">
-                {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => {
-                    window.location.href = "/";
-                  }}
-                >
-                  <a href="/" className="block w-full h-full">
-                    Beranda
-                  </a>
-                </li>
-
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  <a href="/admin/myprofile">Profile</a>
-                </li>
-                {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => signOut()}
-                >
-                  Logout
-                </li>
-              </ul>
+            <div ref={dropdownRef}>
+              <AdminNavbarDropdown />
             </div>
           )}
         </div>

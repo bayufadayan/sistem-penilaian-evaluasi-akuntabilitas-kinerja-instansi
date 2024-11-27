@@ -49,21 +49,22 @@ model Team {
 }
 
 model User {
-  id                  Int       @id @default(autoincrement())
-  email               String    @unique
+  id                  Int           @id @default(autoincrement())
+  email               String        @unique
   password            String
   nip                 BigInt
   name                String
   role                Role
   gender              Gender
   status              Status
-  created_at          DateTime  @default(now())
-  updated_at          DateTime  @updatedAt
-  id_team             Int
-  team                Team      @relation(fields: [id_team], references: [id], onDelete: Cascade)
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+  id_team             Int           @default(1)
+  team                Team          @relation(fields: [id_team], references: [id], onDelete: SetDefault)
   Score               Score[]
   resetPasswordToken  String?
   resetPasswordExpire DateTime?
+  ActivityLog         ActivityLog[]
 }
 
 model EvaluationSheet {
@@ -123,7 +124,7 @@ model Score {
   id_criterias Int
   id_users     Int?
   criteria     Criteria   @relation(fields: [id_criterias], references: [id], onDelete: Cascade)
-  user         User?      @relation(fields: [id_users], references: [id], onDelete: Cascade)
+  user         User?      @relation(fields: [id_users], references: [id], onDelete: SetNull)
   Evidence     Evidence[]
 }
 
@@ -184,4 +185,14 @@ model Settings {
   guideLink        String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+}
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  actionType  String
+  tableName   String
+  recordId    Int
+  id_users    Int?
+  user        User?    @relation(fields: [id_users], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
 }
