@@ -31,13 +31,13 @@ export default function Navbar() {
           <Link href={"/"}>Beranda</Link>
         </li>
         <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
-          <Link href={"/panduan"}>Panduan</Link>
+          <Link href={"/guide"}>Panduan</Link>
         </li>
         <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
-          <Link href={"/riwayat"}>Riwayat</Link>
+          <Link href={"/activities"}>Riwayat</Link>
         </li>
         <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
-          <Link href={"/hasil-sementara"}>Hasil Sementara</Link>
+          <Link href={"/results"}>Hasil</Link>
         </li>
         <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
           Laporan

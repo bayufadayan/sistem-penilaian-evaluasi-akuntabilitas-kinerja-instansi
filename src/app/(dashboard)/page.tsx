@@ -234,7 +234,7 @@ export default function Home() {
         )}
 
         <div className={styles.buttonSection}>
-          <Link href="/panduan">
+          <Link href="/guide">
             <button type="button">
               <div className={styles.icon}>
                 <svg

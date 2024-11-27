@@ -70,7 +70,7 @@ export const DELETE = async (
     );
   }
   const activityLog = createActivityLog(
-    `{LKE AKIP ${params.id}}`,
+    `{LKE AKIP didelete}`,
     "Evaluations",
     0,
     Number(session.user.id)
