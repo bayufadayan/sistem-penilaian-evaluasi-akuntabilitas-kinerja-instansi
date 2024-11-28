@@ -3,14 +3,20 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import styles from "@/styles/styles.module.css";
+import { FiDownload } from "react-icons/fi";
 import Link from "next/link";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [laporanDropdownOpen, setLaporanDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+
+  const toggleLaporanDropdown = () => {
+    setLaporanDropdownOpen(!laporanDropdownOpen);
   };
 
   return (
@@ -39,8 +45,46 @@ export default function Navbar() {
         <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
           <Link href={"/results"}>Hasil</Link>
         </li>
-        <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
-          Laporan
+        <li className="relative">
+          <button
+            className="flex items-center hover:text-blue-600 cursor-pointer hover:font-bold"
+            onClick={toggleLaporanDropdown}
+          >
+            Laporan
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="ml-1 flex items-center hover:text-blue-600 cursor-pointer hover:font-bold"
+            >
+              <path
+                d="M7 10L12 15L17 10"
+                stroke="#001D6C"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          {laporanDropdownOpen && (
+            <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-2xl z-20 border-separate"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setLaporanDropdownOpen(false);
+              }}
+            >
+              <ul className="py-1 text-base">
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  <Link href="/laporan1"><span className="flex"><FiDownload className="mr-2" /> Laporan 1</span></Link>
+                </li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  <Link href="/laporan1"><span className="flex"><FiDownload className="mr-2" /> Laporan 2</span></Link>
+                </li>
+                {/* Add more laporan items as needed */}
+              </ul>
+            </div>
+          )}
         </li>
       </ul>
 

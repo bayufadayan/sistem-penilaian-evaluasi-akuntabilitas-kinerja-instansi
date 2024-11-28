@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { User } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/utils";
-import {createActivityLog} from "@/lib/activityLog";
+import { createActivityLog } from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
@@ -59,12 +59,42 @@ export const POST = async (request: Request) => {
       { status: 401 }
     );
   }
-  const activityLog = createActivityLog("Akun Baru dibuat", "User", user.id, Number(session.user.id))
+  const activityLog = createActivityLog(
+    "Akun Baru dibuat",
+    "User",
+    user.id,
+    Number(session.user.id)
+  );
 
   const responseUser = {
     ...user,
     nip: user.nip.toString(),
   };
 
-  return NextResponse.json({responseUser, activityLog}, { status: 201 });
+  return NextResponse.json({ responseUser, activityLog }, { status: 201 });
+};
+export const GET = async () => {
+  try {
+    const users = await prisma.user.findMany(); // Mengambil semua pengguna
+
+    if (!users || users.length === 0) {
+      return NextResponse.json({ message: "No users found" }, { status: 404 });
+    }
+
+    // Menyusun data pengguna agar sesuai dengan format yang diinginkan
+    const serializedUsers = users.map((user) => ({
+      ...user,
+      id: user.id.toString(),
+      nip: user.nip ? user.nip.toString() : null,
+    }));
+
+    // Mengembalikan respons JSON
+    return NextResponse.json(serializedUsers);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch users" },
+      { status: 500 }
+    );
+  }
 };
