@@ -18,7 +18,7 @@ type EvaluationStatusCount = {
   CANCELLED: number;
 };
 
-export default function AdminPage() {
+export default function TeamPage() {
 
   const [userCount, setUserCount] = useState("");
   const [teamCount, setTeamCount] = useState("");

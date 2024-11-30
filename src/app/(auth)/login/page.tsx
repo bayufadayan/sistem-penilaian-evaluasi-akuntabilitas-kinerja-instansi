@@ -45,6 +45,7 @@ const LoginPage: FC = () => {
         callbackUrl,
       });
 
+      console.log(res);
       if (!res?.error) {
         setIsError(false);
         router.push(callbackUrl);

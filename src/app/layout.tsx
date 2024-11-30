@@ -11,8 +11,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
-          <NextTopLoader showSpinner={false} />
+        <SessionProvider data-testid="session-provider">
+          <NextTopLoader showSpinner={false} data-testid="next-top-loader" />
           {children}
         </SessionProvider>
       </body>
