@@ -4,7 +4,7 @@ import type { User } from "@prisma/client";
 const prisma = new PrismaClient();
 import {createActivityLog} from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOption";
 
 export const GET = async (
   req: NextRequest,

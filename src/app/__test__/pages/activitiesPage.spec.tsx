@@ -63,7 +63,7 @@ describe('HistoryPage', () => {
 
         // Wait for the logs to be fetched and displayed
         await waitFor(() => {
-            expect(screen.getByText(/Login/i)).toBeInTheDocument();
+            expect(screen.getByText(/login/i)).toBeInTheDocument();
             expect(screen.getByText(/Logout/i)).toBeInTheDocument();
         });
     });
@@ -131,7 +131,7 @@ describe('HistoryPage', () => {
             expect(fetch).toHaveBeenCalledWith(
                 `/api/log-activity/${mockSession.user.id}?page=1&limit=5&filter=Today`
             );
-            expect(screen.getByText(/Login/i)).toBeInTheDocument();
+            expect(screen.getByText(/login/i)).toBeInTheDocument();
         });
     });
 
@@ -163,7 +163,7 @@ describe('HistoryPage', () => {
 
         // Wait for the logs to be fetched and displayed
         await waitFor(() => {
-            expect(screen.getByText(/Login/i)).toBeInTheDocument();
+            expect(screen.getByText(/login/i)).toBeInTheDocument();
             expect(screen.getByText(/Logout/i)).toBeInTheDocument();
         });
 

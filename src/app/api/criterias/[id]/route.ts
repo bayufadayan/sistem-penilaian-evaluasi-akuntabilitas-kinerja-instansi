@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import type { Criteria } from "@prisma/client";
 import { createActivityLog } from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOption";
 const prisma = new PrismaClient();
 
 export const DELETE = async (

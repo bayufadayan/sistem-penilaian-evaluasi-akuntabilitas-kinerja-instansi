@@ -21,7 +21,7 @@ function EvaluationPieChart({ data }: { data: any }) {
                 },
             },
             legend: {
-                position: 'bottom',
+                position: 'top' as const,
                 labels: {
                     boxWidth: 15,
                     padding: 3,

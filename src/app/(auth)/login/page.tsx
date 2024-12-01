@@ -11,8 +11,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import styles from "@/styles/login.module.css";
+import { Suspense } from 'react';
 
-const LoginPage: FC = () => {
+const Login: FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -275,4 +276,10 @@ const LoginPage: FC = () => {
   );
 };
 
-export default LoginPage;
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Login />
+    </Suspense>
+  );
+}

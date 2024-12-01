@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/utils";
 import { createActivityLog } from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOption";
 
 export const POST = async (request: Request) => {
   const body: User = await request.json();

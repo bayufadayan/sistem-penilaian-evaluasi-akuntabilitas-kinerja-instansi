@@ -595,25 +595,25 @@ const PdfContent: React.FC<{
   dateFinish,
   components,
 }) => (
-  <Page
-    size="A4"
-    style={{
-      ...styles.page,
-      marginTop: 0,
-    }}
-  >
-    <PdfContentHeader />
-    <PdfContentDetails
-      year={year}
-      title={evaluationName}
-      id={id || "ID Tidak Tersedia"}
-      description={description}
-      dateStart={dateStart}
-      dateFinish={dateFinish}
-    />
-    <PdfComponentsDetail components={components} year={year} />
-  </Page>
-);
+    <Page
+      size="A4"
+      style={{
+        ...styles.page,
+        marginTop: 0,
+      }}
+    >
+      <PdfContentHeader />
+      <PdfContentDetails
+        year={year}
+        title={evaluationName}
+        id={id || "ID Tidak Tersedia"}
+        description={description}
+        dateStart={dateStart}
+        dateFinish={dateFinish}
+      />
+      <PdfComponentsDetail components={components} year={year} />
+    </Page>
+  );
 
 // Dokumen PDF utama
 const PdfDocument = ({
@@ -673,14 +673,10 @@ export default function PdfGenerator({
       fileName={`Hasil Evaluasi Akuntabilitas Kinerja BPMSPH ${year}.pdf`}
       className="flex text-sm font-medium items-center bg-red-500 hover:bg-red-600 active:bg-red-700 text-white py-1 px-2 rounded shadow-md transform active:scale-95 transition-transform duration-150"
     >
-      {({ loading }: { loading: boolean }) => {
-        return (
-          <>
-            <FaFilePdf className="mr-2" />
-            {loading ? "Loading..." : "Download PDF"}
-          </>
-        );
-      }}
+      <>
+        <FaFilePdf className="mr-2" />
+        Download PDF
+      </>
     </PDFDownloadLink>
   );
 }

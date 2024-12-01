@@ -1,124 +1,123 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 
-export const GET = async (request: Request) => {
-    try {
-        const url = new URL(request.url);
-        const page = Number(url.searchParams.get("page") || 1);
-        const limit = Number(url.searchParams.get("limit") || 10);
-        const search = url.searchParams.get("search") || "";
-        const evaluationId = url.searchParams.get("evaluationId"); // Get evaluationId from query
-        const offset = (page - 1) * limit;
+export const GET = async (req: NextRequest) => {
+  const { searchParams } = new URL(req.nextUrl); // Use req.nextUrl instead
+  const page = Number(searchParams.get("page") || 1);
+  const limit = Number(searchParams.get("limit") || 10);
+  const search = searchParams.get("search") || "";
+  const evaluationId = searchParams.get("evaluationId");
+  const offset = (page - 1) * limit;
 
-        const whereCondition: Prisma.ScoreWhereInput = {
-            AND: [
-                evaluationId
-                    ? {
-                          criteria: {
-                              is: {
-                                  subComponent: {
-                                      is: {
-                                          component: {
-                                              is: {
-                                                  id_LKE: evaluationId, // Filter berdasarkan LKE
-                                              },
-                                          },
-                                      },
-                                  },
-                              },
-                          },
-                      }
-                    : {},
-                search
-                    ? {
-                          OR: [
-                              {
-                                  criteria: {
-                                      is: {
-                                          name: {
-                                              contains: search,
-                                              mode: Prisma.QueryMode.insensitive,
-                                          },
-                                      },
-                                  },
-                              },
-                              {
-                                  user: {
-                                      is: {
-                                          name: {
-                                              contains: search,
-                                              mode: Prisma.QueryMode.insensitive,
-                                          },
-                                      },
-                                  },
-                              },
-                              {
-                                  notes: {
-                                      contains: search,
-                                      mode: Prisma.QueryMode.insensitive,
-                                  },
-                              },
-                          ],
-                      }
-                    : {},
-            ],
-        };
-        
-
-        // Fetch scores with evidence count
-        const scores = await prisma.score.findMany({
-            skip: offset,
-            take: limit,
-            where: whereCondition,
-            include: {
+  const whereCondition: Prisma.ScoreWhereInput = {
+    AND: [
+      evaluationId
+        ? {
+            criteria: {
+              is: {
+                subComponent: {
+                  is: {
+                    component: {
+                      is: {
+                        id_LKE: evaluationId,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          }
+        : {},
+      search
+        ? {
+            OR: [
+              {
                 criteria: {
-                    select: {
-                        id: true,
-                        name: true,
+                  is: {
+                    name: {
+                      contains: search,
+                      mode: Prisma.QueryMode.insensitive,
                     },
+                  },
                 },
+              },
+              {
                 user: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true, // Include user email
+                  is: {
+                    name: {
+                      contains: search,
+                      mode: Prisma.QueryMode.insensitive,
                     },
+                  },
                 },
-                _count: {
-                    select: {
-                        Evidence: true, // Counts the number of evidence records
-                    },
+              },
+              {
+                notes: {
+                  contains: search,
+                  mode: Prisma.QueryMode.insensitive,
                 },
-            },
-            orderBy: {
-                created_at: "desc",
-            },
-        });
+              },
+            ],
+          }
+        : {},
+    ],
+  };
 
-        // Map evidence count into scores
-        const formattedScores = scores.map((score) => ({
-            ...score,
-            evidence_count: score._count.Evidence,
-        }));
+  try {
+    // Fetch scores with evidence count
+    const scores = await prisma.score.findMany({
+      skip: offset,
+      take: limit,
+      where: whereCondition,
+      include: {
+        criteria: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        _count: {
+          select: {
+            Evidence: true,
+          },
+        },
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
 
-        // Count total records for pagination
-        const totalRecords = await prisma.score.count({ where: whereCondition });
+    const formattedScores = scores.map((score) => ({
+      ...score,
+      evidence_count: score._count.Evidence,
+    }));
 
-        // Pagination details
-        const pagination = {
-            totalRecords,
-            totalPages: Math.ceil(totalRecords / limit),
-            currentPage: page,
-            pageSize: limit,
-        };
+    const totalRecords = await prisma.score.count({ where: whereCondition });
 
-        return NextResponse.json({ data: formattedScores, pagination }, { status: 200 });
-    } catch (error) {
-        console.error("Error fetching scores:", error);
-        return NextResponse.json(
-            { error: "Failed to fetch scores" },
-            { status: 500 }
-        );
-    }
+    const pagination = {
+      totalRecords,
+      totalPages: Math.ceil(totalRecords / limit),
+      currentPage: page,
+      pageSize: limit,
+    };
+
+    return NextResponse.json(
+      { data: formattedScores, pagination },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error fetching scores:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch scores" },
+      { status: 500 }
+    );
+  }
 };

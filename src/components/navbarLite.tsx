@@ -6,7 +6,7 @@ export default function NavbarLite() {
   return (
     <header className={styles.loginHeader}>
       <nav className={styles.loginNav}>
-        <Link href={"/login"}><Image src="images/navbar-flat.svg" alt="logo instansi" width={200} height={34} /></Link>
+        <Link href={"/login"}><Image src="/images/navbar-flat.svg" alt="logo instansi" width={200} height={34} /></Link>
       </nav>
     </header>
   );

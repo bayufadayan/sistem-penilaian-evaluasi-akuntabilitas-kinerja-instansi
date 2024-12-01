@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import NavbarLite from "@/components/navbarLite";
@@ -10,8 +9,9 @@ import { signOut } from "next-auth/react";
 import axios from "axios";
 import { resetPasswordSchema } from "@/lib/form-schema";
 import { z } from "zod";
+import { Suspense } from 'react';
 
-export default function ResetPasswordPage() {
+function ResetPassword() {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [isPasswordUpdated, setIsPasswordUpdated] = useState(false);
@@ -161,5 +161,13 @@ export default function ResetPasswordPage() {
                 {message && <p className="text-red-600 mt-4">{message}</p>}
             </div>
         </>
+    );
+}
+
+export default function ResetPasswordPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ResetPassword />
+        </Suspense>
     );
 }
