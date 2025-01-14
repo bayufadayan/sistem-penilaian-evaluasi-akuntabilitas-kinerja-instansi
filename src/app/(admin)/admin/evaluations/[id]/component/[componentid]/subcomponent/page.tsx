@@ -27,6 +27,12 @@ const getSubComponentsByComponentId = async (componentId: string) => {
       component: {
         select: {
           name: true,
+          id_LKE: true,
+          evaluation: {
+            select: {
+              title: true,
+            }
+          }
         },
       },
       criteria: true,
@@ -53,6 +59,12 @@ export default async function EvaluationPage({
     (acc, subComponent) => acc + subComponent.weight,
     0
   );
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    const prefix = text.slice(0, 9);
+    const suffix = text.slice(-8);
+    return `${prefix}...${suffix}`;
+  };
 
   return (
     <div>
@@ -63,12 +75,22 @@ export default async function EvaluationPage({
           </span>
         </Link>
         <IoIosArrowForward className="h-5 w-5" />
-        <Link href="/admin/evaluations" className="hover:text-blue-600">
-          <span>Lembar Kerja Evaluasi</span>
+        <Link href="/admin/evaluations" className="text-blue-600">
+          <span>
+            {subComponents[0]?.component.evaluation?.title
+            ? truncateText(subComponents[0]?.component.evaluation?.title, 20)
+            : 'Judul LKE'
+            }
+          </span>
         </Link>
         <IoIosArrowForward className="h-5 w-5" />
-        <Link href={"admin/evaluations/"} className="hover:text-blue-600">
-          <span>Komponen</span>
+        <Link href={`/admin/evaluations/${subComponents[0]?.component.id_LKE}/component/`} className="text-blue-600">
+          <span>
+            {subComponents[0]?.component.name
+            ? truncateText(subComponents[0]?.component.name, 20)
+            : 'Nama Komponen'
+            }
+            </span>
         </Link>
         <IoIosArrowForward className="h-5 w-5" />
         <span>Sub Komponen</span>

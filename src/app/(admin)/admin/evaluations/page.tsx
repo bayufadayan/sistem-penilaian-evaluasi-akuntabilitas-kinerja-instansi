@@ -81,9 +81,10 @@ export default async function EvaluationPage() {
       </div>
 
       {/* Kumpulan Kartu */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {evalsheets.length > 0 ? (
-          evalsheets.map((evalsheet) => (
+      {evalsheets.length > 0 ?
+        (<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          {evalsheets.map((evalsheet) => (
             <div
               key={evalsheet.id}
               className={`relative p-6 rounded-lg shadow-md ${evalsheet.color} hover:shadow-lg transition-shadow duration-300 flex flex-col h-full`}
@@ -117,14 +118,14 @@ export default async function EvaluationPage() {
                 <div className="rounded p-1 bg-white font-semibold mt-3 text-center w-2/3">
                   <p
                     className={`font-medium text-sm ${evalsheet.status === "COMPLETED"
-                        ? "text-green-600"
-                        : evalsheet.status === "PENDING"
-                          ? "text-yellow-600"
-                          : evalsheet.status === "IN_PROGRESS"
-                            ? "text-blue-600"
-                            : evalsheet.status === "CANCELLED"
-                              ? "text-red-600"
-                              : "text-gray-900"
+                      ? "text-green-600"
+                      : evalsheet.status === "PENDING"
+                        ? "text-yellow-600"
+                        : evalsheet.status === "IN_PROGRESS"
+                          ? "text-blue-600"
+                          : evalsheet.status === "CANCELLED"
+                            ? "text-red-600"
+                            : "text-gray-900"
                       }`}
                   >
                     Status: {evalsheet.status}
@@ -149,11 +150,14 @@ export default async function EvaluationPage() {
                 </div>
               </div>
             </div>
-          ))
+          ))}
+
+        </div>
         ) : (
-          <p className="text-gray-200">Data tidak ditemukan</p>
+          <div className="flex items-center justify-center w-full h-full rounded-lg">
+            <p className="text-gray-400 text-lg font-semibold pt-24">Lembar Evaluasi Kosong</p>
+          </div>
         )}
-      </div>
     </div>
   );
 }

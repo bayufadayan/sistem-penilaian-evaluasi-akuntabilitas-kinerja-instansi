@@ -119,7 +119,7 @@ export default function DeleteComponent({ component }: { component: Component })
                       fill="currentColor"
                     />
                   </svg>
-                  Deleting...
+                  Menghapus...
                 </button>
               )}
               <button

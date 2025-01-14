@@ -8,6 +8,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userFormSchema } from "@/lib/form-schema";
 import type { z } from "zod";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
+import Link from "next/link";
 
 const fetchTeams = async () => {
   const res = await axios.get("/api/teams");
@@ -99,7 +102,7 @@ const UserForm: FC = () => {
   };
 
   return (
-    <div>
+    <div className="mb-16">
       {isEmailNotAvailable && (
         <div
           id="toast-danger"
@@ -148,20 +151,34 @@ const UserForm: FC = () => {
         </div>
       )}
 
-      <h2 className="text-2xl font-semibold mb-4">Create New Account</h2>
+      <div className="mb-4 text-gray-500 flex gap-1 items-start">
+        <Link href="/admin" className="text-blue-600">
+          <span className="flex gap-1">
+            <TiHome className="mt-0.5" /> Dashboard
+          </span>
+        </Link>
+        <IoIosArrowForward className="h-5 w-5" />
+        <Link href="/admin/accounts" className="text-blue-600">
+          Manajemen Akun
+        </Link>
+        <IoIosArrowForward className="h-5 w-5" />
+        Tambah Akun Baru
+      </div>
+
+      <h2 className="text-2xl font-semibold my-4">Tambah Akun Baru</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4 mb-4 grid-cols-2">
           {/* Name Field */}
           <div className="col-span-2">
             <label htmlFor="name" className="label font-bold">
-              Name
+              Nama Lengkap
             </label>
             <input
               {...register("name")}
               type="text"
               id="name"
               className="input input-bordered w-full"
-              placeholder="Enter full name"
+              placeholder="Masukan Nama Lengkap"
               required
             />
             {errors.name && <p className="text-error">{errors.name.message}</p>}
@@ -170,14 +187,14 @@ const UserForm: FC = () => {
           {/* NIP Field */}
           <div className="col-span-2">
             <label htmlFor="nip" className="label font-bold">
-              NIP
+              NIP (Nomer Induk Pegawai) <span className="text-xs text-red-600">*Berisi 16 digit angka</span>
             </label>
             <input
               {...register("nip")}
               type="number"
               id="nip"
               className="input input-bordered w-full"
-              placeholder="Enter NIP"
+              placeholder="Masukan NIP"
               required
             />
             {errors.nip && <p className="text-error">{errors.nip.message}</p>}
@@ -193,7 +210,7 @@ const UserForm: FC = () => {
               type="email"
               id="email"
               className="input input-bordered w-full"
-              placeholder="Enter email"
+              placeholder="Masukan Email Aktif"
               required
             />
             {errors.email && (
@@ -212,7 +229,7 @@ const UserForm: FC = () => {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 className="input input-bordered w-full"
-                placeholder="Enter password"
+                placeholder="Buat Kata Sandi"
                 required
               />
               <button
@@ -231,14 +248,14 @@ const UserForm: FC = () => {
           {/* Role Field */}
           <div className="col-span-1">
             <label htmlFor="role" className="label font-bold">
-              Role
+              Role (Admin/User)
             </label>
             <select
               {...register("role")}
               id="role"
               className="select select-bordered w-full"
             >
-              <option value="">Select Role</option>
+              <option value="">Pilih Role</option>
               <option value="ADMIN">Admin</option>
               <option value="USER">User</option>
             </select>
@@ -248,16 +265,16 @@ const UserForm: FC = () => {
           {/* Gender Field */}
           <div className="col-span-1">
             <label htmlFor="gender" className="label font-bold">
-              Gender
+              Jenis Kelamin
             </label>
             <select
               {...register("gender")}
               id="gender"
               className="select select-bordered w-full"
             >
-              <option value="">Select Gender</option>
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
+              <option value="">Pilih Jenis Kelamin</option>
+              <option value="MALE">Laki Laki</option>
+              <option value="FEMALE">Perempuan</option>
             </select>
             {errors.gender && (
               <p className="text-error">{errors.gender.message}</p>
@@ -286,14 +303,14 @@ const UserForm: FC = () => {
           {/* Team Field */}
           <div className="col-span-1">
             <label htmlFor="idTeam" className="label font-bold">
-              Team
+              Team/Divisi
             </label>
             <select
               {...register("id_team")}
               id="idTeam"
               className="select select-bordered w-full"
             >
-              <option value="">Select Team</option>
+              <option value="">Pilih Tim/Divisi</option>
               {teams.map((team) => (
                 <option value={team.id} key={team.id}>
                   {team.name}
@@ -312,7 +329,7 @@ const UserForm: FC = () => {
             type="submit"
             className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           >
-            Add new account
+            Buat Akun Baru
           </button>
         ) : (
           <button

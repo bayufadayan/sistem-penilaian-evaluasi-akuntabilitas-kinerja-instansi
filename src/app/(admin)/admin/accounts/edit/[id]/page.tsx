@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import type { Team } from "@prisma/client";
 import Link from "next/link";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
 
 
 const fetchTeams = async () => {
@@ -126,8 +128,22 @@ export default function UpdateAccountPage({
         </div>
       )}
 
+      <div className="mb-4 text-gray-500 flex gap-1 items-start">
+        <Link href="/admin" className="text-blue-600">
+          <span className="flex gap-1">
+            <TiHome className="mt-0.5" /> Dashboard
+          </span>
+        </Link>
+        <IoIosArrowForward className="h-5 w-5" />
+        <Link href="/admin/accounts" className="text-blue-600">
+          Manajemen Akun
+        </Link>
+        <IoIosArrowForward className="h-5 w-5" />
+        Edit Akun &quot;{name}&quot;
+      </div>
+
       <div>
-        <h2 className="text-2xl font-semibold mb-4">Update Akun</h2>
+        <h2 className="text-2xl font-semibold my-4">Edit Akun &quot;{name}&quot;</h2>
         <form onSubmit={handleUpdate}>
           <div className="grid gap-4 mb-4 grid-cols-2">
             <div className="col-span-2">
@@ -135,7 +151,7 @@ export default function UpdateAccountPage({
                 htmlFor="name"
                 className="label font-bold"
               >
-                Name
+                Nama Lengkap
               </label>
               <input
                 value={name}
@@ -143,7 +159,7 @@ export default function UpdateAccountPage({
                 type="text"
                 id="name"
                 className="input input-bordered w-full"
-                placeholder="Enter full name"
+                placeholder="Masukan Nama Lengkap"
                 required
               />
             </div>
@@ -153,7 +169,7 @@ export default function UpdateAccountPage({
                 htmlFor="nip"
                 className="label font-bold"
               >
-                NIP
+                NIP (Nomer Induk Pegawai) <span className="text-xs text-red-600">*Berisi 16 digit angka</span>
               </label>
               <input
                 value={nip}
@@ -161,7 +177,7 @@ export default function UpdateAccountPage({
                 type="number"
                 id="nip"
                 className="input input-bordered w-full"
-                placeholder="Enter NIP"
+                placeholder="Masukan NIP"
                 required
               />
             </div>
@@ -179,7 +195,7 @@ export default function UpdateAccountPage({
                 type="email"
                 id="email"
                 className="input input-bordered w-full"
-                placeholder="Enter email"
+                placeholder="masukan Email Aktif"
                 required
               />
             </div>
@@ -214,15 +230,15 @@ export default function UpdateAccountPage({
                 htmlFor="role"
                 className="label font-bold"
               >
-                Role
+                Role (Admin/User)
               </label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 id="role"
-                className="input input-bordered w-full"
+                className="select select-bordered w-full"
               >
-                <option value="">Select Role</option>
+                <option value="">Pilih Role</option>
                 <option value="ADMIN">Admin</option>
                 <option value="USER">User</option>
               </select>
@@ -233,17 +249,17 @@ export default function UpdateAccountPage({
                 htmlFor="gender"
                 className="label font-bold"
               >
-                Gender
+                Jenis Kelamin
               </label>
               <select
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
                 id="gender"
-                className="input input-bordered w-full"
+                className="select select-bordered w-full"
               >
-                <option value="">Select gender</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
+                <option value="">Pilih Jenis Kelamin</option>
+                <option value="MALE">Laki Laki</option>
+                <option value="FEMALE">Perempuan</option>
               </select>
             </div>
 
@@ -258,7 +274,7 @@ export default function UpdateAccountPage({
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 id="status"
-                className="input input-bordered w-full"
+                className="select select-bordered w-full"
               >
                 <option value="">Select status</option>
                 <option value="ACTIVE">Active</option>
@@ -271,15 +287,15 @@ export default function UpdateAccountPage({
                 htmlFor="idTeam"
                 className="label font-bold"
               >
-                Team
+                Team/Divisi
               </label>
               <select
                 value={idTeam}
                 onChange={(e) => setIdTeam(e.target.value)}
                 id="idTeam"
-                className="input input-bordered w-full"
+                className="select select-bordered w-full"
               >
-                <option value="">Select team</option>
+                <option value="">Pilih Team/Divisi</option>
                 {teams.map((team) => (
                   <option value={team.id} key={team.id}>
                     {team.name}
@@ -293,7 +309,7 @@ export default function UpdateAccountPage({
               type="submit"
               className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Save
+              Simpan
             </button>
           ) : (
             <button

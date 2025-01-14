@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate deploy",
+    "prisma:seed": "npx prisma db:seed",
     "test": "jest --passWithNoTests -u",
     "test:cover": "npm run test -- --coverage",
     "test:watch": "jest --watch"

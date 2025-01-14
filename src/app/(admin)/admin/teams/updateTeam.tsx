@@ -87,15 +87,15 @@ export default function UpdateTeam({ team }: { team: Team }) {
             </div>
             <div className="modal-action">
               <button type="button" className="btn" onClick={handleModal}>
-                Close
+                Batal
               </button>
               {!isLoading ? (
                 <button type="submit" className="btn btn-primary">
-                  Update
+                  Simpan
                 </button>
               ) : (
                 <button type="button" className="btn loading">
-                  Updating...
+                  Menyimpan...
                 </button>
               )}
             </div>

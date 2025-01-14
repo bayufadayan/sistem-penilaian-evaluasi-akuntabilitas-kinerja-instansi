@@ -2,6 +2,9 @@
 import { type SyntheticEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
+import Link from "next/link";
 
 export default function CreateEvaluationPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,118 +43,26 @@ export default function CreateEvaluationPage() {
 
   return (
     <>
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Create New Evaluation</h2>
+      <div className="mb-4 text-gray-500 flex gap-1 items-start">
+        <Link href="/admin" className="text-blue-600">
+          <span className="flex gap-1">
+            <TiHome className="mt-0.5" /> Dashboard
+          </span>
+        </Link>
+        <IoIosArrowForward className="h-5 w-5" />
+        <Link href="/admin/evaluations" className="text-blue-600">
+          Manajemen LKE AKIP
+        </Link>
+        <IoIosArrowForward className="h-5 w-5" />
+        Tambah Lembar Kerja Evaluasi
+      </div>
+      <div className="mb-16">
+        <h2 className="text-2xl font-semibold mb-4">Tambah LKE AKIP Baru</h2>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 mb-4 grid-cols-2">
             <div className="col-span-2">
-              <p className="label font-bold">Pilih Warna Cover</p>
-              <ul className="flex gap-2 bg-blue-50 rounded-lg px-4 py-4 w-fit">
-                <li className="p-4 bg-red-600 text-red-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverRed"
-                    value="bg-red-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-orange-600 text-orange-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverOrange"
-                    value="bg-orange-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-yellow-500 text-yellow-500 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverYellow"
-                    value="bg-yellow-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-lime-600 text-lime-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverLime"
-                    value="bg-lime-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-green-600 text-green-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverGreen"
-                    value="bg-green-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-blue-600 text-blue-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverBlue"
-                    value="bg-blue-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-indigo-600 text-indigo-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverIndigo"
-                    value="bg-indigo-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-violet-600 text-violet-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverViolet"
-                    value="bg-violet-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-purple-600 text-purple-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverPurple"
-                    value="bg-purple-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-pink-600 text-pink-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverPink"
-                    value="bg-pink-600"
-                    className="hidden peer"
-                  />
-                </li>
-                <li className="p-4 bg-zinc-600 text-zinc-600 rounded-full w-9 h-9 cursor-pointer peer-checked:border-gray-700 peer">
-                  <input
-                    type="radio"
-                    name="cover"
-                    id="coverZinc"
-                    value="bg-zinc-600"
-                    // className="hidden peer"
-                  />
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-span-2">
               <label htmlFor="title" className="label font-bold">
-                Title
+                Judul Lembar Kerja Evaluasi
               </label>
               <input
                 value={title}
@@ -159,14 +70,14 @@ export default function CreateEvaluationPage() {
                 type="text"
                 id="title"
                 className="input input-bordered w-full"
-                placeholder="Enter event title"
+                placeholder="Masukan Judul Lembar Kerja Evaluasi"
                 required
               />
             </div>
 
             <div className="col-span-1">
               <label htmlFor="dateStart" className="label font-bold">
-                Start Date
+                Mulai Pelaksanaan
               </label>
               <input
                 value={dateStart}
@@ -180,7 +91,7 @@ export default function CreateEvaluationPage() {
 
             <div className="col-span-1">
               <label htmlFor="dateFinish" className="label font-bold">
-                Finish Date
+                Selesai Pelaksanaan
               </label>
               <input
                 value={dateFinish}
@@ -194,32 +105,32 @@ export default function CreateEvaluationPage() {
 
             <div className="col-span-2">
               <label htmlFor="description" className="label font-bold">
-                Description
+                Deskripsi
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 id="description"
-                className="px-5 py-2 textarea textarea-bordered rounded-lg w-full"
-                placeholder="Enter event description"
+                className="px-5 textarea textarea-bordered rounded-lg w-full"
+                placeholder="Masukan Deskripsi (Ini bersifat opsional, Silakan kosongkan jika tidak ada deskripsi)"
               />
             </div>
 
             <div className="col-span-1">
               <label htmlFor="status" className="label font-bold">
-                Status
+                Status LKE
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 id="status"
-                className="input input-bordered w-full"
+                className="select select-bordered w-full"
               >
-                <option value="">Select status</option>
+                <option value="">Pilih Status LKE</option>
                 <option value="PENDING" selected>
                   PENDING
                 </option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="IN_PROGRESS">IN PROGRESS</option>
                 <option value="COMPLETED">COMPLETED</option>
                 <option value="CANCELLED">CANCELLED</option>
               </select>
@@ -227,7 +138,7 @@ export default function CreateEvaluationPage() {
 
             <div className="col-span-1">
               <label htmlFor="year" className="label font-bold">
-                Year
+                Tahun
               </label>
               <input
                 value={year}
@@ -235,7 +146,7 @@ export default function CreateEvaluationPage() {
                 type="number"
                 id="year"
                 className="input input-bordered w-full"
-                placeholder="Enter year"
+                placeholder="Masukan Tahun"
                 required
               />
             </div>
@@ -259,7 +170,7 @@ export default function CreateEvaluationPage() {
                   clipRule="evenodd"
                 />
               </svg>
-              Add new event
+              Tambah Lembar Kerja Evaluasi
             </button>
           ) : (
             <button

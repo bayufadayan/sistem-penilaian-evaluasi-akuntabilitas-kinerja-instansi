@@ -76,6 +76,13 @@ export default async function ManagementAccountPage({
     0
   );
 
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    const prefix = text.slice(0, 9);
+    const suffix = text.slice(-8);
+    return `${prefix}...${suffix}`;
+  };
+
   return (
     <>
       <div>
@@ -86,8 +93,12 @@ export default async function ManagementAccountPage({
             </span>
           </Link>
           <IoIosArrowForward className="h-5 w-5" />
-          <Link href="/admin/evaluations" className="hover:text-blue-600">
-            <span>Lembar Kerja Evaluasi</span>
+          <Link href="/admin/evaluations" className="text-blue-600 hover:text-blue-800">
+            <span>
+              {evaluationSheets?.title
+              ? truncateText(evaluationSheets?.title, 20)
+              : 'Judul LKE'}
+            </span>
           </Link>
           <IoIosArrowForward className="h-5 w-5" />
           <span>Komponen</span>

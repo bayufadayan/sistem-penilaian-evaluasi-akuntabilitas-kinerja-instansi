@@ -71,8 +71,8 @@ export default async function ManagementTeamPage() {
                   <tr className="border-b" key={team.id}>
                     <td className="py-4">{index + 1}</td>
                     <td className="pe-8">{team.name.toUpperCase()}</td>
-                    <td className="">
-                      <button type="button" className="btn btn-primary">
+                    <td className="text-white">
+                      <button type="button" className="btn btn-primary me-2">
                         Tambah Anggota
                       </button>
                       <button type="button" className="btn btn-primary">

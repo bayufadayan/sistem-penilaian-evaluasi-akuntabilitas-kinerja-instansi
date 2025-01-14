@@ -2,6 +2,9 @@
 import { type SyntheticEvent, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { TiHome } from "react-icons/ti";
+import { IoIosArrowForward } from "react-icons/io";
+import Link from "next/link";
 
 export default function UpdateEvaluationPage({
   params,
@@ -106,8 +109,21 @@ export default function UpdateEvaluationPage({
       )}
 
       <div>
-        <h2 className="text-2xl font-semibold mb-4">
-          Update Evaluation
+        <div className="mb-4 text-gray-500 flex gap-1 items-start">
+          <Link href="/admin" className="text-blue-600">
+            <span className="flex gap-1">
+              <TiHome className="mt-0.5" /> Dashboard
+            </span>
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          <Link href="/admin/evaluations" className="text-blue-600">
+            Manajemen LKE AKIP
+          </Link>
+          <IoIosArrowForward className="h-5 w-5" />
+          Edit Lembar Kerja Evaluasi &quot;{title}&quot;
+        </div>
+        <h2 className="text-2xl font-semibold my-4">
+        Edit Lembar Kerja Evaluasi &quot;{title}&quot;
         </h2>
         <form onSubmit={handleUpdate}>
           <div className="grid gap-4 mb-4 grid-cols-2">
@@ -116,7 +132,7 @@ export default function UpdateEvaluationPage({
                 htmlFor="title"
                 className="label font-bold"
               >
-                Title
+                Judul Lembar Kerja Evaluasi
               </label>
               <input
                 value={title}
@@ -124,7 +140,7 @@ export default function UpdateEvaluationPage({
                 type="text"
                 id="title"
                 className="input input-bordered w-full"
-                placeholder="Enter event title"
+                placeholder="Judul Lembar Kerja Evaluasi"
                 required
               />
             </div>
@@ -134,7 +150,7 @@ export default function UpdateEvaluationPage({
                 htmlFor="dateStart"
                 className="label font-bold"
               >
-                Start Date
+                Mulai Pelaksanaan
               </label>
               <input
                 value={dateStart}
@@ -151,7 +167,7 @@ export default function UpdateEvaluationPage({
                 htmlFor="dateFinish"
                 className="label font-bold"
               >
-                Finish Date
+                Selesai Pelaksanaan
               </label>
               <input
                 value={dateFinish}
@@ -168,14 +184,14 @@ export default function UpdateEvaluationPage({
                 htmlFor="description"
                 className="label font-bold"
               >
-                Description
+                Deskripsi
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 id="description"
                 className="px-5 py-2 textarea textarea-bordered rounded-lg w-full"
-                placeholder="Enter event description"
+                placeholder="Masukan Deskripsi (Ini bersifat opsional, Silakan kosongkan jika tidak ada deskripsi)"
               />
             </div>
 
@@ -184,19 +200,19 @@ export default function UpdateEvaluationPage({
                 htmlFor="status"
                 className="label font-bold"
               >
-                Status
+                Status LKE
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 id="status"
-                className="input input-bordered w-full"
+                className="select select-bordered w-full"
               >
                 <option value="">Select status</option>
                 <option value="PENDING" selected>
                   PENDING
                 </option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="IN_PROGRESS">IN PROGRESS</option>
                 <option value="COMPLETED">COMPLETED</option>
                 <option value="CANCELLED">CANCELLED</option>
               </select>
@@ -226,7 +242,7 @@ export default function UpdateEvaluationPage({
               type="submit"
               className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Save
+              Simpan
             </button>
           ) : (
             <button
@@ -249,7 +265,7 @@ export default function UpdateEvaluationPage({
                   fill="currentColor"
                 />
               </svg>
-              Saving...
+              Menyimpan...
             </button>
           )}
         </form>

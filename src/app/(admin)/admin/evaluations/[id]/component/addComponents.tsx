@@ -65,13 +65,13 @@ export default function AddComponents({
           <h3 className="font-bold text-xl">Tambah Komponen Baru</h3>
           <form onSubmit={handleSubmit}>
           <div className="form-control w-full">
-              <label className="label font-bold" htmlFor="">Nomor Komponen</label>
+              <label className="label font-bold" htmlFor="">Nomor <span className="text-xs text-red-600">Untuk urutan komponen</span></label>
               <input
                 type="number"
                 value={componentNumber}
                 onChange={(e) => setComponentNumber(e.target.value)}
                 className="input input-bordered"
-                placeholder="0"
+                placeholder="Nomor Urutan Komponen"
                 required
               />
             </div>
@@ -82,7 +82,7 @@ export default function AddComponents({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="input input-bordered"
-                placeholder="Nama Komponen"
+                placeholder="Masukan Nama Komponen"
                 required
               />
             </div>
@@ -92,7 +92,7 @@ export default function AddComponents({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="px-5 py-2 textarea textarea-bordered"
-                placeholder="Deskripsi"
+                placeholder="Masukan Deskripsi (Opsional)"
               />
             </div>
             <div className="form-control w-full">
@@ -127,15 +127,15 @@ export default function AddComponents({
 
             <div className="modal-action">
               <button type="button" className="btn" onClick={handleModal}>
-                Close
+                Batal
               </button>
               {!isLoading ? (
                 <button type="submit" className="btn btn-primary">
-                  Save
+                  Simpan
                 </button>
               ) : (
                 <button type="button" className="btn loading">
-                  Saving...
+                  Menyimpan...
                 </button>
               )}
             </div>

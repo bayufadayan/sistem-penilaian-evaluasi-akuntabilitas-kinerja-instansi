@@ -63,7 +63,7 @@ export default function AdminSidebar() {
             </svg>
             <Link href={"/"}>
               <span className="text-2xl font-semibold text-gray-900 dark:text-white">
-                Admin BPMSPH
+                Admin LKE AKIP
               </span>
             </Link>
           </div>

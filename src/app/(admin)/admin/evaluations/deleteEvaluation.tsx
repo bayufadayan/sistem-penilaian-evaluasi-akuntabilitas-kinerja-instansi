@@ -130,7 +130,7 @@ export default function DeleteEvaluation({
                       fill="currentColor"
                     />
                   </svg>
-                  Deleting...
+                  Menghapus...
                 </button>
               )}
               <button

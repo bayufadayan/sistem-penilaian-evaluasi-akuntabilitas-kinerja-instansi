@@ -146,7 +146,7 @@ export default function UpdateComponent({
 
             <div className="modal-action">
               <button type="button" className="btn" onClick={handleModal}>
-                Close
+                Batal
               </button>
               {!isLoading ? (
                 <button type="submit" className="btn btn-primary">

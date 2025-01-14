@@ -86,7 +86,21 @@ export default function SummaryScore() {
     async (total: number) => {
       try {
         const grade =
-          total >= 90 ? "AA" : total >= 75 ? "BB" : total >= 60 ? "B" : "C";
+          total > 90 ?
+            "AA" :
+            total > 80 ?
+              "A" :
+              total > 70 ?
+                "BB" :
+                total > 60 ?
+                  "B" :
+                  total > 50 ?
+                    "CC" :
+                    total > 30 ?
+                      "C" :
+                      total <= 30 ?
+                        "D" :
+                        "Belum Input";
 
         await axios.patch(
           `/api/calculateScore/evaluationscore/${evaluationId}`,
@@ -298,13 +312,21 @@ export default function SummaryScore() {
                 Grade LKE
               </h2>
               <p className="text-3xl font-bold text-yellow-500">
-                {totalScore >= 90
-                  ? "AA"
-                  : totalScore >= 75
-                  ? "BB"
-                  : totalScore >= 60
-                  ? "B"
-                  : "C"}
+                {totalScore > 90 ?
+                  "AA" :
+                  totalScore > 80 ?
+                    "A" :
+                    totalScore > 70 ?
+                      "BB" :
+                      totalScore > 60 ?
+                        "B" :
+                        totalScore > 50 ?
+                          "CC" :
+                          totalScore > 30 ?
+                            "C" :
+                            totalScore <= 30 ?
+                              "D" :
+                              "Belum Input"}
               </p>
             </div>
             <FaStar className="w-12 h-12 text-yellow-100" />
@@ -336,9 +358,8 @@ export default function SummaryScore() {
             <tbody>
               {components.map((component, index) => (
                 <tr
-                  className={`bg-white border-b hover:bg-gray-100 ${
-                    index % 2 === 0 ? "bg-gray-50" : ""
-                  }`}
+                  className={`bg-white border-b hover:bg-gray-100 ${index % 2 === 0 ? "bg-gray-50" : ""
+                    }`}
                   key={component.id}
                 >
                   <td className="px-6 py-4 font-medium text-gray-900">
@@ -383,13 +404,21 @@ export default function SummaryScore() {
                   colSpan={2}
                 >
                   <div className="py-2 px-4 bg-yellow-600 text-white rounded w-fit ml-auto mr-5">
-                    {totalScore >= 90
-                      ? "AA"
-                      : totalScore >= 75
-                      ? "BB"
-                      : totalScore >= 60
-                      ? "B"
-                      : "C"}
+                    {totalScore > 90 ?
+                      "AA" :
+                      totalScore > 80 ?
+                        "A" :
+                        totalScore > 70 ?
+                          "BB" :
+                          totalScore > 60 ?
+                            "B" :
+                            totalScore > 50 ?
+                              "CC" :
+                              totalScore > 30 ?
+                                "C" :
+                                totalScore <= 30 ?
+                                  "D" :
+                                  "Belum Input"}
                   </div>
                 </td>
               </tr>
