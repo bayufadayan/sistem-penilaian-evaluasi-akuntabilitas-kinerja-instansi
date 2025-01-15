@@ -3,7 +3,7 @@
 import type React from "react";
 import styles from "@/styles/styles.module.css";
 import axios from "axios";
-import { useCallback, useEffect, useState} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { uploadFileToSupabase, supabase } from "@/lib/supabaseClient";
 import { IoIosArrowForward } from "react-icons/io";
@@ -514,7 +514,6 @@ export default function ScoreInputPage({
   }, [nilaiAvgOlah, percentage, grade, nilai, updateSubComponentScore]);
 
   // Nilai Component
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const updateComponentScore = useCallback(async (componentId: number) => {
     try {
       const response = await axios.patch(
@@ -544,7 +543,12 @@ export default function ScoreInputPage({
       const response = await axios.get(`/api/components/${componentId}`);
       const componentScore = response.data.componentScore;
 
-      return componentScore;
+      if (typeof componentScore === 'number') {
+        return componentScore;
+      } else {
+        console.error("Invalid component score format:", response.data);
+        return 0;
+      }
     } catch (error) {
       console.error("Error calculating component score:", error);
       return 0;
@@ -562,20 +566,17 @@ export default function ScoreInputPage({
       {/* Toast */}
       {isToastVisible && (
         <div
-          className={`fixed right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-lg border ${
-            toastType === "success" ? "border-green-300" : "border-red-300"
-          } transition-all duration-500 ease-in-out transform ${
-            isToastVisible ? "animate-slideIn" : "animate-slideOut"
-          }`}
+          className={`fixed right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-lg border ${toastType === "success" ? "border-green-300" : "border-red-300"
+            } transition-all duration-500 ease-in-out transform ${isToastVisible ? "animate-slideIn" : "animate-slideOut"
+            }`}
           // biome-ignore lint/a11y/useSemanticElements: <explanation>
           role="alert"
         >
           <div
-            className={`inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full shadow-md ${
-              toastType === "success"
+            className={`inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full shadow-md ${toastType === "success"
                 ? "bg-green-100 text-green-500"
                 : "bg-red-100 text-red-500"
-            }`}
+              }`}
           >
             {toastType === "success" ? (
               <FaCircleCheck className="text-green-600 text-2xl" />
@@ -664,9 +665,8 @@ export default function ScoreInputPage({
             <div className={styles.fillCriteriaHeaderContent}>
               <div className={styles.criteriaTitleContainer}>
                 <div className={styles.mainTitle}>
-                  <p className="text-sm text-blue-800 mb-1">{`Komponen No. ${
-                    subComponent?.component?.component_number ?? ""
-                  }`}</p>
+                  <p className="text-sm text-blue-800 mb-1">{`Komponen No. ${subComponent?.component?.component_number ?? ""
+                    }`}</p>
 
                   <h1 className="text-3xl">
                     {subComponent?.component.name.toUpperCase()}
@@ -782,21 +782,18 @@ export default function ScoreInputPage({
                         <button
                           type="button"
                           key={criterion.id}
-                          className={`${
-                            selectedCriterion?.id === criterion.id
+                          className={`${selectedCriterion?.id === criterion.id
                               ? "bg-blue-900 text-white"
                               : "hover:bg-blue-200 hover:text-blue-900"
-                          } ${
-                            styles.theCriteria
-                          } cursor-pointer transition duration-300 ease-in-out`}
+                            } ${styles.theCriteria
+                            } cursor-pointer transition duration-300 ease-in-out`}
                           onClick={() => setSelectedCriterion(criterion)}
                         >
                           <div
-                            className={`${styles.criteriaNumber} ${
-                              selectedCriterion?.id === criterion.id
+                            className={`${styles.criteriaNumber} ${selectedCriterion?.id === criterion.id
                                 ? "bg-white text-blue-900"
                                 : "bg-blue-900 text-white"
-                            }`}
+                              }`}
                           >
                             {criterion.criteria_number}
                           </div>
@@ -815,11 +812,10 @@ export default function ScoreInputPage({
                   <button
                     type="button"
                     onClick={handleHiddenSubmit}
-                    className={`flex justify-center items-center gap-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none ${
-                      hasChanges && !isSaving
+                    className={`flex justify-center items-center gap-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none ${hasChanges && !isSaving
                         ? "bg-blue-700 hover:bg-blue-800"
                         : "bg-gray-400 cursor-not-allowed"
-                    }`}
+                      }`}
                     disabled={!hasChanges || isSaving}
                   >
                     {isSaving ? (
@@ -880,11 +876,10 @@ export default function ScoreInputPage({
                     <p
                       className={`${styles.criteriaFormSubtitle} text-base font-semibold bg-blue-800 py-1 px-4 mb-1 rounded-full text-white w-fit`}
                     >
-                      {`Kriteria ${
-                        selectedCriterion
+                      {`Kriteria ${selectedCriterion
                           ? selectedCriterion.criteria_number
                           : ""
-                      }`}
+                        }`}
                     </p>
                     <h3 className="font-bold text-xl">
                       {selectedCriterion ? selectedCriterion.name : ""}
@@ -895,7 +890,7 @@ export default function ScoreInputPage({
                       </div>
                       <p>
                         {selectedCriterion &&
-                        selectedCriterion.description?.trim() !== ""
+                          selectedCriterion.description?.trim() !== ""
                           ? selectedCriterion.description
                           : "Tidak ada Deskripsi"}
                       </p>

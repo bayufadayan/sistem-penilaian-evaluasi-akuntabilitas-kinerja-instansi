@@ -19,8 +19,29 @@ interface ScoreExplain {
   penjelasan: string;
 }
 
+interface SubComponent {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
+  subcomponent_number: number;
+  id_components: number;
+}
+
+interface Component {
+  id: number;
+  name: string;
+  description: string;
+  weight: number;
+  component_number: number;
+  id_team: number;
+  id_LKE: string;
+  subComponents: SubComponent[];
+}
+
 export default function InstructionPage() {
   const [scoreExplain, setScoreExplain] = useState<ScoreExplain[]>([]);
+  const [firstSubComponents, setFirstSubComponents] = useState<SubComponent | null>(null);
   const [activeSection, setActiveSection] = useState<ScoreExplainSectionType>(
     ScoreExplainSectionType.Keberadaan
   );
@@ -37,12 +58,33 @@ export default function InstructionPage() {
       }
     };
 
+    const fetchComponents = async () => {
+      try {
+        const res = await fetch(`/api/components-by-lke/${dataContext?.evaluationId}`);
+        const data: { component: Component } = await res.json();
+
+        // Cari subcomponent dengan subcomponent_number terkecil
+        const smallestSubComponent = data.component.subComponents.reduce((smallest, current) =>
+          current.subcomponent_number < smallest.subcomponent_number ? current : smallest
+        );
+
+        setFirstSubComponents(smallestSubComponent);
+
+      } catch (error) {
+        console.error("Error fetching components:", error);
+      }
+    };
+
+
     fetchScoreExplain();
-  }, []);
+    fetchComponents();
+  }, [dataContext?.evaluationId]);
 
   const filteredSections = scoreExplain.filter(
     (item) => item.section === activeSection
   );
+
+  if (!dataContext) return <div>No Data Found</div>;
 
   return (
     <div className={styles.lkeContentContainer}>
@@ -73,11 +115,10 @@ export default function InstructionPage() {
               <div className={styles.menuContainer}>
                 <button
                   type="button"
-                  className={`${
-                    activeSection === ScoreExplainSectionType.Keberadaan
-                      ? "bg-blue-800 text-white"
-                      : "text-blue-800"
-                  } ${styles.theMenu} hover:bg-blue-800 hover:text-white`}
+                  className={`${activeSection === ScoreExplainSectionType.Keberadaan
+                    ? "bg-blue-800 text-white"
+                    : "text-blue-800"
+                    } ${styles.theMenu} hover:bg-blue-800 hover:text-white`}
                   onClick={() =>
                     setActiveSection(ScoreExplainSectionType.Keberadaan)
                   }
@@ -88,11 +129,10 @@ export default function InstructionPage() {
 
                 <button
                   type="button"
-                  className={`${
-                    activeSection === ScoreExplainSectionType.Kualitas
-                      ? "bg-blue-800 text-white"
-                      : "text-blue-800"
-                  } ${styles.theMenu} hover:bg-blue-800 hover:text-white`}
+                  className={`${activeSection === ScoreExplainSectionType.Kualitas
+                    ? "bg-blue-800 text-white"
+                    : "text-blue-800"
+                    } ${styles.theMenu} hover:bg-blue-800 hover:text-white`}
                   onClick={() =>
                     setActiveSection(ScoreExplainSectionType.Kualitas)
                   }
@@ -103,11 +143,10 @@ export default function InstructionPage() {
 
                 <button
                   type="button"
-                  className={`${
-                    activeSection === ScoreExplainSectionType.Pemanfaat
-                      ? "bg-blue-800 text-white"
-                      : "text-blue-800"
-                  } ${styles.theMenu} hover:bg-blue-800 hover:text-white`}
+                  className={`${activeSection === ScoreExplainSectionType.Pemanfaat
+                    ? "bg-blue-800 text-white"
+                    : "text-blue-800"
+                    } ${styles.theMenu} hover:bg-blue-800 hover:text-white`}
                   onClick={() =>
                     setActiveSection(ScoreExplainSectionType.Pemanfaat)
                   }
@@ -118,28 +157,30 @@ export default function InstructionPage() {
               </div>
             </div>
 
-            <div className={`${styles.nextButton} ${styles.nextScoreExplain}`}>
-              <button type="button">
-                <p>Selanjutnya</p>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="45"
-                  height="45"
-                  viewBox="0 0 45 45"
-                  fill="none"
-                >
-                  <title>Next</title>
-                  <rect width="45" height="45" rx="22.5" fill="#01499F" />
-                  <path
-                    d="M19 30L26.5 22.5L19 15"
-                    stroke="white"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
+            <Link href={`/sheets/${dataContext.evaluationId}/${firstSubComponents?.id}`}>
+              <div className={`${styles.nextButton} ${styles.nextScoreExplain}`}>
+                <button type="button">
+                  <p>Selanjutnya</p>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="45"
+                    height="45"
+                    viewBox="0 0 45 45"
+                    fill="none"
+                  >
+                    <title>Next</title>
+                    <rect width="45" height="45" rx="22.5" fill="#01499F" />
+                    <path
+                      d="M19 30L26.5 22.5L19 15"
+                      stroke="white"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </Link>
           </div>
 
           <div className={styles.explainTableSection}>

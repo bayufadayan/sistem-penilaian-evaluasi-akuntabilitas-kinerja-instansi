@@ -45,3 +45,27 @@ export const POST = async (request: Request) => {
     { status: 201 }
   );
 };
+
+  export const GET = async () => {
+    try {
+      const component = await prisma.component.findMany({
+        select: {
+          id: true,
+          name: true,
+          subComponents: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });     
+    return NextResponse.json({ component, }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching component:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch component" },
+      { status: 500 }
+    );
+  }
+};

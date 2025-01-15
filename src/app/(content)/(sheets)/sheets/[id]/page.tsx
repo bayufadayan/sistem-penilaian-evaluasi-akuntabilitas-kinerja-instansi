@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import styles from "@/styles/styles.module.css";
 import { useDataContext } from "./layout";
+import Link from "next/link";
 
 export default function EvaluationSheetsPage() {
   const dataContext = useDataContext();
@@ -39,28 +40,30 @@ export default function EvaluationSheetsPage() {
           </div>
         </div>
 
-        <div className={styles.nextButton}>
-          <button type="button">
-            <p>Selanjutnya</p>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="45"
-              height="45"
-              viewBox="0 0 45 45"
-              fill="none"
-            >
-              <title>Next</title>
-              <rect width="45" height="45" rx="22.5" fill="#01499F" />
-              <path
-                d="M19 30L26.5 22.5L19 15"
-                stroke="white"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
+        <Link href={`${dataContext.evaluationId}/instruction`}>
+          <div className={styles.nextButton}>
+            <button type="button">
+              <p>Selanjutnya</p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="45"
+                height="45"
+                viewBox="0 0 45 45"
+                fill="none"
+              >
+                <title>Next</title>
+                <rect width="45" height="45" rx="22.5" fill="#01499F" />
+                <path
+                  d="M19 30L26.5 22.5L19 15"
+                  stroke="white"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </Link>
       </div>
     </div>
   );
