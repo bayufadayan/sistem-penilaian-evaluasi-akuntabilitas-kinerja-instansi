@@ -8,6 +8,7 @@ import ComponentChart from "./chartComponent";
 import PdfGenerator from "./pdfGenerator";
 import ExcelGenerator from "./excelGenerator";
 import type { ComponentScore, Score } from "@prisma/client";
+import Link from "next/link";
 
 type CriteriaData = {
   id: number;
@@ -81,6 +82,7 @@ export default function SummaryScore() {
   const [dateStart, setDateStart] = useState("");
   const [dateFinish, setDateFinish] = useState("");
   const [description, setDescription] = useState("");
+  const dataContext = useDataContext();
 
   const saveTotalScore = useCallback(
     async (total: number) => {
@@ -217,8 +219,14 @@ export default function SummaryScore() {
       <div className={`${styles.lkeContent}`}>
         <div className={styles.fillCriteriaHeader}>
           <div className={styles.breadcrumb}>
-            Lembar Kinerja Evaluasi / Perencanaan Kinerja / Dokumen Perencanaan
-            Kinerja...
+            <Link href={`/`} className="text-blue-700 font-semibold hover:text-green-600">
+              Beranda
+            </Link>{" "}
+            <span>{" / "}</span>
+            <Link href={`/sheets/${dataContext?.evaluationId}`} className="text-blue-600 hover:text-green-600 font-semibold">
+              Lembar Kerja Evaluasi
+            </Link>{" "}
+            / Hasil LKE
           </div>
 
           <div className={styles.fillCriteriaHeroContainer}>
@@ -356,7 +364,7 @@ export default function SummaryScore() {
               </tr>
             </thead>
             <tbody>
-              {components.map((component, index) => (
+              {components.sort((a, b) => a.component_number - b.component_number).map((component, index) => (
                 <tr
                   className={`bg-white border-b hover:bg-gray-100 ${index % 2 === 0 ? "bg-gray-50" : ""
                     }`}
@@ -426,8 +434,8 @@ export default function SummaryScore() {
           </table>
         </div>
 
-        <div className="mt-6">
-          <h3 className="text-lg font-bold mb-4">
+        <div className="mt-10">
+          <h3 className="text-2xl font-bold mb-4 text-center">
             Perbandingan Komponen dengan Maksimal Bobotnya
           </h3>
           <ComponentChart components={components} />

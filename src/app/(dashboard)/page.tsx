@@ -12,7 +12,77 @@ interface EvaluationSheet {
   title: string;
   date_start: string | Date;
   date_finish: string | Date;
+  description: string;
   status: string;
+  year: string;
+  evaluationSheetScore: EvaluationSheetScore[];
+}
+
+interface EvaluationSheetScore {
+  id: number;
+  nilai: number | null;
+  grade: string | null;
+  id_LKE: string;
+}
+
+
+interface Score {
+  id: string;
+  score: string;
+  notes: string | null;
+  created_at: string;
+  id_criterias: string;
+  id_users: string | null;
+}
+
+interface Criteria {
+  id: string;
+  name: string;
+  description: string | null;
+  criteria_number: number;
+  id_subcomponents: string;
+  score: Score[];
+}
+
+interface SubComponent {
+  id: string;
+  name: string;
+  description: string;
+  weight: number;
+  subcomponent_number: number;
+  id_components: string;
+  subComponentScore: Score[];
+  criteria: Criteria[];
+}
+
+interface Component {
+  id: string;
+  name: string;
+  description: string;
+  weight: number;
+  component_number: number;
+  id_team: number;
+  id_LKE: string;
+  componentScore: Score[];
+  subComponents: SubComponent[];
+}
+
+interface Evaluation {
+  id: string;
+  title: string;
+  date_start: string | Date;
+  date_finish: string | Date;
+  description: string;
+  status: string;
+  year: string;
+  color: string;
+  components: Component[];
+}
+
+interface CriteriaStats {
+  totalCriteria: number,
+  emptyCriteriaCount: number,
+  filledCriteriaCount: number,
 }
 
 export default function Home() {
@@ -26,6 +96,11 @@ export default function Home() {
   );
   const [completedSheets, setCompletedSheets] = useState<EvaluationSheet[]>([]);
   const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
+  const [criteriaStats, setCriteriaStats] = useState<CriteriaStats>({
+    totalCriteria: 0,
+    emptyCriteriaCount: 0,
+    filledCriteriaCount: 0,
+  });
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -58,6 +133,51 @@ export default function Home() {
       setDaysRemaining(remainingDays);
     }
   }, [inProgressSheets]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+
+    const fetchCriteriaCount = async () => {
+      if (!inProgressSheets || inProgressSheets.length === 0) {
+        console.log('Loading in-progress sheets...');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/evaluations/${inProgressSheets[0].id}`);
+
+        // Pastikan response berhasil
+        if (!res.ok) {
+          console.error('Failed to fetch data:', res.statusText);
+          return;
+        }
+
+        const data: Evaluation = await res.json();
+        console.log("Data fetched:", data);
+
+        const allCriteria = data.components.flatMap((component: Component) =>
+          component.subComponents.flatMap((subComponent: SubComponent) => subComponent.criteria)
+        );
+
+        const totalCriteriaCount = allCriteria.length;
+        const emptyCriteriaCount = allCriteria.filter(
+          (criteria: Criteria) => criteria.score[0].score === ""
+        ).length;
+
+        setCriteriaStats({
+          totalCriteria: totalCriteriaCount,
+          emptyCriteriaCount,
+          filledCriteriaCount: totalCriteriaCount - emptyCriteriaCount,
+        });
+      } catch (error) {
+        console.error('Error fetching criteria count:', error);
+      }
+    };
+
+    fetchCriteriaCount();
+  }, [inProgressSheets, status, router]);
 
   return (
     <div className={styles.mainContent}>
@@ -103,21 +223,33 @@ export default function Home() {
       </div>
       <div className={styles.summaryCard}>
         <div className={styles.title}>
-          <h2 className="font-bold text-2xl">Ringkasan</h2>
+          <h2 className="font-bold text-xl flex justify-center">
+            {inProgressSheets.length !== 0 ?
+              <h2 className="mt-[8px] text-center font-bold px-8 py-2 bg-green-600 rounded-full shadow-md text-white w-fit">{inProgressSheets[0]?.title ?? "Loading .."}</h2>
+              : (
+                "Ringkasan"
+              )}
+          </h2>
         </div>
 
         {inProgressSheets.length !== 0 ? (
 
           <div className={inProgressSheets.length === 0 ? "hidden" : "-mt-3 flex flex-col gap-4"}>
-
             <div className={styles.progressSection}>
               <div className={styles.persentageSection}>
                 <p>Progess Pengisian Keseluruhan</p>
                 <div className={styles.persentage}>
                   <div className={styles.progressBar}>
-                    <div className={styles.insideProgress}>a</div>
+                    <div
+                      className={styles.insideProgress}
+                      style={{
+                        width: `${(criteriaStats.filledCriteriaCount / criteriaStats.totalCriteria) * 100}%`,
+                        transition: 'width 0.5s ease-out',
+                      }}>
+                      {(criteriaStats.filledCriteriaCount / criteriaStats.totalCriteria) * 100}
+                    </div>
                   </div>
-                  <p>90%</p>
+                  <p>{(criteriaStats.filledCriteriaCount / criteriaStats.totalCriteria) * 100}%</p>
                 </div>
               </div>
               {inProgressSheets.length > 0 && (
@@ -213,18 +345,28 @@ export default function Home() {
                   <div className={styles.information}>
                     <div className={styles.scoreInfo}>
                       <p>Nilai Akuntabilitas Kinerja</p>
-                      <p>79,55</p>
+                      <p>
+                        {(inProgressSheets[0]?.evaluationSheetScore[0]?.nilai ?? "Nilai belum tersedia")}
+                      </p>
+
                     </div>
 
                     <div className={styles.scoreInfo}>
                       <p>Status Pengisian</p>
-                      <p>Jumlah Kriteria Terisi: <span className="text-blue-800 py-1 px-2 bg-white rounded-md">45/52</span></p>
+                      <p>Jumlah Kriteria Terisi:
+                        <span className="text-blue-800 py-1 px-2 bg-white rounded-md">
+                          {criteriaStats.filledCriteriaCount}/{criteriaStats.totalCriteria}
+                        </span>
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 <div className={styles.grade}>
-                  <div className={styles.gradeScore}>BB</div>
+                  <div className={`${styles.gradeScore} flex flex-col justify-center items-center`}>
+                    <small className="text-sm text-gray-600 font-semibold">Grade</small>
+                    {(inProgressSheets[0]?.evaluationSheetScore[0]?.grade ?? "N/A")}
+                  </div>
                 </div>
               </div>
             </div>

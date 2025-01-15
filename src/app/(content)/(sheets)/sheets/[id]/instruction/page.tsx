@@ -91,7 +91,11 @@ export default function InstructionPage() {
       <div className={styles.lkeContent}>
         <div className={styles.lkeContentHeader}>
           <div className={`${styles.breadcrumb}`}>
-            <Link href={`/sheets/${dataContext?.evaluationId}`} className="text-blue-800 opacity-100">
+            <Link href={`/`} className="text-blue-700 font-semibold hover:text-green-600">
+              Beranda
+            </Link>{" "}
+            <span>{" / "}</span>
+            <Link href={`/sheets/${dataContext?.evaluationId}`} className="text-blue-600 hover:text-green-600 font-semibold">
               Lembar Kerja Evaluasi
             </Link>{" "}
             / Penjelasan Penilaian
@@ -157,8 +161,8 @@ export default function InstructionPage() {
               </div>
             </div>
 
-            <Link href={`/sheets/${dataContext.evaluationId}/${firstSubComponents?.id}`}>
-              <div className={`${styles.nextButton} ${styles.nextScoreExplain}`}>
+            <div className={`${styles.nextButton}`}>
+              <Link href={`/sheets/${dataContext.evaluationId}/${firstSubComponents?.id}`} className="text-blue-500 rounded-lg px-4 hover:bg-blue-500 hover:text-white transition-colors duration-300 ease-in-out shadow-md bg-white">
                 <button type="button">
                   <p>Selanjutnya</p>
                   <svg
@@ -179,8 +183,8 @@ export default function InstructionPage() {
                     />
                   </svg>
                 </button>
-              </div>
-            </Link>
+              </Link>
+            </div>
           </div>
 
           <div className={styles.explainTableSection}>
@@ -213,7 +217,7 @@ export default function InstructionPage() {
                 <tbody>
                   <tr>
                     <td colSpan={4} className="mt-2">
-                      Tidak ada data tersedia
+                      Loading ...
                     </td>
                   </tr>
                 </tbody>

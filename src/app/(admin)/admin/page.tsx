@@ -168,8 +168,8 @@ export default function TeamPage() {
 
       <div className="flex gap-2 flex-col">
         <div className="flex gap-4 mb-6">
-          <CardCount title="Jumlah Pengguna" value={userCount} color="from-red-600 to-red-400" icon={< MdOutlineAccountCircle className="text-white w-12 h-12" />} />
-          <CardCount title="Jumlah Tim" value={teamCount} color="from-blue-600 to-blue-400" icon={< AiOutlineTeam className="text-white w-12 h-12" />} />
+          <CardCount title="Jumlah Akun Terdaftar" value={userCount} color="from-red-600 to-red-400" icon={< MdOutlineAccountCircle className="text-white w-12 h-12" />} />
+          <CardCount title="Jumlah Tim Terdaftar" value={teamCount} color="from-blue-600 to-blue-400" icon={< AiOutlineTeam className="text-white w-12 h-12" />} />
           <CardCount title="Jumlah LKE AKIP" value={evaluationCount} color="from-green-600 to-green-400" icon={< FaRegChartBar className="text-white w-12 h-12" />} />
           <CardCount title="Jumlah Evidence" value={evidenceCount} color="from-yellow-600 to-yellow-400" icon={<ImFilesEmpty className="text-white w-12 h-12" />} />
         </div>
@@ -178,9 +178,9 @@ export default function TeamPage() {
       <div className="flex flex-col md:flex-row gap-8">
         <div className="bg-white flex-1 p-4 rounded-lg shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-            <SmallCard title="Total Komponen" value={componentCount} color="text-blue-600" borderColor="border-blue-600" />
-            <SmallCard title="Total Subkomponen" value={subComponentCount} color="text-green-600" borderColor="border-green-600" />
-            <SmallCard title="Total Kriteria" value={criteriaCount} color="text-yellow-600" borderColor="border-yellow-600" />
+            <SmallCard title="Total Seluruh Komponen" value={componentCount} color="text-blue-600" borderColor="border-blue-600" />
+            <SmallCard title="Total Seluruh Subkomponen" value={subComponentCount} color="text-green-600" borderColor="border-green-600" />
+            <SmallCard title="Total Seluruh Kriteria" value={criteriaCount} color="text-yellow-600" borderColor="border-yellow-600" />
           </div>
 
           <div className="flex flex-col gap-4">

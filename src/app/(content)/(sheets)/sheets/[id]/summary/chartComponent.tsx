@@ -40,13 +40,19 @@ export default function ComponentChart({ components }: ComponentChartProps) {
   const normalizedScores = components.map((component) => {
     const score = component.componentScore?.[0]?.nilai ?? 0;
     const weight = component.weight ?? 1;
-    return (score / weight) * 100; 
+    return (score / weight) * 100;
   });
 
   const remainingScores = normalizedScores.map((score) => 100 - score);
 
   const data = {
-    labels: components.map((component) => component.name),
+    labels: components.sort((a, b) => a.component_number - b.component_number)
+      .map((component) => {
+        const componentName = component.name.split(" ").map((word) => {
+          return word.slice(0);
+        });
+        return componentName;
+      }),
     datasets: [
       {
         label: "Skor Ternormalisasi (%)",

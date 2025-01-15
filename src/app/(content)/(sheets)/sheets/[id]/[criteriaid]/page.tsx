@@ -22,6 +22,67 @@ import type {
   Score,
   SubComponentScore,
 } from "@prisma/client";
+import Link from "next/link";
+import { useDataContext } from "../layout";
+
+interface Score2 {
+  id: string;
+  score: string;
+  notes: string | null;
+  created_at: string;
+  id_criterias: string;
+  id_users: string | null;
+}
+
+interface Criteria2 {
+  id: string;
+  name: string;
+  description: string | null;
+  criteria_number: number;
+  id_subcomponents: string;
+  score: Score2[];
+}
+
+interface SubComponent2 {
+  id: string;
+  name: string;
+  description: string;
+  weight: number;
+  subcomponent_number: number;
+  id_components: string;
+  subComponentScore: Score2[];
+  criteria: Criteria2[];
+}
+
+interface Component2 {
+  id: string;
+  name: string;
+  description: string;
+  weight: number;
+  component_number: number;
+  id_team: number;
+  id_LKE: string;
+  componentScore: Score2[];
+  subComponents: SubComponent2[];
+}
+
+interface Evaluation2 {
+  id: string;
+  title: string;
+  date_start: string | Date;
+  date_finish: string | Date;
+  description: string;
+  status: string;
+  year: string;
+  color: string;
+  components: Component2[];
+}
+
+interface CriteriaStats2 {
+  totalCriteria: number,
+  emptyCriteriaCount: number,
+  filledCriteriaCount: number,
+}
 
 type CriteriaWithScore = Criteria & {
   score: Score[];
@@ -62,6 +123,13 @@ export default function ScoreInputPage({
     number | null
   >(null);
   const [componentScore, setComponentScore] = useState<number | null>(null);
+  const [criteriaStats, setCriteriaStats] = useState<CriteriaStats2>({
+    totalCriteria: 0,
+    emptyCriteriaCount: 0,
+    filledCriteriaCount: 0,
+  });
+
+  const dataContext = useDataContext();
 
   const { data: session } = useSession();
 
@@ -503,6 +571,35 @@ export default function ScoreInputPage({
   }, [selectedCriterion, subComponent, nilaiAvgOlah, percentage, grade, nilai]);
 
   useEffect(() => {
+    if (!dataContext) return;
+
+    const fetchCriteriaCount = async () => {
+      const res = await fetch(`/api/evaluations/${dataContext.evaluationId}`);
+      const data: Evaluation2 = await res.json();
+
+      // Semua kriteria dari semua komponen
+      const allCriteria = data.components.flatMap((component: Component2) =>
+        component.subComponents.flatMap((subComponent: SubComponent2) => subComponent.criteria)
+      );
+
+      const totalCriteriaCount = allCriteria.length;
+
+      const emptyCriteriaCount = allCriteria.filter(
+        (criteria: Criteria2) => criteria.score[0].score === ""
+      ).length;
+
+      setCriteriaStats({
+        totalCriteria: totalCriteriaCount,
+        emptyCriteriaCount,
+        filledCriteriaCount: totalCriteriaCount - emptyCriteriaCount,
+      });
+    };
+
+    fetchCriteriaCount();
+  }, [dataContext]);
+
+
+  useEffect(() => {
     if (
       nilaiAvgOlah !== null &&
       percentage !== null &&
@@ -566,7 +663,7 @@ export default function ScoreInputPage({
       {/* Toast */}
       {isToastVisible && (
         <div
-          className={`fixed right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-lg border ${toastType === "success" ? "border-green-300" : "border-red-300"
+          className={`z-50 fixed right-4 flex items-center w-full max-w-xs p-4 mb-4 text-gray-700 bg-white rounded-lg shadow-lg border ${toastType === "success" ? "border-green-300" : "border-red-300"
             } transition-all duration-500 ease-in-out transform ${isToastVisible ? "animate-slideIn" : "animate-slideOut"
             }`}
           // biome-ignore lint/a11y/useSemanticElements: <explanation>
@@ -574,8 +671,8 @@ export default function ScoreInputPage({
         >
           <div
             className={`inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full shadow-md ${toastType === "success"
-                ? "bg-green-100 text-green-500"
-                : "bg-red-100 text-red-500"
+              ? "bg-green-100 text-green-500"
+              : "bg-red-100 text-red-500"
               }`}
           >
             {toastType === "success" ? (
@@ -648,27 +745,60 @@ export default function ScoreInputPage({
       <div className={styles.lkeContent}>
         <div className={styles.fillCriteriaHeader}>
           <div className={styles.breadcrumb}>
-            Lembar Kinerja Evaluasi / Perencanaan Kineja / Dokumen Perencanaan
-            Kinerj...
+            <Link href={`/`} className="text-blue-700 font-semibold hover:text-green-600">
+              Beranda
+            </Link>{" "}
+            <span>{" / "}</span>
+            <Link href={`/sheets/${dataContext?.evaluationId}`} className="text-blue-600 hover:text-green-600 font-semibold">
+              Lembar Kerja Evaluasi
+            </Link>
+            <span>{" / "}</span>
+            <span>
+              {subComponent?.component.name
+                .toLowerCase()
+                .split(' ')
+                .map(word => word.trim())
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ')}
+            </span>
+            <span>{" / "}</span>
+            <span>
+              {subComponent?.name
+                ? subComponent.name.length > 50
+                  ? `${subComponent.name.slice(0, 50)}...`
+                  : subComponent.name
+                : "Loading..."}
+            </span>
+
           </div>
 
           <div className={styles.fillCriteriaHeroContainer}>
             <div className={styles.criteriaFilledProgress}>
-              <small className="font-bold">Progress Anda (70%)</small>
+              <small className="font-bold flex justify-between">
+                <span>Progress Pengisian "{dataContext?.evaluationName}" Keseluruhan</span>
+                <span>{(criteriaStats.filledCriteriaCount / criteriaStats.totalCriteria) * 100}%</span>
+              </small>
               <div className={styles.persentage}>
-                <div className={styles.progressCompleted}>
-                  [Bar Progress nya]
+                <div
+                  className={`${styles.progressCompleted}`}
+                  style={{
+                    width: `${(criteriaStats.filledCriteriaCount / criteriaStats.totalCriteria) * 100}%`,
+                    transition: 'width 0.5s ease-out',
+                  }}
+                >
+                  {(criteriaStats.filledCriteriaCount / criteriaStats.totalCriteria) * 100}
                 </div>
+
               </div>
             </div>
 
             <div className={styles.fillCriteriaHeaderContent}>
               <div className={styles.criteriaTitleContainer}>
                 <div className={styles.mainTitle}>
-                  <p className="text-sm text-blue-800 mb-1">{`Komponen No. ${subComponent?.component?.component_number ?? ""
+                  <p className="text-sm text-blue-800 mb-1 font-bold">{`Komponen No. ${subComponent?.component?.component_number ?? ""
                     }`}</p>
 
-                  <h1 className="text-3xl">
+                  <h1 className="text-3xl font-bold mb-1">
                     {subComponent?.component.name.toUpperCase()}
                   </h1>
                   <div className="flex gap-1">
@@ -676,7 +806,7 @@ export default function ScoreInputPage({
                       Bobot komponen:{" "}
                       <span>{subComponent?.component.weight.toFixed(2)}</span>
                     </div>
-                    <div className={styles.componentWeight}>
+                    <div className={`${styles.componentWeight} font-bold`}>
                       Nilai Komponen:{" "}
                       <span>
                         {componentScore !== null
@@ -719,7 +849,7 @@ export default function ScoreInputPage({
                 <div className={styles.criteriaScore}>
                   <div className={styles.scoreAndPersentage}>
                     <div className={styles.scoreCard}>
-                      <h5>Persentasi</h5>
+                      <h5>Persentase</h5>
                       <h2>{percentage.toFixed(2)}%</h2>
                     </div>
 
@@ -770,7 +900,7 @@ export default function ScoreInputPage({
                 <p>Pilihan Kriteria:</p>
 
                 <div
-                  className={`${styles.criteriaListContainer} overflow-y-auto max-h-[60vh] rounded`}
+                  className={`${styles.criteriaListContainer} overflow-y-auto max-h-[60vh] rounded shadow-lg`}
                 >
                   {(subComponent?.criteria ?? []).length > 0 ? (
                     subComponent?.criteria
@@ -783,16 +913,16 @@ export default function ScoreInputPage({
                           type="button"
                           key={criterion.id}
                           className={`${selectedCriterion?.id === criterion.id
-                              ? "bg-blue-900 text-white"
-                              : "hover:bg-blue-200 hover:text-blue-900"
+                            ? "bg-blue-900 text-white"
+                            : "hover:bg-blue-200 hover:text-blue-900"
                             } ${styles.theCriteria
                             } cursor-pointer transition duration-300 ease-in-out`}
                           onClick={() => setSelectedCriterion(criterion)}
                         >
                           <div
                             className={`${styles.criteriaNumber} ${selectedCriterion?.id === criterion.id
-                                ? "bg-white text-blue-900"
-                                : "bg-blue-900 text-white"
+                              ? "bg-white text-blue-900"
+                              : "bg-blue-900 text-white"
                               }`}
                           >
                             {criterion.criteria_number}
@@ -813,8 +943,8 @@ export default function ScoreInputPage({
                     type="button"
                     onClick={handleHiddenSubmit}
                     className={`flex justify-center items-center gap-2 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none ${hasChanges && !isSaving
-                        ? "bg-blue-700 hover:bg-blue-800"
-                        : "bg-gray-400 cursor-not-allowed"
+                      ? "bg-blue-700 hover:bg-blue-800"
+                      : "bg-gray-400 cursor-not-allowed"
                       }`}
                     disabled={!hasChanges || isSaving}
                   >
@@ -877,8 +1007,8 @@ export default function ScoreInputPage({
                       className={`${styles.criteriaFormSubtitle} text-base font-semibold bg-blue-800 py-1 px-4 mb-1 rounded-full text-white w-fit`}
                     >
                       {`Kriteria ${selectedCriterion
-                          ? selectedCriterion.criteria_number
-                          : ""
+                        ? selectedCriterion.criteria_number
+                        : ""
                         }`}
                     </p>
                     <h3 className="font-bold text-xl">
@@ -889,11 +1019,11 @@ export default function ScoreInputPage({
                         Deskripsi:
                       </div>
                       <p>
-                        {selectedCriterion &&
-                          selectedCriterion.description?.trim() !== ""
-                          ? selectedCriterion.description
+                        {selectedCriterion
+                          ? selectedCriterion.description ? selectedCriterion.description : "Tidak ada Deskripsi"
                           : "Tidak ada Deskripsi"}
                       </p>
+
                     </div>
                     <hr className="border-t-2 border-gray-300 mt-2" />
                   </div>
@@ -1198,7 +1328,7 @@ export default function ScoreInputPage({
                         </p>
                       )
                     ) : (
-                      <p className="text-gray-600">No evidence found.</p>
+                      <p className="text-gray-600 italic opacity-95">Belum ada evidence pada kriteria <span className="font-bold">"{selectedCriterion?.name}"</span></p>
                     )}
                   </div>
                 </div>

@@ -36,7 +36,7 @@ function UserActivityTable() {
                         {users.length !== 0 ? (
                             users.map((user, index) => (
                                 <tr key={user.id || index}>
-                                    <td className="px-4 py-2">{index}</td>
+                                    <td className="px-4 py-2">{index+1}</td>
                                     <td className="px-4 py-2">{user.name}</td>
                                 </tr>
                             ))

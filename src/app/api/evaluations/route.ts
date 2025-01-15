@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { EvaluationSheet } from "@prisma/client";
-import {createActivityLog} from "@/lib/activityLog";
+import { createActivityLog } from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 const prisma = new PrismaClient();
@@ -48,7 +48,11 @@ export const POST = async (request: Request) => {
 
 export const GET = async () => {
   try {
-    const sheets = await prisma.evaluationSheet.findMany();
+    const sheets = await prisma.evaluationSheet.findMany({
+      include: {
+        evaluationSheetScore: true,
+      },
+    });
     return NextResponse.json(sheets);
   } catch (error) {
     return NextResponse.json(

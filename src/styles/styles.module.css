@@ -198,7 +198,7 @@
 }
 
 .progressSection {
-  margin-block: 8px;
+  margin-bottom: 8px;
 }
 
 .persentageSection {
@@ -230,7 +230,8 @@
 .insideProgress {
   background-color: #4176b7;
   border-radius: 100px;
-  width: 90%;
+  color: transparent;
+  width: 0%;
 }
 
 .progressSection button {
@@ -774,7 +775,8 @@
 
 .criteriaFilledProgress .progressCompleted {
   background-color: #01499f;
-  width: 70%;
+  color: transparent;
+  width: 0;
 }
 
 .criteriaTitleContainer {
