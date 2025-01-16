@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,39 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  USER
-}
-
-enum Gender {
-  MALE
-  FEMALE
-}
-
-enum Status {
-  ACTIVE
-  INACTIVE
-}
-
-enum StatusEvaluation {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-enum ScoreExplainSection {
-  Keberadaan
-  Kualitas
-  Pemanfaat
-}
-
 model Team {
   id         Int         @id @default(autoincrement())
   name       String      @unique
-  users      User[]
   components Component[]
+  users      User[]
 }
 
 model User {
@@ -60,11 +26,11 @@ model User {
   created_at          DateTime      @default(now())
   updated_at          DateTime      @updatedAt
   id_team             Int           @default(1)
-  team                Team          @relation(fields: [id_team], references: [id], onDelete: SetDefault)
-  Score               Score[]
-  resetPasswordToken  String?
   resetPasswordExpire DateTime?
+  resetPasswordToken  String?
   ActivityLog         ActivityLog[]
+  Score               Score[]
+  team                Team          @relation(fields: [id_team], references: [id], onDelete: SetDefault)
 }
 
 model EvaluationSheet {
@@ -85,13 +51,13 @@ model Component {
   name             String
   description      String?
   weight           Float
-  component_number Int              @default(0)
   id_team          Int
   id_LKE           String
-  team             Team?            @relation(fields: [id_team], references: [id])
-  evaluation       EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
-  subComponents    SubComponent[]
+  component_number Int              @default(0)
+  evaluation       EvaluationSheet  @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
+  team             Team             @relation(fields: [id_team], references: [id])
   componentScore   ComponentScore[]
+  subComponents    SubComponent[]
 }
 
 model SubComponent {
@@ -99,10 +65,10 @@ model SubComponent {
   name                String
   description         String?
   weight              Float
-  subcomponent_number Int                 @default(0)
   id_components       Int
-  component           Component           @relation(fields: [id_components], references: [id], onDelete: Cascade)
+  subcomponent_number Int                 @default(0)
   criteria            Criteria[]
+  component           Component           @relation(fields: [id_components], references: [id], onDelete: Cascade)
   subComponentScore   SubComponentScore[]
 }
 
@@ -110,8 +76,8 @@ model Criteria {
   id               Int          @id @default(autoincrement())
   name             String
   description      String?
-  criteria_number  Int          @default(0)
   id_subcomponents Int
+  criteria_number  Int          @default(0)
   subComponent     SubComponent @relation(fields: [id_subcomponents], references: [id], onDelete: Cascade)
   score            Score[]
 }
@@ -123,9 +89,9 @@ model Score {
   created_at   DateTime   @default(now())
   id_criterias Int
   id_users     Int?
-  criteria     Criteria   @relation(fields: [id_criterias], references: [id], onDelete: Cascade)
-  user         User?      @relation(fields: [id_users], references: [id], onDelete: SetNull)
   Evidence     Evidence[]
+  criteria     Criteria   @relation(fields: [id_criterias], references: [id], onDelete: Cascade)
+  user         User?      @relation(fields: [id_users], references: [id])
 }
 
 model Evidence {
@@ -134,9 +100,9 @@ model Evidence {
   file_type        String
   file_size        Float
   file_path        String
-  public_path      String
   date_uploaded_at DateTime @default(now())
   id_score         Int
+  public_path      String
   score            Score    @relation(fields: [id_score], references: [id], onDelete: Cascade)
 }
 
@@ -166,34 +132,62 @@ model ComponentScore {
 }
 
 model EvaluationSheetScore {
-  id         Int              @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   nilai      Float?
   grade      String?
   id_LKE     String
-  evaluation EvaluationSheet? @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
+  evaluation EvaluationSheet @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
 }
 
 model Settings {
   id               Int      @id @default(autoincrement())
-  appName          String
-  appLogoLogin     String
-  appLogoDashboard String
-  appLogoFooter    String?
-  favicon          String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
   adminEmail       String
   adminMailPass    String
   adminPhone       String
+  appLogoDashboard String
+  appLogoLogin     String
+  appName          String
+  favicon          String
   guideLink        String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  appLogoFooter    String?
 }
 
 model ActivityLog {
-  id          Int      @id @default(autoincrement())
-  actionType  String
-  tableName   String
-  recordId    Int
-  id_users    Int?
-  user        User?    @relation(fields: [id_users], references: [id], onDelete: SetNull)
-  createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  actionType String
+  tableName  String
+  recordId   Int
+  id_users   Int?
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [id_users], references: [id])
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum StatusEvaluation {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ScoreExplainSection {
+  Keberadaan
+  Kualitas
+  Pemanfaat
 }
