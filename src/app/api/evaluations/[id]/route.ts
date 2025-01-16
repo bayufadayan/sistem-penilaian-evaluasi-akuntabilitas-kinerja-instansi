@@ -21,6 +21,7 @@ export const GET = async (
           where: { id_LKE: id },
           include: {
             componentScore: true,
+            team: true,
             subComponents: {
               include: {
                 subComponentScore: true,

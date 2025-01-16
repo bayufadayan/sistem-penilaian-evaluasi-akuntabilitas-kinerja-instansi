@@ -13,6 +13,8 @@ import {
 import styles from "@/styles/styles.module.css";
 import { useDataContext } from "./layout";
 import Link from "next/link";
+import type { User } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 ChartJS.register(
   CategoryScale,
@@ -62,6 +64,12 @@ interface Component {
   id_LKE: string;
   componentScore: Score[];
   subComponents: SubComponent[];
+  team: Team;
+}
+
+interface Team {
+  id: number;
+  name: string;
 }
 
 interface Evaluation {
@@ -85,7 +93,10 @@ interface CriteriaStats {
 
 export default function EvaluationSheetsPage() {
   const [criteriaStats, setCriteriaStats] = useState<CriteriaStats[]>([]);
+  const [components, setComponents] = useState<Component[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const dataContext = useDataContext();
+  const { data: session } = useSession();
 
   useEffect(() => {
     if (!dataContext) return;
@@ -111,11 +122,42 @@ export default function EvaluationSheetsPage() {
         };
       });
 
+      const components = data.components.map((component: Component) => ({
+        id: component.id,
+        name: component.name,
+        description: component.description,
+        weight: component.weight,
+        component_number: component.component_number,
+        id_team: component.id_team,
+        id_LKE: component.id_LKE,
+        componentScore: component.componentScore,
+        subComponents: component.subComponents,
+        team: component.team,
+      }));
+
+      setComponents(components);
       setCriteriaStats(stats);
     };
 
     fetchCriteriaCount();
   }, [dataContext]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("/api/users");
+        if (!res.ok) {
+          throw new Error("Failed to fetch users");
+        }
+        const data = await res.json();
+        setUsers(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const chartData = {
     labels: criteriaStats
@@ -223,8 +265,49 @@ export default function EvaluationSheetsPage() {
           <div className={styles.explainComponents}>
             <h5 className="font-bold">Deskripsi</h5>
             <p className="italic text-gray-600 font-normal">
-              {dataContext.evaluationDesc !== "" ? dataContext.evaluationDesc : "Tidak ada deskripsi untuk LKE ini"}
+              {dataContext.evaluationDesc !== "" ? dataContext.evaluationDesc : "Tidak ada deskripsi khusus untuk LKE ini"}
             </p>
+
+            <h5 className="font-bold mt-4">Tim Pengisi</h5>
+            <ol className="list-decimal pl-6">
+              {components
+                .sort((a, b) => a.component_number - b.component_number)
+                .flatMap((component) => {
+                  return (
+                    <li className="relative mb-4 bg-white text-black shadow-md rounded-lg p-2">
+                      <div>
+                        <b>{component.name}</b>
+                      </div>
+                      <ul className="pl-6">
+                        <li className="relative pl-4 flex flex-col">
+                          Diisi Oleh:
+                          <span className="font-bold bg-blue-600 text-white p-2 rounded-lg shadow-md w-fit">Tim {component.team.name}</span>
+                          <ul className="list-disc pl-6">
+                            {users.filter(user => user.id_team === component.id_team).length === 0 ? (
+                              <li className="text-gray-500">Belum ada anggota</li>
+                            ) : (
+                              users.map((user) => {
+                                if (user.id_team === component.id_team) {
+                                  return (
+                                    <li key={user.id} className="relative flex items-center my-1">
+                                      <div className="absolute top-0 left-[-1rem] w-[2px] h-full bg-black opacity-40"></div>
+                                      <div className="absolute top-2 left-[-21px] w-3 h-3 bg-white rounded-full border-2 border-gray-500"></div>
+
+                                      <span className="ml-2">{user.name}</span>
+                                    </li>
+                                  );
+                                }
+                                return null;
+                              })
+                            )}
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  );
+                })}
+            </ol>
+
 
           </div>
         </div>

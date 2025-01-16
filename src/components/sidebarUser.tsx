@@ -5,6 +5,7 @@ import type { Component } from "@prisma/client";
 
 type ComponentWithSubComponents = Component & {
   subComponents: SubComponent[];
+  team: Team;
 };
 
 interface SubComponent {
@@ -13,6 +14,11 @@ interface SubComponent {
   description: string;
   weight: number;
   subcomponent_number: number;
+}
+
+interface Team {
+  id: number;
+  name: string;
 }
 
 export default function SidebarUser({

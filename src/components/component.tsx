@@ -1,10 +1,14 @@
-import { useState } from "react";
+'use client'
+import { useEffect, useState } from "react";
 import SubComponentListCard from "./subComponent";
 import styles from "@/styles/styles.module.css";
-import type { Component } from "@prisma/client";
+import type { Component, User } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { CgDanger } from "react-icons/cg"
 
 type ComponentWithSubComponents = Component & {
   subComponents: SubComponent[];
+  team: Team;
 };
 
 interface SubComponent {
@@ -13,6 +17,11 @@ interface SubComponent {
   description: string;
   weight: number;
   subcomponent_number: number;
+}
+
+interface Team {
+  id: number;
+  name: string;
 }
 
 export default function ComponentCard({
@@ -25,10 +34,29 @@ export default function ComponentCard({
   evaluationId: string
 }) {
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const { data: session } = useSession();
 
   const handleDropDown = () => {
     setIsOpenDropDown(!isOpenDropDown);
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("/api/users");
+        if (!res.ok) {
+          throw new Error("Failed to fetch users");
+        }
+        const data = await res.json();
+        setUsers(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   return (
     <div className={styles.lkeComponents}>
@@ -36,8 +64,32 @@ export default function ComponentCard({
         <div className={`${styles.lkeSingleComponents} hover:bg-gray-200`}>
           <div className={styles.componentsContent}>
             <div className={styles.componentsInfo}>
+              {
+                session && session.user.role !== "ADMIN" ? (
+                  users.map((user) => {
+                    const userEmail = session.user.email;
+                    if (userEmail === user.email) {
+                      if (component.team.id !== user.id_team) {
+                        return (
+                          <span className="text-red-600 font-bold text-left w-fit flex gap-2 items-center" key={user.id}>
+                            <CgDanger className="text-3xl"/> 
+                            <span className="text-xs">Anda bukan bagian dari {component.team.name}</span>
+                          </span>
+                        );
+                      } else {
+                        return null
+                      }
+                    } else {
+                      return null
+                    }
+                  })
+                ) : null
+              }
+
+
               <h2 className="text-left font-bold text-lg">{component.name}</h2>
               <small className="text-left">Bobot: {component.weight} • {component.subComponents.length} Sub-komponen</small>
+              <span className="py-1 px-2 rounded-full bg-blue-500 text-white text-xs text-left w-fit">Diisi oleh Tim {component.team.name} </span>
             </div>
 
             <div className={styles.componentsDropdown}>
@@ -83,14 +135,12 @@ export default function ComponentCard({
 
       {isOpenDropDown && (
         <div
-          className={`${
-            styles.lkeCriteria
-          } transition-all duration-300 ease-in-out overflow-hidden ${
-            isOpenDropDown ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`${styles.lkeCriteria
+            } transition-all duration-300 ease-in-out overflow-hidden ${isOpenDropDown ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+            }`}
           style={{ maxHeight: isOpenDropDown ? "1000px" : "0px" }}
         >
-          <SubComponentListCard subComponents={subComponents} evaluationId={evaluationId}/>
+          <SubComponentListCard subComponents={subComponents} evaluationId={evaluationId} />
         </div>
       )}
     </div>

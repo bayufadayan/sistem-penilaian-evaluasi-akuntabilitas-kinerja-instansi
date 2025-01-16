@@ -20,6 +20,7 @@ interface SubComponent {
 
 type ComponentWithSubComponents = Component & {
   subComponents: SubComponent[];
+  team: Team;
 };
 
 interface EvaluationSheet {
@@ -27,6 +28,10 @@ interface EvaluationSheet {
   title: string;
   description: string;
   components: ComponentWithSubComponents[];
+}
+interface Team {
+  id: number;
+  name: string;
 }
 
 const DataContext = createContext<{

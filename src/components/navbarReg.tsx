@@ -3,20 +3,14 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import styles from "@/styles/styles.module.css";
-import { FiDownload } from "react-icons/fi";
 import Link from "next/link";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [laporanDropdownOpen, setLaporanDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
-  };
-
-  const toggleLaporanDropdown = () => {
-    setLaporanDropdownOpen(!laporanDropdownOpen);
   };
 
   return (
