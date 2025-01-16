@@ -139,11 +139,15 @@ export default function UpdateAccountPage({
           Manajemen Akun
         </Link>
         <IoIosArrowForward className="h-5 w-5" />
-        Edit Akun &quot;{name}&quot;
+        Edit Akun &quot;{name.length > 35
+          ? `${name.slice(0, 16)}...`
+          : name}&quot;
       </div>
 
       <div>
-        <h2 className="text-2xl font-semibold my-4">Edit Akun &quot;{name}&quot;</h2>
+        <h2 className="text-2xl font-semibold my-4">Edit Akun &quot;{name.length > 35
+          ? `${name.slice(0, 35)}...`
+          : name}&quot;</h2>
         <form onSubmit={handleUpdate}>
           <div className="grid gap-4 mb-4 grid-cols-2">
             <div className="col-span-2">

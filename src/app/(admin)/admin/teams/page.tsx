@@ -9,6 +9,8 @@ import { Suspense } from "react"
 const AddTeam = dynamic(() => import("./addTeam"), { ssr: false });
 const UpdateTeam = dynamic(() => import("./updateTeam"), { ssr: false });
 const DeleteTeam = dynamic(() => import("./deleteTeam"), { ssr: false });
+const ModalMemberTeam = dynamic(() => import("./modalMemberTeam"), { ssr: false });
+const AddMemberTeam = dynamic(() => import("./addMemberTeam"), { ssr: false });
 
 export async function generateMetadata() {
   const title = await pageTitles.adminTeam();
@@ -23,6 +25,12 @@ const getTeams = async () => {
     select: {
       id: true,
       name: true,
+      users: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
   return res;
@@ -34,6 +42,7 @@ export default async function ManagementTeamPage() {
   return (
     <>
       {/* content nya */}
+
       <div>
         {/* Breadcrumb */}
         <div className="mb-4 text-gray-500 flex gap-1 items-start">
@@ -72,12 +81,10 @@ export default async function ManagementTeamPage() {
                     <td className="py-4">{index + 1}</td>
                     <td className="pe-8">{team.name.toUpperCase()}</td>
                     <td className="text-white">
-                      <button type="button" className="btn btn-primary me-2">
-                        Tambah Anggota
-                      </button>
-                      <button type="button" className="btn btn-primary">
-                        Lihat Anggota
-                      </button>
+                      <span className="flex items-stretch justify-start space-x-0 gap-2">
+                      <AddMemberTeam team={team} />
+                        <ModalMemberTeam team={team} />
+                      </span>
                     </td>
                     <td>
                       <span className="flex items-stretch justify-start space-x-0">

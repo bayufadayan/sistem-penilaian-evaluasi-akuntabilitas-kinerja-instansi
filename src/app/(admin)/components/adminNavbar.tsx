@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { FaUserTie } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
-import { FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { LuRefreshCcw } from "react-icons/lu";
 import AdminNavbarDropdown from "./adminNavbarDropdown";
@@ -46,25 +45,20 @@ export default function AdminNavbar() {
         >
           <IoMdArrowBack className="text-3xl" />
         </button>
-        <button
+        {/* <button
           type="button"
           className="btn -ml-3 mr-2 bg-transparent p-2 border-none shadow-none hover:shadow-md hover:bg-slate-200"
           onClick={() => document.location.reload()}
         >
           <LuRefreshCcw className="text-2xl font-bold" />
+        </button> */}
+        <button
+          type="button"
+          className="btn -ml-3 mr-2 bg-transparent p-2 border-none shadow-none hover:shadow-md hover:bg-slate-200"
+          onClick={() => router.replace(`?timestamp=${new Date().getTime()}`)}
+        >
+          <LuRefreshCcw className="text-2xl font-bold" />
         </button>
-
-        <div className="relative">
-          <div className="absolute flex items-center h-full left-2 opacity-40 text-slate-600 active:text-black">
-            <FiSearch className="text-2xl font-black" />
-          </div>
-
-          <input
-            type="text"
-            placeholder="Type to search..."
-            className="pl-10 pr-4 py-2 w-80 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-200"
-          />
-        </div>
       </div>
 
       {/* Right Side (Profile Section) */}

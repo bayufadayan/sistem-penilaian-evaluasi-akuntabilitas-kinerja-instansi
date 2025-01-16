@@ -1,8 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import type { User } from "@prisma/client";
 const prisma = new PrismaClient();
-import {createActivityLog} from "@/lib/activityLog";
+import { createActivityLog } from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 
@@ -46,47 +45,103 @@ export const DELETE = async (
       { status: 401 }
     );
   }
-  const activityLog = createActivityLog("Akun dihapus", "User", user.id, Number(session.user.id))
+  const activityLog = createActivityLog(
+    "Akun dihapus",
+    "User",
+    user.id,
+    Number(session.user.id)
+  );
 
   const serializedUser = {
     ...user,
-    nip: user.nip.toString(), 
+    nip: user.nip.toString(),
   };
-  return NextResponse.json({serializedUser, activityLog}, { status: 200 });
+  return NextResponse.json({ serializedUser, activityLog }, { status: 200 });
 };
 
 export const PATCH = async (
   request: Request,
   { params }: { params: { id: string } }
 ) => {
-  const body: User = await request.json();
-  const user = await prisma.user.update({
-    where: {
-      id: Number(params.id),
-    },
-    data: {
-      email: body.email,
-      nip: BigInt(body.nip),
-      name: body.name,
-      role: body.role,
-      gender: body.gender,
-      status: body.status,
-      id_team: body.id_team,
-    },
-  });
+  try {
+    const body = await request.json();
 
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user || !session.user.id) {
+    // Check update type
+    if (body.updateType === "id_team") {
+      // Hanya update id_team
+      const user = await prisma.user.update({
+        where: {
+          id: Number(params.id),
+        },
+        data: {
+          id_team: body.id_team,
+        },
+      });
+
+      const session = await getServerSession(authOptions);
+      if (!session || !session.user || !session.user.id) {
+        return NextResponse.json(
+          { message: "User not authenticated" },
+          { status: 401 }
+        );
+      }
+
+      const activityLog = createActivityLog(
+        "Tim diperbarui",
+        "User",
+        user.id,
+        Number(session.user.id)
+      );
+
+      const responseUser = {
+        ...user,
+        nip: user.nip?.toString(),
+      };
+
+      return NextResponse.json({ responseUser, activityLog }, { status: 200 });
+    } else {
+      const user = await prisma.user.update({
+        where: {
+          id: Number(params.id),
+        },
+        data: {
+          email: body.email,
+          nip: BigInt(body.nip),
+          name: body.name,
+          role: body.role,
+          gender: body.gender,
+          status: body.status,
+          id_team: body.id_team,
+        },
+      });
+
+      const session = await getServerSession(authOptions);
+      if (!session || !session.user || !session.user.id) {
+        return NextResponse.json(
+          { message: "User not authenticated" },
+          { status: 401 }
+        );
+      }
+
+      const activityLog = createActivityLog(
+        "Akun diperbarui",
+        "User",
+        user.id,
+        Number(session.user.id)
+      );
+
+      const responseUser = {
+        ...user,
+        nip: user.nip.toString(),
+      };
+
+      return NextResponse.json({ responseUser, activityLog }, { status: 200 });
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
     return NextResponse.json(
-      { message: "User not authenticated" },
-      { status: 401 }
+      { message: "Error updating user" },
+      { status: 500 }
     );
   }
-  const activityLog = createActivityLog("Akun diperbarui", "User", user.id, Number(session.user.id))
-  
-  const responseUser = {
-    ...user,
-    nip: user.nip.toString(),
-};
-return NextResponse.json({responseUser, activityLog}, { status: 201 });
 };

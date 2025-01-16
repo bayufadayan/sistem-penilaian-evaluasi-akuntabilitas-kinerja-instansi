@@ -775,7 +775,7 @@ export default function ScoreInputPage({
           <div className={styles.fillCriteriaHeroContainer}>
             <div className={styles.criteriaFilledProgress}>
               <small className="font-bold flex justify-between">
-                <span>Progress Pengisian "{dataContext?.evaluationName}" Keseluruhan</span>
+                <span>Progress Pengisian &quot;{dataContext?.evaluationName}&quot; Keseluruhan</span>
                 <span>{(criteriaStats.filledCriteriaCount / criteriaStats.totalCriteria) * 100}%</span>
               </small>
               <div className={styles.persentage}>
@@ -1328,7 +1328,7 @@ export default function ScoreInputPage({
                         </p>
                       )
                     ) : (
-                      <p className="text-gray-600 italic opacity-95">Belum ada evidence pada kriteria <span className="font-bold">"{selectedCriterion?.name}"</span></p>
+                      <p className="text-gray-600 italic opacity-95">Belum ada evidence pada kriteria <span className="font-bold">&quot;{selectedCriterion?.name}&quot;</span></p>
                     )}
                   </div>
                 </div>
