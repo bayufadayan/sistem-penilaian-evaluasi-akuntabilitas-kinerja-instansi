@@ -293,9 +293,6 @@ export default function TableRow({ score,
                                             await handleUpload(selectedFile);
                                         }
                                     }}
-                                    onDeleteEvidence={(evidenceId) => {
-                                        console.log("Deleting evidence:", evidenceId);
-                                    }}
                                     onDeleteSuccess={async () => {
                                         await onDeleteSuccess();
                                     }}

@@ -14,7 +14,6 @@ import styles from "@/styles/styles.module.css";
 import { useDataContext } from "./layout";
 import Link from "next/link";
 import type { User } from "@prisma/client";
-import { useSession } from "next-auth/react";
 
 ChartJS.register(
   CategoryScale,
@@ -96,7 +95,6 @@ export default function EvaluationSheetsPage() {
   const [components, setComponents] = useState<Component[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const dataContext = useDataContext();
-  const { data: session } = useSession();
 
   useEffect(() => {
     if (!dataContext) return;

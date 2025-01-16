@@ -25,72 +25,9 @@ interface EvaluationSheetScore {
   id_LKE: string;
 }
 
-
-interface Score {
-  id: string;
-  score: string;
-  notes: string | null;
-  created_at: string;
-  id_criterias: string;
-  id_users: string | null;
-}
-
-interface Criteria {
-  id: string;
-  name: string;
-  description: string | null;
-  criteria_number: number;
-  id_subcomponents: string;
-  score: Score[];
-}
-
-interface SubComponent {
-  id: string;
-  name: string;
-  description: string;
-  weight: number;
-  subcomponent_number: number;
-  id_components: string;
-  subComponentScore: Score[];
-  criteria: Criteria[];
-}
-
-interface Component {
-  id: string;
-  name: string;
-  description: string;
-  weight: number;
-  component_number: number;
-  id_team: number;
-  id_LKE: string;
-  componentScore: Score[];
-  subComponents: SubComponent[];
-}
-
-interface Evaluation {
-  id: string;
-  title: string;
-  date_start: string | Date;
-  date_finish: string | Date;
-  description: string;
-  status: string;
-  year: string;
-  color: string;
-  components: Component[];
-}
-
-interface CriteriaStats {
-  totalCriteria: number,
-  emptyCriteriaCount: number,
-  filledCriteriaCount: number,
-}
-
 export default function TempResultPage() {
-  const [inProgressSheets, setInProgressSheets] = useState<EvaluationSheet[]>(
-    []
-  );
   const [completedSheets, setCompletedSheets] = useState<EvaluationSheet[]>([]);
-  const { data: session, status }: { data: unknown; status: string } =
+  const { status }: { data: unknown; status: string } =
     useSession();
   const router = useRouter();
 
@@ -103,12 +40,7 @@ export default function TempResultPage() {
       const res = await fetch("/api/evaluations");
       const sheets: EvaluationSheet[] = await res.json();
 
-      const inProgress = sheets.filter(
-        (sheet) => sheet.status === "IN_PROGRESS"
-      );
       const completed = sheets.filter((sheet) => sheet.status === "COMPLETED");
-
-      setInProgressSheets(inProgress);
       setCompletedSheets(completed);
     };
 

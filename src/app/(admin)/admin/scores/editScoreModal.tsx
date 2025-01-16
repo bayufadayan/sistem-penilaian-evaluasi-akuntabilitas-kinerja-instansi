@@ -10,7 +10,6 @@ export default function EditScoreModal({
     onDelete,
     evidenceData,
     onAddEvidence,
-    onDeleteEvidence,
     onDeleteSuccess,
 }: {
     score: { id: number; score: string; notes: string };
@@ -19,7 +18,6 @@ export default function EditScoreModal({
     onDelete: () => void;
     evidenceData: any[];
     onAddEvidence: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
-    onDeleteEvidence: (evidenceId: number) => void;
     onDeleteSuccess: () => Promise<void>;
 }) {
     const [newScore, setNewScore] = useState(score.score || "");
