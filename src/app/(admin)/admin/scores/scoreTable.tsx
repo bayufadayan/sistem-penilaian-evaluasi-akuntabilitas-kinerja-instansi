@@ -1,8 +1,10 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { FiExternalLink } from "react-icons/fi";
 import { IoSearch } from "react-icons/io5";
 import TableRow from "./tableRow";
+import { FaSortAmountDownAlt } from "react-icons/fa";
+import { FaSortAmountUp } from "react-icons/fa";
 
 type Score = {
     id: number;
@@ -37,6 +39,15 @@ export default function ScoreTable({ selectedLKE }: { selectedLKE: string | null
     });
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [sortConfig, setSortConfig] = useState<{
+        key: keyof Score;
+        direction: "asc" | "desc";
+    }>({
+        key: "created_at",
+        direction: "asc",
+    });
+
+
 
     const fetchScores = useCallback(
         async (page = 1, limit = 10, query = "") => {
@@ -139,6 +150,50 @@ export default function ScoreTable({ selectedLKE }: { selectedLKE: string | null
         );
     };
 
+    const handleSort = (key: keyof Score) => {
+        setSortConfig((prevState) => {
+            if (prevState.key === key) {
+                return {
+                    key,
+                    direction: prevState.direction === "asc" ? "desc" : "asc",
+                };
+            } else {
+                return { key, direction: "asc" };
+            }
+        });
+    };
+
+    const sortedScores = useMemo(() => {
+        const sortedData = [...scores];
+
+        sortedData.sort((a, b) => {
+            const aValue = a[sortConfig.key];
+            const bValue = b[sortConfig.key];
+
+            if (aValue == null && bValue == null) return 0;
+            if (aValue == null) return sortConfig.direction === "asc" ? -1 : 1;
+            if (bValue == null) return sortConfig.direction === "asc" ? 1 : -1;
+
+            if (sortConfig.key === "score") {
+                const aScore = parseFloat(aValue as string);
+                const bScore = parseFloat(bValue as string);
+                return sortConfig.direction === "asc" ? aScore - bScore : bScore - aScore;
+            } else if (sortConfig.key === "evidence_count") {
+                const aCount = typeof aValue === 'number' ? aValue : parseFloat(aValue as string);
+                const bCount = typeof bValue === 'number' ? bValue : parseFloat(bValue as string);
+                return sortConfig.direction === "asc" ? aCount - bCount : bCount - aCount;
+            } else {
+                // Untuk kriteria dan created_at, gunakan perbandingan string
+                if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+                if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+                return 0;
+            }
+        });
+
+        return sortedData;
+    }, [scores, sortConfig]);
+
+
     const handleScoreUpdate = (updatedScore: Score) => {
         fetchScores();
         setScores((prevScores) =>
@@ -171,13 +226,46 @@ export default function ScoreTable({ selectedLKE }: { selectedLKE: string | null
                         <thead>
                             <tr className="text-gray-500 border-b">
                                 <th className="py-2 pe-4 text-left pl-4 w-[5%]">#</th>
-                                <th className="py-2 pe-2 text-center w-[13%]">TANGGAL</th>
-                                <th className="py-2 text-left w-[52%]">KRITERIA</th>
-                                <th className="py-2 text-center w-[10%] gap-2">
-                                    <span className="text-lg font-bold me-1">Σ</span>
-                                    <span>EVIDENCE</span>
+                                <th className="py-2 pe-2 text-center w-[13%] cursor-pointer" onClick={() => handleSort("created_at")}
+                                >
+                                    {sortConfig.key === "created_at"
+                                        ? (sortConfig.direction === "asc"
+                                            ? (<FaSortAmountUp className="me-1 inline-block mb-1" />)
+                                            : (<FaSortAmountDownAlt className="me-1 inline-block mb-1" />))
+                                        : (<FaSortAmountDownAlt className="me-1 inline-block mb-1" />)
+                                    }
+                                    <span className="inline-block">TANGGAL</span>
                                 </th>
-                                <th className="py-2 text-center w-[10%]">SCORE</th>
+
+                                <th className="py-2 text-left w-[50%] cursor-pointer" onClick={() => handleSort("criteria")}
+                                >
+                                    {sortConfig.key === "criteria"
+                                        ? (sortConfig.direction === "asc"
+                                            ? (<FaSortAmountUp className="me-1 inline-block mb-1" />)
+                                            : (<FaSortAmountDownAlt className="me-1 inline-block mb-1" />))
+                                        : (<FaSortAmountDownAlt className="me-1 inline-block mb-1" />)
+                                    }
+                                    <span className="inline-block">KRITERIA</span>
+                                </th>
+                                <th className="py-2 text-center w-[12%] cursor-pointer" onClick={() => handleSort("evidence_count")}
+                                >
+                                    {sortConfig.key === "evidence_count"
+                                        ? (sortConfig.direction === "asc"
+                                            ? (<FaSortAmountUp className="me-1 inline-block mb-1" />)
+                                            : (<FaSortAmountDownAlt className="me-1 inline-block mb-1" />))
+                                        : (<FaSortAmountDownAlt className="me-1 inline-block mb-1" />)
+                                    }
+                                    <span className="inline">EVIDENCE</span>
+                                </th>
+                                <th className="py-2 text-center w-[10%] cursor-pointer" onClick={() => handleSort("score")}>
+                                    {sortConfig.key === "score"
+                                        ? (sortConfig.direction === "asc"
+                                            ? (<FaSortAmountUp className="me-1 inline-block mb-1" />)
+                                            : (<FaSortAmountDownAlt className="me-1 inline-block mb-1" />))
+                                        : (<FaSortAmountDownAlt className="me-1 inline-block mb-1" />)
+                                    }
+                                    <span className="inline-block">SCORE</span>
+                                </th>
                                 <th className="py-2 text-center w-[10%]">
                                     <div className="flex justify-center items-center">
                                         <FiExternalLink className="w-5 h-5 text-gray-600" />
@@ -186,8 +274,8 @@ export default function ScoreTable({ selectedLKE }: { selectedLKE: string | null
                             </tr>
                         </thead>
                         <tbody>
-                            {scores.length > 0 ? (
-                                scores.map((score, index) => (
+                            {sortedScores.length > 0 ? (
+                                sortedScores.map((score, index) => (
                                     <tr key={score.id} className="border-b">
                                         <td className="py-4 text-center">
                                             {(pagination.currentPage - 1) * pagination.pageSize +
@@ -214,7 +302,6 @@ export default function ScoreTable({ selectedLKE }: { selectedLKE: string | null
                                             >
                                                 {score.score !== "" ? score.score : 'N/A'}
                                             </span>
-
                                         </td>
                                         <TableRow score={score} onScoreUpdate={handleScoreUpdate} />
                                     </tr>
@@ -227,6 +314,7 @@ export default function ScoreTable({ selectedLKE }: { selectedLKE: string | null
                                 </tr>
                             )}
                         </tbody>
+
                     </table>
                     <div className="mt-4">
                         {scores.length > 0 ? renderPagination() : ""}
