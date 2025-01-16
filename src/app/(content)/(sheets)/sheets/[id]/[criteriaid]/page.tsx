@@ -1016,7 +1016,7 @@ export default function ScoreInputPage({
                       {selectedCriterion ? selectedCriterion.name : ""}
                     </h3>
                     <div className="text-sm text-gray-600 mt-1">
-                      
+
                       <div className="font-semibold text-gray-800 ">
                         Deskripsi:
                       </div>
