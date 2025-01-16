@@ -36,7 +36,7 @@ export const POST = async (request: Request) => {
     );
   }
   const activityLog = createActivityLog(
-    "Kriteria dibuat",
+    `Kriteria ${criteria.name} dibuat`,
     "User",
     criteria.id,
     Number(session.user.id)

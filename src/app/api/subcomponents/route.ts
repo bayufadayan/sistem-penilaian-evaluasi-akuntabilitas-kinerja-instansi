@@ -36,9 +36,9 @@ export const POST = async (request: Request) => {
     );
   }
   const activityLog = createActivityLog(
-    "Sub komponen ditambahkan",
+    `Sub komponen ${subcomponent.name} dibuat`,
     "SubComponens",
-    body.id,
+    subcomponent.id,
     Number(session.user.id)
   );
 

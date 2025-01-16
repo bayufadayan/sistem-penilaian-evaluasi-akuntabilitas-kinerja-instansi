@@ -25,7 +25,7 @@ export const DELETE = async (
     );
   }
   const activityLog = createActivityLog(
-    "Kriteria Dihapus",
+    `Kriteria ${criteria.name} dihapus`,
     "User",
     criteria.id,
     Number(session.user.id)
@@ -58,7 +58,7 @@ export const PATCH = async (
     );
   }
   const activityLog = createActivityLog(
-    "Kriteria Diupdate",
+    `Kriteria ${criteria.name} diupdate`,
     "User",
     criteria.id,
     Number(session.user.id)

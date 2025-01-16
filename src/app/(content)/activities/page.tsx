@@ -43,7 +43,7 @@ export default function HistoryPage() {
         });
       } catch (error) {
         console.error("Error fetching data:", error);
-        setLogActivity([]); // Set to empty array on error
+        setLogActivity([]);
       } finally {
         setLoading(false);
       }

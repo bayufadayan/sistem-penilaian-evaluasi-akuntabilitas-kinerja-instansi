@@ -22,9 +22,9 @@ export const POST = async (request: Request) => {
     );
   }
   const activityLog = createActivityLog(
-    "Tim baru di buat",
+    `Tim ${team.name} dibuat`,
     "User",
-    body.id,
+    team.id,
     Number(session.user.id)
   );
 

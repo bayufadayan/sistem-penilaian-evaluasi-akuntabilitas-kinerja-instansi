@@ -71,7 +71,7 @@ export const DELETE = async (
     );
   }
   const activityLog = createActivityLog(
-    `{LKE AKIP didelete}`,
+    `LKE berjudul ${evaluationSheet.title} dihapus`,
     "Evaluations",
     0,
     Number(session.user.id)
@@ -107,7 +107,7 @@ export const PATCH = async (
     );
   }
   const activityLog = createActivityLog(
-    "LKE AKIP diupdate",
+    `LKE berjudul ${evaluationSheet.title} diupdate`,
     "Evaluations",
     0,
     Number(session.user.id)

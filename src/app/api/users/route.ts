@@ -60,7 +60,7 @@ export const POST = async (request: Request) => {
     );
   }
   const activityLog = createActivityLog(
-    "Akun Baru dibuat",
+    `Akun ${user.name} dibuat`,
     "User",
     user.id,
     Number(session.user.id)

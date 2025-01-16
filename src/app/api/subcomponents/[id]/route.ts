@@ -25,7 +25,7 @@ export const DELETE = async (
     );
   }
   const activityLog = createActivityLog(
-    "Sub komponen dihapus",
+    `Sub komponen ${subComponent.name} dihapus`,
     "SubComponents",
     Number(params.id),
     Number(session.user.id)
@@ -59,9 +59,9 @@ export const PATCH = async (
     );
   }
   const activityLog = createActivityLog(
-    "Sub Komponen diupdate",
+    `Sub komponen ${subComponent.name} diupdate`,
     "SubComponent",
-    body.id,
+    subComponent.id,
     Number(session.user.id)
   );
   return NextResponse.json({ subComponent, activityLog }, { status: 200 });

@@ -24,7 +24,7 @@ export const DELETE = async (
     );
   }
   const activityLog = createActivityLog(
-    "Tim dihapus",
+    `Tim ${team.name} dihapus`,
     "Team",
     Number(params.id),
     Number(session.user.id)
@@ -38,6 +38,19 @@ export const PATCH = async (
   { params }: { params: { id: string } }
 ) => {
   const body: Team = await request.json();
+  const teamBeforeUpdate = await prisma.team.findUnique({
+    where: { id: Number(params.id), },
+    select: {
+      id: true,
+      name: true,
+      users: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
   const team = await prisma.team.update({
     where: {
       id: Number(params.id),
@@ -53,8 +66,13 @@ export const PATCH = async (
       { status: 401 }
     );
   }
+
+  if (!teamBeforeUpdate) {
+    return NextResponse.json({ error: "Team not found" }, { status: 404 });
+  }
+
   const activityLog = createActivityLog(
-    "Tim diupdate",
+    `Tim ${teamBeforeUpdate.name} diupdate menjadi ${team.name}`,
     "Team",
     Number(params.id),
     Number(session.user.id)

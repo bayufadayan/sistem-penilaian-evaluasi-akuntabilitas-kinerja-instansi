@@ -46,7 +46,7 @@ export const DELETE = async (
     );
   }
   const activityLog = createActivityLog(
-    "Akun dihapus",
+    `Akun ${user.name} dihapus`,
     "User",
     user.id,
     Number(session.user.id)
@@ -66,8 +66,13 @@ export const PATCH = async (
   try {
     const body = await request.json();
 
-    // Check update type
     if (body.updateType === "id_team") {
+      const userBeforeUpdate = await prisma.user.findUnique({
+        where: {
+          id: Number(params.id),
+        },
+      });
+
       // Hanya update id_team
       const user = await prisma.user.update({
         where: {
@@ -75,6 +80,38 @@ export const PATCH = async (
         },
         data: {
           id_team: body.id_team,
+        },
+      });
+
+      const team = await prisma.team.findUnique({
+        where: { id: user.id_team },
+        select: {
+          id: true,
+          name: true,
+          users: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      if (!userBeforeUpdate) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+      }
+
+      const teamBeforeUpdate = await prisma.team.findUnique({
+        where: { id: userBeforeUpdate.id_team },
+        select: {
+          id: true,
+          name: true,
+          users: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       });
 
@@ -87,7 +124,7 @@ export const PATCH = async (
       }
 
       const activityLog = createActivityLog(
-        "Tim diperbarui",
+        `Akun ${user.name} dipindahkan dari Tim ${teamBeforeUpdate?.name} ke Tim ${team?.name}`,
         "User",
         user.id,
         Number(session.user.id)
@@ -124,7 +161,7 @@ export const PATCH = async (
       }
 
       const activityLog = createActivityLog(
-        "Akun diperbarui",
+        `Akun ${user.name} diupdate`,
         "User",
         user.id,
         Number(session.user.id)

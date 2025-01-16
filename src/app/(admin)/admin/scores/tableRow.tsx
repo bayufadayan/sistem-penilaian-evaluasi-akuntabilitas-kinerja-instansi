@@ -206,14 +206,17 @@ export default function TableRow({ score,
 
     const fetchDetails = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`/api/score/${score.id}/detail`);
             const result = await response.json();
             if (response.ok) {
                 setDetails(result);
                 setIsDetailModalOpen(true);
+                
             } else {
                 console.error("Failed to fetch details:", result.error);
             }
+            setIsLoading(false);
         } catch (error) {
             console.error("Error fetching details:", error);
         }

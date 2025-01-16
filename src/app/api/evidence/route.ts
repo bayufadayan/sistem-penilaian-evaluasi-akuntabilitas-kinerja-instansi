@@ -28,7 +28,7 @@ export const POST = async (request: Request) => {
     );
   }
   const activityLog = createActivityLog(
-    "Evidence baru ditambahkan",
+    `File Evidence ${evidence.file_name} ditambahkan`,
     "Evidence",
     evidence.id,
     Number(session.user.id)

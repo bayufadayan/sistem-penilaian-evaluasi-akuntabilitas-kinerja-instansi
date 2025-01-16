@@ -34,7 +34,7 @@ export const POST = async (request: Request) => {
     );
   }
   const activityLog = createActivityLog(
-    "Komponen Ditambah",
+    `Komponen ${component.name} ditambah`,
     "Components",
     component.id,
     Number(session.user.id)

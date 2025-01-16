@@ -67,7 +67,7 @@ export const POST = async (request: Request) => {
       );
     }
     const activityLog = createActivityLog(
-      "Pengaturan diupdate",
+      "Pengaturan aplikasi diupdate",
       "User",
       0,
       Number(session.user.id)

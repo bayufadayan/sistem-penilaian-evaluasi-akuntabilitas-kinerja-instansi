@@ -113,10 +113,10 @@ export default function AddComponents({
                 value={idTeam}
                 onChange={(e) => setIdTeam(e.target.value)}
                 id="idTeam"
-                className="input input-bordered w-full"
+                className="select select-bordered w-full"
                 required
               >
-                <option value="">Select team</option>
+                <option value="">Pilih Tim/Divisi</option>
                 {teams.map((team) => (
                   <option value={team.id} key={team.id}>
                     {team.name}

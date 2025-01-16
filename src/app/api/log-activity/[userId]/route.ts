@@ -5,16 +5,14 @@ import { Prisma } from "@prisma/client";
 
 export const GET = async (request: NextRequest) => {
   try {
-    // Parse URL parameters
     const url = new URL(request.url);
     const page = Number(url.searchParams.get("page") || 1);
     const limit = Number(url.searchParams.get("limit") || 5);
     const search = url.searchParams.get("search") || "";
-    const filter = url.searchParams.get("filter") || "Semua"; // Filter default
+    const filter = url.searchParams.get("filter") || "Semua";
 
     const offset = (page - 1) * limit;
 
-    // Building dynamic where condition based on filter and search
     const whereCondition: Prisma.ActivityLogWhereInput = {
       AND: [
         search
@@ -36,27 +34,56 @@ export const GET = async (request: NextRequest) => {
             }
           : {},
         filter !== "Semua"
-          ? { actionType: { equals: filter } } // Filtering based on actionType
+          ? filter === "Hari Ini"
+            ? {
+                createdAt: {
+                  gte: new Date(new Date().setHours(0, 0, 0, 0)), 
+                  lt: new Date(new Date().setHours(24, 0, 0, 0)),
+                },
+              }
+            : filter === "Minggu Ini"
+            ? {
+                createdAt: {
+                  gte: new Date(
+                    new Date().setDate(
+                      new Date().getDate() - new Date().getDay()
+                    )
+                  ),
+                  lt: new Date(
+                    new Date().setDate(
+                      new Date().getDate() + (7 - new Date().getDay())
+                    )
+                  ),
+                },
+              }
+            : filter === "Lebih lama"
+            ? {
+                createdAt: {
+                  lt: new Date(
+                    new Date().setDate(
+                      new Date().getDate() - new Date().getDay()
+                    )
+                  ),
+                },
+              }
+            : {}
           : {},
       ],
     };
 
-    // Fetch activity logs with pagination
     const logActivity = await prisma.activityLog.findMany({
       skip: offset,
       take: limit,
       where: whereCondition,
       orderBy: {
-        createdAt: "desc", // You can change this as needed
+        createdAt: "desc",
       },
     });
 
-    // Count total records for pagination
     const totalRecords = await prisma.activityLog.count({
       where: whereCondition,
     });
 
-    // Pagination metadata
     const pagination = {
       totalRecords,
       totalPages: Math.ceil(totalRecords / limit),

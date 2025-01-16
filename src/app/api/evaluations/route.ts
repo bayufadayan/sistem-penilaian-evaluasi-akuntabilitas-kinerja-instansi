@@ -35,7 +35,7 @@ export const POST = async (request: Request) => {
     );
   }
   const activityLog = createActivityLog(
-    "LKE AKIP baru dibuat",
+    `LKE Baru dibuat dengan Judul ${evaluationSheet.title}`,
     "User",
     0,
     Number(session.user.id)

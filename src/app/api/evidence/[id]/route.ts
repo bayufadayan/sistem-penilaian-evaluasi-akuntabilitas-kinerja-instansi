@@ -56,7 +56,7 @@ export async function DELETE(
       );
     }
     await createActivityLog(
-      "Evidence dihapus",
+      `File Evidence ${evidence.file_name} dihapus`,
       "Evidence",
       evidence.id,
       Number(session.user.id)

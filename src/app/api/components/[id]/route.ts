@@ -25,7 +25,7 @@ export const DELETE = async (
     );
   }
   const activityLog = createActivityLog(
-    "Komponen dihapus",
+    `Komponen ${component.name} dihapus`,
     "Components",
     component.id,
     Number(session.user.id)
@@ -60,7 +60,7 @@ export const PATCH = async (
     );
   }
   const activityLog = createActivityLog(
-    "Komponen Diupdate",
+    `Komponen ${component.name} diupdate`,
     "User",
     component.id,
     Number(session.user.id)

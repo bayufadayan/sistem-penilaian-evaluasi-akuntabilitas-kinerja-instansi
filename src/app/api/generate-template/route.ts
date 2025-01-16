@@ -710,7 +710,7 @@ export const POST = async () => {
 
     // Log Aktivitas
     const activityLog = createActivityLog(
-      "Template LKE AKIP berhasil digenerate",
+      `Template LKE AKIP berjudul ${evaluationSheet.title} berhasil digenerate`,
       "System",
       0,
       Number(session.user.id)
