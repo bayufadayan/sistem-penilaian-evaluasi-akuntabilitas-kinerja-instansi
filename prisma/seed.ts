@@ -11,7 +11,7 @@ async function main() {
       appName: "Eka Prime",
       appLogoLogin: "/images/navbar-flat.svg",
       appLogoDashboard: "/images/nav-logo-main.svg",
-      : "/images/footer-logo.svg",
+      appLogoFooter: "/images/footer-logo.svg",
       favicon: "/images/favicon.ico",
       adminEmail: "ekaprime.akip.bpmsph@gmail.com",
       adminMailPass: "lxtwdclvxitqfdhp",
