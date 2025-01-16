@@ -14,7 +14,7 @@ import styles from "@/styles/styles.module.css";
 import { useDataContext } from "./layout";
 import Link from "next/link";
 import type { User } from "@prisma/client";
-
+ 
 ChartJS.register(
   CategoryScale,
   LinearScale,
