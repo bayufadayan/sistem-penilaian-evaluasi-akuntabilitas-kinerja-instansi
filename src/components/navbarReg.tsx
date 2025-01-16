@@ -40,12 +40,13 @@ export default function Navbar() {
           <Link href={"/guide"}>Panduan</Link>
         </li>
         <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
-          <Link href={"/activities"}>Riwayat</Link>
+          <Link href={"/activities"}>Aktivitas</Link>
         </li>
         <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
           <Link href={"/results"}>Hasil</Link>
         </li>
-        <li className="relative">
+        {/* Tidak diimplementasikan */}
+        {/* <li className="relative">
           <button
             className="flex items-center hover:text-blue-600 cursor-pointer hover:font-bold"
             onClick={toggleLaporanDropdown}
@@ -82,10 +83,10 @@ export default function Navbar() {
                   <Link href="/laporan1"><span className="flex"><FiDownload className="mr-2" /> Laporan 2</span></Link>
                 </li>
                 {/* Add more laporan items as needed */}
-              </ul>
+              {/* </ul>
             </div>
           )}
-        </li>
+        </li> */} 
       </ul>
 
       <ul className={`${styles.navRightMenu} flex items-center space-x-6`}>

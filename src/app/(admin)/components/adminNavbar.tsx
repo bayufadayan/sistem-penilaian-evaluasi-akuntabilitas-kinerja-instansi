@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { FaUserTie } from "react-icons/fa";
-import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoMdArrowBack } from "react-icons/io";
 import { FiSearch } from "react-icons/fi";
 import { useRouter } from "next/navigation";
@@ -70,15 +69,6 @@ export default function AdminNavbar() {
 
       {/* Right Side (Profile Section) */}
       <div className="flex items-center space-x-6">
-        {/* Notifications */}
-        <div className="relative">
-          <button
-            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
-            type="button"
-          >
-            <IoMdNotificationsOutline className="text-gray-500 w-6 h-6" />
-          </button>
-        </div>
 
         {/* Profile Info with Dropdown */}
         <div className="relative">

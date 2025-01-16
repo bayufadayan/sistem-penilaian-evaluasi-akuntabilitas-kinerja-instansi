@@ -135,7 +135,7 @@ export default function HistoryPage() {
 
         {/* Filter Buttons */}
         <div className="mb-4 flex justify-start space-x-2">
-          {["Semua", "Today", "This Week", "Long Time Ago"].map((label) => (
+          {["Semua", "Hari Ini", "Minggu Ini", "Lebih lama"].map((label) => (
             <button
               key={label}
               onClick={() => setFilter(label)}
