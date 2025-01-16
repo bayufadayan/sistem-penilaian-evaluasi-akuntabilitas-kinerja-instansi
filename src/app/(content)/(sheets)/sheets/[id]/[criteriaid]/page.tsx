@@ -1011,10 +1011,12 @@ export default function ScoreInputPage({
                         : ""
                         }`}
                     </p>
+                    <Link href={`/sheets/${dataContext?.evaluationId}/instruction`} className="text-blue-600 hover:px-2 transition-all duration-500 rounded-md w-fit">Lihat Penjelasan Nilai</Link>
                     <h3 className="font-bold text-xl">
                       {selectedCriterion ? selectedCriterion.name : ""}
                     </h3>
                     <div className="text-sm text-gray-600 mt-1">
+                      
                       <div className="font-semibold text-gray-800 ">
                         Deskripsi:
                       </div>

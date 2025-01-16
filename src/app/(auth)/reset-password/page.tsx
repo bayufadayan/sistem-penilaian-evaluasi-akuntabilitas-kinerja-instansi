@@ -83,7 +83,7 @@ function ResetPassword() {
         <>
             <NavbarLite />
             <div className="max-w-md mx-auto mt-10 p-6 bg-gray-50 shadow rounded-lg">
-                <h1 className="text-xl font-bold mb-4 flex items-center gap-1">
+                <h1 className="text-xl font-bold mb-4 flex items-center gap-1 text-black">
                     <button className="p-2" onClick={() => router.push("/forgot-password")}>
                         <FaArrowLeftLong />
                     </button>
@@ -98,7 +98,7 @@ function ResetPassword() {
                                     type={showPassword ? "text" : "password"}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Enter new password"
-                                    className="w-full p-2 border rounded mb-4"
+                                    className="w-full p-2 border rounded mb-4 text-black"
                                 />
                                 <button
                                     type="button"

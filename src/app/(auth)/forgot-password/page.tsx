@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
         <>
             <NavbarLite />
             <div className="max-w-md mx-auto mt-10 p-6 bg-gray-50 shadow rounded-lg">
-                <h1 className="text-xl font-bold mb-4 flex items-center gap-1">
+                <h1 className="text-xl font-bold mb-4 flex items-center gap-1 text-black">
                     <button className="p-2" onClick={() => router.back()}>
                         <FaArrowLeftLong />
                     </button>
@@ -91,7 +91,7 @@ export default function ForgotPasswordPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Enter your email"
-                            className="w-full p-2 border rounded mb-4"
+                            className="w-full p-2 border rounded mb-4 text-black"
                             required
                         />
                         <button

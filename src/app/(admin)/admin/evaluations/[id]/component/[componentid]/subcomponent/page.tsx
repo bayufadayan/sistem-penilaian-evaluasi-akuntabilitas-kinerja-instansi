@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
+import { LuDownload } from "react-icons/lu";
 
 const AddSubComponent = dynamic(() => import("./addSubComponent"), { ssr: false });
 const UpdateSubComponent = dynamic(() => import("./updateSubComponent"), { ssr: false });
@@ -134,6 +135,11 @@ export default async function EvaluationPage({
       <div className="mt-6 flex items-center gap-2">
         <AddSubComponent componentId={componentid} />
         <UploadExcel componentId={componentid} />
+        <Link href="/templates/input-sub-komponen.xlsx" download
+            className="h-full inline-flex gap-1 items-center px-4 py-3 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 active:bg-gray-800 transition-all transform active:scale-95 shadow-md">
+            <LuDownload className="w-5 h-5"/>
+            Lihat Format
+          </Link>
       </div>
 
       <div className="bg-white shadow-md rounded-lg p-6">

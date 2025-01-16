@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { FiExternalLink, FiBarChart2, FiPieChart } from "react-icons/fi";;
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
+import { LuDownload } from "react-icons/lu";
 
 const AddComponents = dynamic(() => import("./addComponents"), { ssr: false });
 const UpdateComponent = dynamic(() => import("./updateComponents"), { ssr: false });
@@ -96,8 +97,8 @@ export default async function ManagementAccountPage({
           <Link href="/admin/evaluations" className="text-blue-600 hover:text-blue-800">
             <span>
               {evaluationSheets?.title
-              ? truncateText(evaluationSheets?.title, 20)
-              : 'Judul LKE'}
+                ? truncateText(evaluationSheets?.title, 20)
+                : 'Judul LKE'}
             </span>
           </Link>
           <IoIosArrowForward className="h-5 w-5" />
@@ -137,6 +138,11 @@ export default async function ManagementAccountPage({
         <div className="mt-6 flex items-center gap-2 ">
           <AddComponents teams={teams} id_LKE={id} />
           <UploadExcel id_LKE={id} />
+          <Link href="/templates/input-komponen.xlsx" download
+            className="h-full inline-flex gap-1 items-center px-4 py-3 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 active:bg-gray-800 transition-all transform active:scale-95 shadow-md">
+            <LuDownload className="w-5 h-5"/>
+            Lihat Format
+          </Link>
         </div>
 
         <div className="bg-white shadow-md rounded-lg p-6">

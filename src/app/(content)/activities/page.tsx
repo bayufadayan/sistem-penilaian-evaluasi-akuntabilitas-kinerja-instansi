@@ -131,7 +131,7 @@ export default function HistoryPage() {
   return (
     <main className={`flex flex-col items-start p-6 min-h-[84vh] ${styles.mainContainer}`}>
       <div className="mt-10 w-full md:w-3/4">
-        <h1 className="font-bold text-3xl pt-10 mb-5">Riwayat Aktivitas</h1>
+        <h1 className="font-bold text-3xl pt-10 mb-5 text-black">Riwayat Aktivitas</h1>
 
         {/* Filter Buttons */}
         <div className="mb-4 flex justify-start space-x-2">
@@ -154,7 +154,7 @@ export default function HistoryPage() {
           {loading ? (
             <p className="text-center text-gray-500">Loading...</p>
           ) : Array.isArray(logActivity) && logActivity.length === 0 ? (
-            <p className="text-gray-500">Tidak ada data yang ditemukan.</p>
+            <p className="text-gray-500 ">Tidak ada data yang ditemukan.</p>
           ) : (
             logActivity.map((item, index) => (
               <div
@@ -201,7 +201,7 @@ export default function HistoryPage() {
         </div>
 
         {/* Pagination */}
-        <div className="mt-6">{logActivity.length > 0 ? renderPagination() : ""}</div>
+        <div className="mt-6 text-black">{logActivity.length > 0 ? renderPagination() : ""}</div>
       </div>
     </main>
   );

@@ -182,11 +182,11 @@ export default function Home() {
   return (
     <div className={styles.mainContent}>
       <div className={styles.evaluationCardContainer}>
-        <h4>Lembar Kerja Evaluasi Tersedia</h4>
+        <h4 className="text-black">Lembar Kerja Evaluasi Tersedia</h4>
         <div className={styles.evaluationCardSection}>
           {inProgressSheets.length === 0 ? (
             <div className={styles.evaluationCardSection}>
-              <p>Tidak ada LKE ditemukan</p>
+              <p className="text-black">Tidak ada LKE ditemukan</p>
             </div>
           ) : (
             inProgressSheets.map((sheet) => (
@@ -201,10 +201,10 @@ export default function Home() {
           )}
         </div>
 
-        <h4>Lembar Kerja Evaluasi Selesai</h4>
+        <h4 className="text-black">Lembar Kerja Evaluasi Selesai</h4>
         {completedSheets.length === 0 ? (
           <div className={styles.evaluationCardSection}>
-            <p>Tidak ada LKE ditemukan</p>
+            <p className="text-black">Tidak ada LKE ditemukan</p>
           </div>
         ) : (
           <div className={styles.evaluationCardSection}>
@@ -225,9 +225,9 @@ export default function Home() {
         <div className={styles.title}>
           <h2 className="font-bold text-xl flex justify-center">
             {inProgressSheets.length !== 0 ?
-              <h2 className="mt-[8px] text-center font-bold px-8 py-2 bg-green-600 rounded-full shadow-md text-white w-fit">{inProgressSheets[0]?.title ?? "Loading .."}</h2>
+              <span className="mt-[8px] text-center font-bold px-8 py-2 bg-green-600 rounded-full shadow-md text-white w-fit">{inProgressSheets[0]?.title ?? "Loading .."}</span>
               : (
-                "Ringkasan"
+                <span className="text-black text-3xl">Ringkasan</span>
               )}
           </h2>
         </div>

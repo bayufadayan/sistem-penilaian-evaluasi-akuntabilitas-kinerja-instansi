@@ -72,6 +72,7 @@ const ExcelGenerator: React.FC<ExcelGeneratorProps> = ({
         "Sub Komponen": "",
         Kriteria: "",
         "Skor Kriteria": "",
+        "Catatan": "",
       });
 
       component.subComponents.forEach((subComponent, subIndex) => {
@@ -84,6 +85,7 @@ const ExcelGenerator: React.FC<ExcelGeneratorProps> = ({
           "Sub Komponen": subComponent.name,
           Kriteria: "",
           "Skor Kriteria": "",
+          "Catatan": "",
         });
 
         subComponent.criteria.forEach((criterion, critIndex) => {
@@ -96,6 +98,7 @@ const ExcelGenerator: React.FC<ExcelGeneratorProps> = ({
             "Sub Komponen": "",
             Kriteria: criterion.name,
             "Skor Kriteria": criterion.score?.[0]?.score ?? "N/A",
+            "Catatan": criterion.score?.[0]?.notes ?? "N/A",
           });
         });
       });

@@ -4,6 +4,7 @@ import { FiBarChart2 } from "react-icons/fi";
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import dynamic from "next/dynamic";
+import { LuDownload } from "react-icons/lu";
 
 const AddCriteria = dynamic(() => import("./addCriterias"), { ssr: false });
 const DeleteCriteria = dynamic(() => import("./deleteCriterias"), { ssr: false });
@@ -124,6 +125,11 @@ export default async function ManagementAccountPage({
       <div className="mt-6 flex items-center gap-2">
         <AddCriteria subComponentId={subcomponentid} />
         <UploadExcel subComponentId={subcomponentid} />
+        <Link href="/templates/input-kriteria.xlsx" download
+            className="h-full inline-flex gap-1 items-center px-4 py-3 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 active:bg-gray-800 transition-all transform active:scale-95 shadow-md">
+            <LuDownload className="w-5 h-5"/>
+            Lihat Format
+          </Link>
       </div>
 
       {/* Tabel Konten */}

@@ -12,6 +12,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import styles from "@/styles/login.module.css";
 import { Suspense } from 'react';
+import { CgDanger } from "react-icons/cg"
 
 const Login: FC = () => {
   const router = useRouter();
@@ -22,7 +23,15 @@ const Login: FC = () => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [visible, setVisible] = useState(false);
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+
+  const handleToggle = () => {
+    setVisible(true);
+    setTimeout(() => {
+      setVisible(false);
+    }, 3000);
+  };
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -80,28 +89,28 @@ const Login: FC = () => {
       <main className={`${styles.loginMain}`}>
         <div className={styles.container}>
           <div className={styles.loginContainer}>
-            <div className={styles.loginTitle}>
-              <h2>Selamat Datang di EkaPrime</h2>
-              <h5>
+            <div className={`${styles.loginTitle} ${isError ? "mb-[10px]" : "mb-[32px]"}`}>
+              <h2 className="text-black">Silakan Login</h2>
+              <h5 className="text-black">
                 Sistem Evaluasi Akuntabilitas Kinerja untuk <span>BPMSPH</span>
               </h5>
             </div>
 
             <div className={styles.loginForm}>
               <form method="POST" onSubmit={form.handleSubmit(onSubmit)}>
+                {isError && <p className="text-red-700 flex gap-2 items-center bg-red-100 py-2 px-4 mb-2 rounded-lg shadow-sm font-bold"><CgDanger /> {errorMessage}</p>}
                 <div className={styles.inputContainer}>
                   <div className={styles.emailContainer}>
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email" className="text-black">Email</label>
                     <input
                       {...form.register("email")}
                       type="email"
                       name="email"
                       id="email"
                       autoComplete="email"
-                      className="input-bordered input tracking-widest"
+                      className="input-bordered input tracking-widest text-black"
                       required
                     />
-                    {isError && <p className="text-red-700">{errorMessage}</p>}
                     {form.formState.errors.email && (
                       <p className="text-red-700">
                         {form.formState.errors.email.message}
@@ -109,7 +118,7 @@ const Login: FC = () => {
                     )}
                   </div>
                   <div className={`${styles.passwordContainer} relative`}>
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password" className="text-black">Password</label>
                     <div className="relative">
                       <input
                         {...form.register("password")}
@@ -117,7 +126,7 @@ const Login: FC = () => {
                         name="password"
                         id="password"
                         autoComplete="current-password"
-                        className="w-full pr-10 input-bordered input tracking-widest"
+                        className="w-full pr-10 input-bordered input tracking-widest text-black"
                         required
                       />
                       <div
@@ -181,22 +190,25 @@ const Login: FC = () => {
                     />
                     <label
                       htmlFor="remember-password"
-                      className="cursor-pointer"
+                      className="cursor-pointer text-black"
                     >
                       Ingat Saya
                     </label>
                   </div>
 
                   <span>
-                    <a href="/forgot-password" className="hover:text-blue-800">
+                    <a href="/forgot-password" className="hover:text-blue-800 text-blue-500">
                       Lupa Password
                     </a>
+
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
                       height="17"
                       viewBox="0 0 16 17"
                       fill="none"
+                      onClick={handleToggle}
+                      className="cursor-pointer"
                     >
                       <title>
                         Klik Lupa Pasword ketika anda terdapat masalah ketika
@@ -209,7 +221,14 @@ const Login: FC = () => {
                         />
                       </g>
                     </svg>
+
+
                   </span>
+                  {visible && (
+                    <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-64 p-2 bg-gray-800 text-white text-sm rounded shadow-lg z-50">
+                      Tekan lupa password jika Anda tidak bisa masuk ke aplikasi.
+                    </div>
+                  )}
                 </div>
 
                 {isLoading ? (

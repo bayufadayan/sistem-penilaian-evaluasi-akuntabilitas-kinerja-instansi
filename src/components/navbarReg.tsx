@@ -27,16 +27,16 @@ export default function Navbar() {
       </div>
 
       <ul className={`${styles.navMainMenu} flex space-x-8`}>
-        <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
+        <li className="hover:text-blue-600 text-black cursor-pointer hover:font-bold">
           <Link href={"/"}>Beranda</Link>
         </li>
-        <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
+        <li className="hover:text-blue-600 text-black cursor-pointer hover:font-bold">
           <Link href={"/guide"}>Panduan</Link>
         </li>
-        <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
+        <li className="hover:text-blue-600 text-black cursor-pointer hover:font-bold">
           <Link href={"/activities"}>Aktivitas</Link>
         </li>
-        <li className="hover:text-blue-600 cursor-pointer hover:font-bold">
+        <li className="hover:text-blue-600 text-black cursor-pointer hover:font-bold">
           <Link href={"/results"}>Hasil</Link>
         </li>
         {/* Tidak diimplementasikan */}
