@@ -118,7 +118,7 @@ export default function TempResultPage() {
     <main className={`${styles.mainContainer} min-h-[90vh]`}>
       <div className={styles.mainContent}>
         <div className={`mt-20`}>
-          <h1 className="font-bold text-3xl mb-4 text-black">Daftar LKE Selesai</h1>
+          <h1 className="font-bold text-3xl mb-4 text-black">Daftar LKE Selesai ({completedSheets.length})</h1>
           {completedSheets.length === 0 ? (
             <div className={styles.evaluationCardSection}>
               <p className='text-black'>Tidak ada LKE ditemukan</p>

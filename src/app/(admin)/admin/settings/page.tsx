@@ -29,6 +29,7 @@ const AdminSettingPage = () => {
         appName: "",
         appLogoLogin: "",
         appLogoDashboard: "",
+        appLogoFooter: "",
         favicon: "",
         adminEmail: "",
         adminMailPass: "",
@@ -41,12 +42,13 @@ const AdminSettingPage = () => {
         message: "",
         isSuccess: true,
     });
-    const [showPassword, setShowPassword] = useState(false);
-
+    // tidak diimplementasikan
+    // const [showPassword, setShowPassword] = useState(false);
+    
     useEffect(() => {
         document.title = "Pengaturan Aplikasi";
     });
-
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setSettings((prev) => ({
@@ -54,10 +56,11 @@ const AdminSettingPage = () => {
             [name]: value,
         }));
     };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword((prev) => !prev);
-    };
+    
+    // tidak diimplementasikan
+    // const togglePasswordVisibility = () => {
+    //     setShowPassword((prev) => !prev);
+    // };
 
     // Fetch settings from the API
     useEffect(() => {
@@ -136,7 +139,7 @@ const AdminSettingPage = () => {
                 </div>
             )}
 
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">Admin Settings</h1>
+            <h1 className="text-2xl font-bold mb-6 text-gray-800">Pengaturan Aplikasi</h1>
 
             <div className="space-y-6">
                 <div>
@@ -173,7 +176,21 @@ const AdminSettingPage = () => {
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Favicon (URL)</label>
+                    <label className="block text-sm font-medium text-gray-700">Logo Footer (URL)</label>
+                    <input
+                        required
+                        type="text"
+                        name="appLogoFooter"
+                        value={settings.appLogoFooter}
+                        onChange={handleChange}
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+                <div>
+                    <label className="text-sm font-medium text-gray-700 flex justify-between">
+                        <span>Favicon (URL)</span>
+                        <span className="text-red-500 font-semibold italic text-xs">*Fitur Setting untuk favicon belum diterapkan</span>
+                    </label>
                     <input
                         required
                         type="text"

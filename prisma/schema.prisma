@@ -178,6 +178,7 @@ model Settings {
   appName          String
   appLogoLogin     String
   appLogoDashboard String
+  appLogoFooter    String?
   favicon          String
   adminEmail       String
   adminMailPass    String

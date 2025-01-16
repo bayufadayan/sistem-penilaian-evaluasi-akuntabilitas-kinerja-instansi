@@ -1,28 +1,60 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
 import styles from "@/styles/styles.module.css";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isLogoLoading, setisLogoLoading] = useState(false);
+  const [settings, setSettings] = useState({
+    appName: "",
+    appLogoLogin: "",
+    appLogoDashboard: "",
+    appLogoFooter: "",
+    favicon: "",
+    adminEmail: "",
+    adminMailPass: "",
+    adminPhone: "",
+    guideLink: "",
+  });
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        setisLogoLoading(true);
+        const response = await fetch("/api/settings");
+        const data = await response.json();
+        setSettings(data);
+        setisLogoLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
   return (
     <nav className={styles.mainNav}>
       <div className={styles.navLogo}>
         <Link href={"/"}>
-          <Image
-            src="/images/nav-logo-main.svg"
-            alt="logo aplikasi"
-            width={198}
-            height={48.14}
-          />
+          {isLogoLoading
+            ? ("Loading...")
+            : (<Image
+              src={settings.appLogoDashboard ? settings.appLogoDashboard : "/images/nav-logo-main.svg"}
+              alt="logo aplikasi"
+              width={198}
+              height={48.14}
+            />)
+          }
         </Link>
       </div>
 
@@ -77,10 +109,10 @@ export default function Navbar() {
                   <Link href="/laporan1"><span className="flex"><FiDownload className="mr-2" /> Laporan 2</span></Link>
                 </li>
                 {/* Add more laporan items as needed */}
-              {/* </ul>
+        {/* </ul>
             </div>
           )}
-        </li> */} 
+        </li> */}
       </ul>
 
       <ul className={`${styles.navRightMenu} flex items-center space-x-6`}>

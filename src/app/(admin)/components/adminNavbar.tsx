@@ -45,20 +45,20 @@ export default function AdminNavbar() {
         >
           <IoMdArrowBack className="text-3xl" />
         </button>
-        {/* <button
+        <button
           type="button"
           className="btn -ml-3 mr-2 bg-transparent p-2 border-none shadow-none hover:shadow-md hover:bg-slate-200"
           onClick={() => document.location.reload()}
         >
           <LuRefreshCcw className="text-2xl font-bold" />
-        </button> */}
-        <button
+        </button>
+        {/* <button
           type="button"
           className="btn -ml-3 mr-2 bg-transparent p-2 border-none shadow-none hover:shadow-md hover:bg-slate-200"
           onClick={() => router.replace(`?timestamp=${new Date().getTime()}`)}
         >
           <LuRefreshCcw className="text-2xl font-bold" />
-        </button>
+        </button> */}
       </div>
 
       {/* Right Side (Profile Section) */}

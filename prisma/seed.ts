@@ -8,9 +8,10 @@ async function main() {
     where: { id: 1 },
     update: {},
     create: {
-      appName: "AKIP App",
-      appLogoLogin: "/images/logo-login.png",
-      appLogoDashboard: "/images/logo-dashboard.png",
+      appName: "Eka Prime",
+      appLogoLogin: "/images/navbar-flat.svg",
+      appLogoDashboard: "/images/nav-logo-main.svg",
+      : "/images/footer-logo.svg",
       favicon: "/images/favicon.ico",
       adminEmail: "ekaprime.akip.bpmsph@gmail.com",
       adminMailPass: "lxtwdclvxitqfdhp",

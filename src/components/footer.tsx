@@ -1,13 +1,47 @@
+"use client"
 import Image from "next/image";
 import styles from "@/styles/footer.module.css"
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
+  const [isLogoLoading, setisLogoLoading] = useState(false);
+  const [settings, setSettings] = useState({
+    appName: "",
+    appLogoLogin: "",
+    appLogoDashboard: "",
+    appLogoFooter: "",
+    favicon: "",
+    adminEmail: "",
+    adminMailPass: "",
+    adminPhone: "",
+    guideLink: "",
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        setisLogoLoading(true);
+        const response = await fetch("/api/settings");
+        const data = await response.json();
+        setSettings(data);
+        setisLogoLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
   return (
     <footer>
       <div className={styles.footerContainer}>
         <div className={styles.footerLogo}>
-          <Image src="/images/footer-logo.svg" alt="logo instansi" width={136} height={33} />
+        {isLogoLoading
+            ? ("Loading...")
+            : (<Image src={settings.appLogoFooter ? settings.appLogoFooter : "/images/footer-logo.svg"} alt="logo instansi" width={136} height={33} />)
+          }
         </div>
 
         <div className={styles.copyright}>BPMSPH &copy; 2025. All right reserved</div>
