@@ -219,12 +219,23 @@ export default function TableRow({ score,
         }
     };
 
-
-
+    const onDeleteSuccess = async () => {
+        try {
+            await fetchEvidence();
+        } catch (error) {
+            console.error("Error eksekusi sukses delete:", error);
+        }
+    }
 
 
     return (
         <td className="text-right relative">
+
+            {isLoading && <div
+                className="fixed top-4 right-4 px-4 py-2 rounded shadow-lg z-50 bg-blue-500 text-white transition-transform duration-300">
+                Loading....
+            </div>}
+
             <div className="flex justify-center items-center">
                 <button
                     type="button"
@@ -281,6 +292,9 @@ export default function TableRow({ score,
                                     }}
                                     onDeleteEvidence={(evidenceId) => {
                                         console.log("Deleting evidence:", evidenceId);
+                                    }}
+                                    onDeleteSuccess={async () => {
+                                        await onDeleteSuccess();
                                     }}
                                 />
 

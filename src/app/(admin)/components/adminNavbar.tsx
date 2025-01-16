@@ -34,7 +34,7 @@ export default function AdminNavbar() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-64 w-[calc(100%-16rem)] h-16 bg-white border-b border-gray-200 z-50 flex items-center justify-between px-4">
+    <header className="fixed top-0 left-64 w-[calc(100%-16rem)] h-16 bg-white border-b border-gray-200 z-40 flex items-center justify-between px-4">
       {/* Search Bar */}
 
       <div className="flex items-center gap-1">
