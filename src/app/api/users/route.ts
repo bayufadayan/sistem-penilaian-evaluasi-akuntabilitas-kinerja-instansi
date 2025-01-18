@@ -75,7 +75,15 @@ export const POST = async (request: Request) => {
 };
 export const GET = async () => {
   try {
-    const users = await prisma.user.findMany(); // Mengambil semua pengguna
+    const users = await prisma.user.findMany({
+      include: {
+        team: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
 
     if (!users || users.length === 0) {
       return NextResponse.json({ message: "No users found" }, { status: 404 });

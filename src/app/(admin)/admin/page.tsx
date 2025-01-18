@@ -118,7 +118,7 @@ export default function TeamPage() {
         const evaluationCountStatusData = await response.json();
         setEvaluationByStatusCount((prevState) => ({
           ...prevState,
-          ...evaluationCountStatusData, // Merge existing with new data
+          ...evaluationCountStatusData,
         }));
 
       } catch (error) {

@@ -1325,9 +1325,7 @@ export default function ScoreInputPage({
                             </div>
                           ))
                       ) : (
-                        <p className="text-gray-600">
-                          No evidence found for the selected criterion.
-                        </p>
+                        <p className="text-gray-600 italic opacity-95">Belum ada evidence pada kriteria <span className="font-bold">&quot;{selectedCriterion?.name}&quot;</span></p>
                       )
                     ) : (
                       <p className="text-gray-600 italic opacity-95">Belum ada evidence pada kriteria <span className="font-bold">&quot;{selectedCriterion?.name}&quot;</span></p>

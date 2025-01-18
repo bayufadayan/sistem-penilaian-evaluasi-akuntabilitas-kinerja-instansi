@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import type { Team } from "@prisma/client";
-import {createActivityLog} from "@/lib/activityLog";
+import { createActivityLog } from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 const prisma = new PrismaClient();
@@ -28,12 +28,21 @@ export const POST = async (request: Request) => {
     Number(session.user.id)
   );
 
-  return NextResponse.json({team, activityLog}, { status: 201 });
+  return NextResponse.json({ team, activityLog }, { status: 201 });
 };
 
 export const GET = async () => {
   try {
-    const teams = await prisma.team.findMany();
+    const teams = await prisma.team.findMany({
+      include: {
+        users: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
 
     return NextResponse.json(teams, { status: 200 });
   } catch (error) {

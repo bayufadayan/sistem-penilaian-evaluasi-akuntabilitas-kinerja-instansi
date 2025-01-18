@@ -1,10 +1,23 @@
+"use client"
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { pageTitles } from "@/lib/pageTitles";
 import dynamic from "next/dynamic";
-import { Suspense } from "react"
+import { Suspense, useCallback } from "react"
+import { Helmet } from "react-helmet";
+import { useDataContext } from "../../layout";
+import React, { useEffect, useState } from 'react';
+
+interface User {
+  id: number;
+  name: string;
+}
+
+interface Team {
+  id: number;
+  name: string;
+  users: User[];
+}
 
 const AddTeam = dynamic(() => import("./addTeam"), { ssr: false });
 const UpdateTeam = dynamic(() => import("./updateTeam"), { ssr: false });
@@ -12,37 +25,42 @@ const DeleteTeam = dynamic(() => import("./deleteTeam"), { ssr: false });
 const ModalMemberTeam = dynamic(() => import("./modalMemberTeam"), { ssr: false });
 const AddMemberTeam = dynamic(() => import("./addMemberTeam"), { ssr: false });
 
-export async function generateMetadata() {
-  const title = await pageTitles.adminTeam();
-  return {
-    title,
-    description: "Mengelola Tim",
-  };
-}
+export default function ManagementTeamPage() {
+  const [teams, setTeams] = useState<Team[]>([]);
+  const dataContext = useDataContext();
 
-const getTeams = async () => {
-  const res = await prisma.team.findMany({
-    select: {
-      id: true,
-      name: true,
-      users: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
-  });
-  return res;
-};
+  const fetchTeams = useCallback (async () => {
+    try {
+      const response = await fetch("/api/teams");
+      if (!response.ok) {
+        throw new Error("Failed to fetch teams");
+      }
+      const teamsData = await response.json();
+      setTeams(teamsData);
+    } catch (error) {
+      console.error("Failed to fetch Teams:", error);
+    }
+  }, []);
 
-export default async function ManagementTeamPage() {
-  const [teams] = await Promise.all([getTeams()]);
+  useEffect(() => {
+    fetchTeams();
+  }, [fetchTeams]);
+
+  const onAddSuccess = async () => {
+    try {
+      await fetchTeams();
+    } catch (error) {
+      console.error("Error eksekusi sukses delete:", error);
+    }
+  }
 
   return (
     <>
       {/* content nya */}
-
+      <Helmet>
+        <title>Manajemen Tim | {dataContext?.appNameContext}</title>
+        <meta name="description" content="Mengelola Data Akun user" />
+      </Helmet>
       <div>
         {/* Breadcrumb */}
         <div className="mb-4 text-gray-500 flex gap-1 items-start">
@@ -82,7 +100,12 @@ export default async function ManagementTeamPage() {
                     <td className="pe-8">{team.name.toUpperCase()}</td>
                     <td className="text-white">
                       <span className="flex items-stretch justify-start space-x-0 gap-2">
-                      <AddMemberTeam team={team} />
+                        <AddMemberTeam
+                          team={team}
+                          onAddSuccess={async () => {
+                            await onAddSuccess();
+                          }}
+                        />
                         <ModalMemberTeam team={team} />
                       </span>
                     </td>

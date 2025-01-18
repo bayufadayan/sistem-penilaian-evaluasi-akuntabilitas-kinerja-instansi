@@ -6,7 +6,6 @@ import { useEffect, useState, createContext, useContext } from "react";
 import SidebarUser from "@/components/sidebarUser";
 import type { Component } from "@prisma/client";
 
-
 import type React from "react";
 import Link from "next/link";
 

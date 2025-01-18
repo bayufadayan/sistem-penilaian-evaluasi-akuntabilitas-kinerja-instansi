@@ -1,6 +1,5 @@
 "use client";
-import { type SyntheticEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { type SyntheticEvent, useCallback, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
 import type { User } from "@prisma/client";
@@ -22,13 +21,11 @@ const fetchUsers = async () => {
     return res.data;
 };
 
-export default function AddMemberTeam({ team }: { team: Team }) {
+export default function AddMemberTeam({ team, onAddSuccess }: { team: Team; onAddSuccess: () => Promise<void>; }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [idUser, setIdUser] = useState("");
-    const [users, setTeams] = useState<User[]>([]);
-
-    const router = useRouter();
+    const [users, setUsers] = useState<User[]>([]);
 
     const handleModal = () => {
         setIsOpen(!isOpen);
@@ -46,26 +43,27 @@ export default function AddMemberTeam({ team }: { team: Team }) {
             console.log("Response:", response.data);
             setIdUser("");
             setIsLoading(false);
+            onAddSuccess();
+            loadUsers();
 
-            router.replace(`/admin/teams?timestamp=${new Date().getTime()}`);
             handleModal();
-            // router.replace(`/admin/teams`);
         } catch (error) {
             console.error("Error:", error);
         }
     };
 
-    useEffect(() => {
-        const loadUsers = async () => {
-            try {
-                const usersData = await fetchUsers();
-                setTeams(usersData);
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            }
-        };
-        loadUsers();
+    const loadUsers = useCallback(async () => {
+        try {
+            const usersData = await fetchUsers();
+            setUsers(usersData);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
     }, []);
+
+    useEffect(() => {
+        loadUsers();
+    }, [loadUsers]);
 
     return (
         <div>
