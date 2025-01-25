@@ -9,7 +9,8 @@ import { MdOutlineAccountCircle } from "react-icons/md";
 import { FaRegChartBar } from "react-icons/fa";
 import { AiOutlineTeam } from "react-icons/ai";
 import { ImFilesEmpty } from "react-icons/im";
-import EvaluationScore from './lastEvaluationScore';
+import EvaluationScoreCompleted, { EvaluationScoreInProgress } from './lastEvaluationScore';
+import EvaluationScoreTable from './evaluationScoreTable';
 
 type EvaluationStatusCount = {
   COMPLETED: number;
@@ -94,19 +95,6 @@ export default function TeamPage() {
     fetchCount();
   }, []);
 
-  const userActivityData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-    datasets: [
-      {
-        label: 'User  Activity',
-        data: [50, 100, 80, 120, 90],
-        fill: false,
-        borderColor: 'rgba(75,192,192,1)',
-        tension: 0.1,
-      },
-    ],
-  };
-
   useEffect(() => {
     const fetchCount = async () => {
       try {
@@ -175,7 +163,7 @@ export default function TeamPage() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-5">
         <div className="bg-white flex-1 p-4 rounded-lg shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
             <SmallCard title="Total Seluruh Komponen" value={componentCount} color="text-blue-600" borderColor="border-blue-600" />
@@ -185,32 +173,41 @@ export default function TeamPage() {
 
           <div className="flex flex-col gap-4">
             {/* Evidence Pie Chart */}
-            <div className="w-full flex gap-2">
-              <div className="w-3/5">
+            <div className="w-full flex gap-2 items-stretch">
+              <div className="w-3/5 grid grid-cols-1">
                 <EvaluationPieChart data={evidenceData} />
               </div>
 
-              <div className="w-2/5 flex flex-col gap-2">
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Hasil LKE Terkini</h3>
-                  <EvaluationScore />
+              <div className="w-2/5 flex flex-col gap-2 min-h-full">
+                <div className="bg-white p-4 rounded-lg shadow-md flex-1 flex flex-col">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    Nilai Akhir LKE AKIP <br />
+                    <span className='text-blue-600'>In Progress</span> Terbaru
+                  </h3>
+                  <EvaluationScoreInProgress />
+                  <div></div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Nilai Komponen [LKE 2024]</h3>
-                  <div>Content</div>
+                <div className="bg-white p-4 rounded-lg shadow-md flex-1 flex flex-col">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    Nilai Akhir LKE AKIP <span className='text-green-600'>Selesai</span> Terbaru
+                  </h3>
+                  <EvaluationScoreCompleted />
+                  <div></div>
                 </div>
               </div>
             </div>
+
             {/* User Activity Line Chart */}
             <div className="w-full">
-              <UserActivityChart data={userActivityData} />
+              <UserActivityChart />
             </div>
           </div>
 
         </div>
 
-        <div className="w-full md:w-1/4">
+        <div className="w-full md:w-1/4 flex flex-col gap-4">
           <UserActivityTable />
+          <EvaluationScoreTable />
         </div>
       </div>
     </div>

@@ -5,13 +5,13 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 export const GET = async () => {
   try {
-    const lastUser = await prisma.evaluationSheetScore.findMany({
+    const lastUser = await prisma.evaluationSheetScore.findFirst({
       orderBy: {
-        nilai: "desc",
+        id: "desc",
       },
       where: {
-        nilai: {
-          not: null, 
+        evaluation: {
+          status: "IN_PROGRESS",
         },
       },
       include: {
