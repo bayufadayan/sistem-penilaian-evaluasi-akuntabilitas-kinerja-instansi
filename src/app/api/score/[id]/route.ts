@@ -11,23 +11,6 @@ export const PATCH = async (
   try {
     const body = await request.json();
 
-    const beforeUpdatedScore = await prisma.score.findUnique({
-      where: { id: Number(params.id) },
-      include: {
-        criteria: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        _count: {
-          select: {
-            Evidence: true,
-          },
-        },
-      },
-    });
-
     // Update data skor
     await prisma.score.update({
       where: {
@@ -71,7 +54,7 @@ export const PATCH = async (
     }
 
     const activityLog = createActivityLog(
-      `Skor Kriteria ${updatedScore?.criteria.name} diupdate, ${beforeUpdatedScore?.score} menjadi ${updatedScore?.score}`,
+      `Detail Skor Kriteria ${updatedScore?.criteria.name} diupdate`,
       "Score",
       updatedScore?.id,
       Number(session.user.id)

@@ -29,7 +29,7 @@ export default function ManagementTeamPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const dataContext = useDataContext();
 
-  const fetchTeams = useCallback (async () => {
+  const fetchTeams = useCallback(async () => {
     try {
       const response = await fetch("/api/teams");
       if (!response.ok) {
@@ -47,6 +47,14 @@ export default function ManagementTeamPage() {
   }, [fetchTeams]);
 
   const onAddSuccess = async () => {
+    try {
+      await fetchTeams();
+    } catch (error) {
+      console.error("Error eksekusi sukses delete:", error);
+    }
+  }
+
+  const onEditSuccess = async () => {
     try {
       await fetchTeams();
     } catch (error) {
@@ -112,12 +120,16 @@ export default function ManagementTeamPage() {
                     <td>
                       <span className="flex items-stretch justify-start space-x-0">
                         <Suspense fallback={<div>Loading Update Team...</div>}>
-                          <UpdateTeam team={team} />
+                          <UpdateTeam team={team} onEditSuccess={async () => {
+                            await onEditSuccess();
+                          }} />
                         </Suspense>
                         {
                           team.name !== 'General' && (
                             <Suspense fallback={<div>Loading Delete Team...</div>}>
-                              <DeleteTeam team={team} />
+                              <DeleteTeam team={team} onDeleteSuccess={async () => {
+                                await onEditSuccess();
+                              }} />
                             </Suspense>
                           )
                         }

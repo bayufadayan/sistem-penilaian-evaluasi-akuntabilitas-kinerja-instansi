@@ -14,12 +14,19 @@ type EvaluationCountsResult = {
   [key in StatusEvaluation]?: number;
 };
 
-export const GET = async () => {
+export const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const status = searchParams.get("status") as StatusEvaluation | null;
+
   try {
     const evaluationCounts = await prisma.evaluationSheet.groupBy({
       by: ["status"],
       _count: {
         status: true,
+      },
+      where: status ? { status } : undefined,
+      orderBy: {
+        status: 'asc', 
       },
     });
 

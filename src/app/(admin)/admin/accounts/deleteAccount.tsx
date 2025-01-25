@@ -16,7 +16,7 @@ type User = {
   id_team: number;
 };
 
-export default function DeleteAccount({ user }: { user: User }) {
+export default function DeleteAccount({ user, onDeleteSuccess }: { user: User; onDeleteSuccess: () => Promise<void>; }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,12 +31,13 @@ export default function DeleteAccount({ user }: { user: User }) {
     await axios.delete(`/../api/users/${userId}`);
     router.refresh();
     setIsLoading(false)
+    onDeleteSuccess();
     setIsModalOpen(false);
   };
 
   return (
     <>
-      <AdminDeleteButton handleProps={handleModalToggle}/>
+      <AdminDeleteButton handleProps={handleModalToggle} />
 
       {/* Main modal */}
       {isModalOpen && (

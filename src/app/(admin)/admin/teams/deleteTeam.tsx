@@ -9,7 +9,7 @@ type Team = {
   name: string;
 };
 
-export default function DeleteTeam({ team }: { team: Team }) {
+export default function DeleteTeam({ team, onDeleteSuccess, }: { team: Team, onDeleteSuccess: () => Promise<void>; }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,6 +24,7 @@ export default function DeleteTeam({ team }: { team: Team }) {
     setIsLoading(true);
     await axios.delete(`/api/teams/${teamId}`);
     router.refresh();
+    onDeleteSuccess();
     setIsLoading(false);
     setIsModalOpen(false);
   };

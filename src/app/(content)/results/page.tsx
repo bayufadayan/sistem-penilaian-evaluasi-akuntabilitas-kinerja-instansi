@@ -50,7 +50,7 @@ export default function TempResultPage() {
     <main className={`${styles.mainContainer} min-h-[90vh]`}>
       <div className={styles.mainContent}>
         <div className={`mt-20`}>
-          <h1 className="font-bold text-3xl mb-4 text-black">Daftar LKE Selesai ({completedSheets.length})</h1>
+          <h1 className="font-bold text-3xl mb-4 text-black">Daftar Lembar Kerja Evaluasi Selesai ({completedSheets.length})</h1>
           {completedSheets.length === 0 ? (
             <div className={styles.evaluationCardSection}>
               <p className='text-black'>Tidak ada LKE ditemukan</p>
@@ -74,7 +74,7 @@ export default function TempResultPage() {
                   {completedSheets.map((sheet, index) => (
                     <tr key={sheet.id} className="odd:bg-white even:bg-gray-50 text-center hover:bg-gray-50">
                       <td className="px-6 py-4">{index + 1}</td>
-                      <td scope='row' className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{sheet.title}</td>
+                      <td scope='row' className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-left">{sheet.title}</td>
                       <td className="px-6 py-4">
                         {new Date(sheet.date_start).toLocaleDateString("id-ID")}
                       </td>

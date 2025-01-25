@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { BsCardChecklist } from "react-icons/bs";
@@ -18,43 +18,53 @@ const GenerateTemplateButton = dynamic(() => import("./generateTemplateButton"),
 
 export default function EvaluationPage() {
   const [evalsheets, setEvalsheets] = useState<EvaluationSheet[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const dataContext = useDataContext();
 
-  useEffect(() => {
-
-    const fetchEvaluations = async () => {
-      try {
-        const response = await fetch("/api/evaluations");
-        if (!response.ok) {
-          throw new Error("Failed to fetch evaluations");
-        }
-        const evaluationsData = await response.json();
-
-        evaluationsData.map((sheet: EvaluationSheet) => {
-          sheet.date_start = new Date(sheet.date_start);
-          sheet.date_finish = new Date(sheet.date_finish);
-
-          if (sheet.status === "PENDING") {
-            sheet.color = "bg-gradient-to-r from-yellow-400 to-yellow-500";
-          } else if (sheet.status === "COMPLETED") {
-            sheet.color = "bg-gradient-to-r from-green-400 to-green-600";
-          } else if (sheet.status === "IN_PROGRESS") {
-            sheet.color = "bg-gradient-to-r from-cyan-500 via-blue-600 to-blue-800";
-          } else if (sheet.status === "CANCELLED") {
-            sheet.color = "bg-gradient-to-r from-red-500 via-red-600 to-red-700";
-          }
-          return sheet;
-        });
-
-
-        setEvalsheets(evaluationsData);
-      } catch (error) {
-        console.error("Failed to fetch evaluations:", error);
+  const fetchEvaluations = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch("/api/evaluations");
+      if (!response.ok) {
+        throw new Error("Failed to fetch evaluations");
       }
-    };
+      const evaluationsData = await response.json();
 
-    fetchEvaluations();
+      evaluationsData.map((sheet: EvaluationSheet) => {
+        sheet.date_start = new Date(sheet.date_start);
+        sheet.date_finish = new Date(sheet.date_finish);
+
+        if (sheet.status === "PENDING") {
+          sheet.color = "bg-gradient-to-r from-yellow-400 to-yellow-500";
+        } else if (sheet.status === "COMPLETED") {
+          sheet.color = "bg-gradient-to-r from-green-400 to-green-600";
+        } else if (sheet.status === "IN_PROGRESS") {
+          sheet.color = "bg-gradient-to-r from-cyan-500 via-blue-600 to-blue-800";
+        } else if (sheet.status === "CANCELLED") {
+          sheet.color = "bg-gradient-to-r from-red-500 via-red-600 to-red-700";
+        }
+        return sheet;
+      });
+
+      setIsLoading(false);
+      setEvalsheets(evaluationsData);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Failed to fetch evaluations:", error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchEvaluations();
+  }, [fetchEvaluations]);
+
+  const onDeleteSuccess = async () => {
+    try {
+      await fetchEvaluations();
+    } catch (error) {
+      console.error("Error eksekusi sukses delete:", error);
+    }
+  }
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("id-ID", {
@@ -85,7 +95,9 @@ export default function EvaluationPage() {
           <h1 className="text-2xl font-semibold mb-4">Manajemen Lembar Kerja Evaluasi</h1>
           <div className="flex flex-row items-start justify-center">
             <AdminAddButton props="/admin/evaluations/create/" label="Tambah LKE" />
-            <GenerateTemplateButton />
+            <GenerateTemplateButton onSuccess={async () => {
+              await onDeleteSuccess();
+            }} />
           </div>
         </div>
 
@@ -144,7 +156,9 @@ export default function EvaluationPage() {
                   <div className="flex flex-wrap gap-2 mt-4">
                     <EditEvaluation
                       editUrl={`/admin/evaluations/edit/${evalsheet.id}`} />
-                    <DeleteEvaluation evaluationSheet={evalsheet} />
+                    <DeleteEvaluation evaluationSheet={evalsheet} onDeleteSuccess={async () => {
+                      await onDeleteSuccess();
+                    }} />
                     <Link href={`/admin/evaluations/${evalsheet.id}/component`}>
                       <button
                         type="button"
@@ -162,7 +176,7 @@ export default function EvaluationPage() {
           </div>
           ) : (
             <div className="flex items-center justify-center w-full h-full rounded-lg">
-              <p className="text-gray-400 text-lg font-semibold pt-24">Lembar Evaluasi Kosong</p>
+              <p className="text-gray-400 text-lg font-semibold pt-24">{isLoading ? "Loading..." : "Lembar Evaluasi Kosong"}</p>
             </div>
           )}
       </div>

@@ -1,14 +1,18 @@
 "use client"
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { MdAutoAwesome } from "react-icons/md";
 
-function GenerateTemplateButton() {
+function GenerateTemplateButton({
+    onSuccess,
+}: {
+    onSuccess: () => Promise<void>;
+}) {
     const [loading, setLoading] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState("");
     const [showToast, setShowToast] = useState(false);
-    const router = useRouter();
+    // const router = useRouter();
 
     const handleGenerate = async () => {
         setLoading(true);
@@ -29,7 +33,8 @@ function GenerateTemplateButton() {
                 setToastType("error");
             }
 
-            router.push(`/admin/evaluations?timestamp=${new Date().getTime()}`);
+            onSuccess();
+            // router.push(`/admin/evaluations?timestamp=${new Date().getTime()}`);
         } catch (error) {
             console.error("Error:", error);
             setToastMessage("Terjadi kesalahan saat memproses permintaan.");

@@ -82,6 +82,7 @@ export default function CreateEvaluationPage() {
               <input
                 value={dateStart}
                 onChange={(e) => setDateStart(e.target.value)}
+                onFocus={(e) => e.target.showPicker()}
                 type="date"
                 id="dateStart"
                 className="input input-bordered w-full"
@@ -96,6 +97,7 @@ export default function CreateEvaluationPage() {
               <input
                 value={dateFinish}
                 onChange={(e) => setDateFinish(e.target.value)}
+                onFocus={(e) => e.target.showPicker()}
                 type="date"
                 id="dateFinish"
                 className="input input-bordered w-full"

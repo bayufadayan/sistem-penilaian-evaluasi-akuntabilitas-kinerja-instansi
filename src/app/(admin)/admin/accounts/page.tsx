@@ -2,7 +2,7 @@
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Suspense, lazy } from "react";
 import { Helmet } from "react-helmet";
 import { useDataContext } from "../../layout";
@@ -37,24 +37,30 @@ export default function ManagementAccountPage() {
   const [users, setUsers] = useState<User[]>([]);
   const dataContext = useDataContext();
 
-  useEffect(() => {
-
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("/api/users");
-        if (!response.ok) {
-          throw new Error("Failed to fetch users");
-        }
-        const usersData = await response.json();
-        setUsers(usersData);
-      } catch (error) {
-        console.error("Failed to fetch users:", error);
+  const fetchUsers = useCallback(async () => {
+    try {
+      const response = await fetch("/api/users");
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
       }
-    };
-
-    fetchUsers();
+      const usersData = await response.json();
+      setUsers(usersData);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
   }, []);
 
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const onDeleteSuccess = async () => {
+    try {
+      await fetchUsers();
+    } catch (error) {
+      console.error("Error eksekusi sukses delete:", error);
+    }
+  }
 
   return (
     <>
@@ -117,7 +123,9 @@ export default function ManagementAccountPage() {
                           props={`/admin/accounts/edit/${user.id}`} />
                       </Suspense>
                       <Suspense fallback={<div>Loading Delete Button...</div>}>
-                        <DeleteAccount user={user} />
+                        <DeleteAccount user={user} onDeleteSuccess={async () => {
+                          await onDeleteSuccess();
+                        }} />
                       </Suspense>
                     </td>
                   </tr>

@@ -14,8 +14,10 @@ type EvaluationSheet = {
 
 export default function DeleteEvaluation({
   evaluationSheet,
+  onDeleteSuccess,
 }: {
   evaluationSheet: EvaluationSheet;
+  onDeleteSuccess: () => Promise<void>;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +32,7 @@ export default function DeleteEvaluation({
     await axios.delete(`/../api/evaluations/${evaluationId}`);
     router.refresh();
     setIsLoading(false);
+    onDeleteSuccess();
     setIsModalOpen(false);
   };
 

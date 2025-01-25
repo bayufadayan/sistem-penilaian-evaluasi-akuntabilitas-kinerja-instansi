@@ -11,7 +11,7 @@ type TeamFormData = {
   name: string;
 };
 
-export default function UpdateTeam({ team }: { team: Team }) {
+export default function UpdateTeam({ team, onEditSuccess, }: { team: Team; onEditSuccess: () => Promise<void>; }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,6 +38,7 @@ export default function UpdateTeam({ team }: { team: Team }) {
       setIsLoading(false);
       reset();
       router.refresh();
+      onEditSuccess();
       setIsOpen(false);
     } catch (error) {
       console.error("Error:", error);
