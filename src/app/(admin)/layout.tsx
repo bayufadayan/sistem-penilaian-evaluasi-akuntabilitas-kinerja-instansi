@@ -2,6 +2,7 @@
 import { useEffect, useState, createContext, useContext } from "react";
 import AdminNavbar from "./components/adminNavbar";
 import AdminSidebar from "./components/adminSidebar";
+import AdminFooter from './components/adminFooter';
 import { Epilogue } from "next/font/google";
 import { Helmet } from "react-helmet";
 
@@ -53,7 +54,9 @@ export default function RootLayout({
           <AdminNavbar />
           <AdminSidebar />
 
-          <div className="p-8 ml-64 mt-14">{children}</div>
+          <div className="p-8 ml-64 mt-14 min-h-[calc(100vh-9.5rem)]">{children}</div>
+
+          <AdminFooter />
         </DataContext.Provider>
       </body>
     </html>

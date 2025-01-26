@@ -9,8 +9,21 @@ import { LuClipboardCheck } from "react-icons/lu";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { VscSignOut } from "react-icons/vsc";
+import { useState } from "react";
 
 export default function AdminSidebar() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+
+  const closeModal = () => setIsModalOpen(false);
+
+  const handleLogout = () => {
+    signOut();
+    closeModal();
+  };
+
+
   return (
     <>
       <button
@@ -151,7 +164,7 @@ export default function AdminSidebar() {
               {/* <hr className="opacity-20" /> */}
               <li
                 className="p-2 cursor-pointer rounded-lg hover:bg-red-700 hover:text-white flex items-center text-red-500"
-                onClick={() => signOut()}
+                onClick={openModal}
               >
                 <VscSignOut className="w-6 h-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" />
                 <span className="ml-3 mt-1">Keluar</span>
@@ -160,6 +173,42 @@ export default function AdminSidebar() {
           </div>
         </div>
       </aside>
+
+      {/* Modal Confirmation */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-full h-full flex items-center justify-center mb-2">
+              <div className="w-fit flex items-center justify-center rounded-full bg-white shadow-lg p-5 my-2 animate-bounce">
+                <VscSignOut className="w-14 h-14 text-red-600 transition duration-75" />
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold text-center">Konfirmasi Keluar</h3>
+            <p className="text-center mb-4">Apakah Anda yakin ingin keluar?</p>
+            <div className="flex justify-center gap-3">
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                onClick={handleLogout}
+              >
+                Ya, Keluar
+              </button>
+              <button
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
+                onClick={closeModal}
+              >
+                Tidak
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -34,12 +34,18 @@ function EvaluationPieChart({ data }: { data: any }) {
         },
     };
 
+    const isDataEmpty = !data || data.datasets[0].data.every((value: number) => value === 0);
+
     return (
         <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">Jumlah LKE berdasarkan status</h3>
-            <div className="flex justify-center items-center h-80">
-                <Pie data={data} options={options} />
-            </div>
+            {isDataEmpty ? (
+                <p className="text-center text-gray-500">Belum ada LKE yang dibuat</p>
+            ) : (
+                <div className="flex justify-center items-center h-80">
+                    <Pie data={data} options={options} />
+                </div>
+            )}
         </div>
     );
 }

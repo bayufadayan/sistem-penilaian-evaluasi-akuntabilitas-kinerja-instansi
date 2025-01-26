@@ -11,16 +11,16 @@ function UserActivityChart() {
     const [filteredData, setFilteredData] = useState<any>([]);
     const [monthFilter, setMonthFilter] = useState<string>('');
     const [yearFilter, setYearFilter] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        // Ambil data dari API
         const fetchData = async () => {
+            setIsLoading(true);
             try {
                 const response = await fetch('/api/log-activity');
                 const data = await response.json();
-                console.log(data); // Tambahkan log ini untuk memeriksa data
+                console.log('Raw API data:', data); // Debug: periksa data dari API
 
-                // Mengelompokkan data berdasarkan hari
                 const groupedData = data.reduce((acc: any, item: any) => {
                     const date = new Date(item.createdAt);
                     const day = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`; // Format DD-MM-YYYY
@@ -28,24 +28,28 @@ function UserActivityChart() {
                     if (!acc[day]) {
                         acc[day] = 0;
                     }
-                    acc[day] += 1; // Menambahkan count untuk hari tersebut
+                    acc[day] += 1;
                     return acc;
                 }, {});
 
-                // Menyimpan data dan menyiapkan chart
+                console.log('Grouped Data:', groupedData); // Debug: periksa hasil grouping
                 setActivityData(groupedData);
                 setFilteredData(groupedData);
             } catch (error) {
                 console.error('Error fetching activity data:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchData();
     }, []);
 
+
     // Filter berdasarkan bulan dan tahun
     useEffect(() => {
         const filterData = () => {
+            console.log('Current Filters:', { monthFilter, yearFilter }); // Debug: Periksa filter yang diterapkan
             const filtered = Object.keys(activityData).filter((key) => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const [day, month, year] = key.split('-');
@@ -57,11 +61,13 @@ function UserActivityChart() {
                 return acc;
             }, {});
 
+            console.log('Filtered Data:', filtered); // Debug: Periksa hasil filter
             setFilteredData(filtered);
         };
 
         filterData();
     }, [monthFilter, yearFilter, activityData]);
+
 
     const options = {
         responsive: true,
@@ -80,11 +86,31 @@ function UserActivityChart() {
                 grid: {
                     display: false,
                 },
+                ticks: {
+                    display: true,
+                },
             },
             y: {
                 grid: {
                     color: 'rgba(0, 0, 0, 0.1)',
                 },
+            },
+        },
+        interaction: {
+            mode: 'nearest' as const,
+            intersect: false,
+        },
+        hover: {
+            mode: 'nearest' as const,
+            intersect: false,
+        },
+        elements: {
+            line: {
+                borderWidth: 3,
+            },
+            point: {
+                radius: 5,
+                hoverRadius: 7,
             },
         },
     };
@@ -98,7 +124,8 @@ function UserActivityChart() {
                 data: Object.values(filteredData),
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                tension: 0.1,
+                borderWidth: 2,
+                tension: 0.2,
             },
         ],
     };
@@ -137,19 +164,27 @@ function UserActivityChart() {
                     className="border p-2 rounded"
                 >
                     <option value="">Semua Tahun</option>
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
+                    {Array.from({ length: new Date().getFullYear() - 2024 + 1 }, (_, i) => 2024 + i).map((year) => (
+                        <option key={year} value={year}>
+                            {year}
+                        </option>
+                    ))}
                 </select>
+
             </div>
 
             {/* Chart */}
             <div className="h-64">
-                {filteredData && filteredData.length > 0 ? (
+                {isLoading ? (
+                    <p className="text-gray-500 text-center">Memuat data...</p>
+                ) : Object.keys(filteredData).length > 0 ? (
                     <Line data={chartData} options={options} />
                 ) : (
-                    <p>Loading data...</p>
+                    <p className="text-gray-500 text-center">Data tidak tersedia untuk bulan dan tahun yang dipilih.</p>
                 )}
             </div>
+
+
         </div>
     );
 }

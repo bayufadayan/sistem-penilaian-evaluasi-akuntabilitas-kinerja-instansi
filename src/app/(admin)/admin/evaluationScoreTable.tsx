@@ -47,7 +47,7 @@ function EvaluationScoreTable() {
                 <table className="min-w-full text-sm text-left text-gray-500">
                     <thead className="bg-gray-100">
                         <tr>
-                            <th className="px-4 py-2 min-w-fit text-left">#</th>
+                            <th className="px-2 py-2 min-w-fit text-left">#</th>
                             <th className="px-4 py-2 min-w-[60%] text-left">Judul</th>
                             <th className="px-4 py-2 min-w-[35%] text-left">Nilai</th>
                         </tr>
@@ -71,7 +71,7 @@ function EvaluationScoreTable() {
                                     }}
                                     className={index === 0 ? "text-white font-bold" : ""}
                                 >
-                                    <td className="px-4 py-2">{index + 1}</td>
+                                    <td className="px-2 py-2">{index + 1}</td>
                                     <td className="px-4 py-2">{evalScore.evaluation.title}</td>
                                     <td className="px-4 py-2">{evalScore.nilai}</td>
                                 </tr>

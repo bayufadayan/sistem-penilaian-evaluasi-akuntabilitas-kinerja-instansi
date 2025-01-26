@@ -11,6 +11,7 @@ import { AiOutlineTeam } from "react-icons/ai";
 import { ImFilesEmpty } from "react-icons/im";
 import EvaluationScoreCompleted, { EvaluationScoreInProgress } from './lastEvaluationScore';
 import EvaluationScoreTable from './evaluationScoreTable';
+import ActivityTable from './activityTable';
 
 type EvaluationStatusCount = {
   COMPLETED: number;
@@ -208,6 +209,7 @@ export default function TeamPage() {
         <div className="w-full md:w-1/4 flex flex-col gap-4">
           <UserActivityTable />
           <EvaluationScoreTable />
+          <ActivityTable />
         </div>
       </div>
     </div>
