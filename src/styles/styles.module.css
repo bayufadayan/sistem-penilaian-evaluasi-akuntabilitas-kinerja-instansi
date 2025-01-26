@@ -24,6 +24,10 @@
   z-index: 99;
 }
 
+.navToggle {
+  display: none;
+}
+
 .mainHeader nav img {
   height: 42px;
 }
@@ -113,6 +117,10 @@
   padding: 36px 100px;
 }
 
+.mobileSummaryMenu {
+  display: none;
+}
+
 .mainContent {
   display: flex;
 }
@@ -166,6 +174,10 @@
   position: absolute;
 }
 
+.detailButton::after {
+  content: "Lihat Detail";
+}
+
 .cardInformation {
   width: 100%;
   padding: 20px;
@@ -190,6 +202,10 @@
   border-radius: 10px;
   box-shadow: 0px 0px 49.6px 0px rgba(0, 0, 0, 0.25);
   gap: 12px;
+}
+
+.summaryCardMobile {
+  display: none;
 }
 
 .summaryCard .title {
@@ -1186,4 +1202,201 @@
   visibility: visible;
   opacity: 1;
   transform: translateX(-50%) translateY(-10px);
+}
+
+@media (max-width: 768px) {
+  .navMainMenu {
+    display: none;
+  }
+
+  .mainNav {
+    position: relative;
+  }
+
+  .navToggle {
+    display: block;
+    right: 10;
+    border: 2px solid #c5c6c7;
+    border-radius: 10px;
+    padding: 5px;
+    position: absolute;
+    right: 20px;
+  }
+
+  .navMobileMenu {
+    display: block;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    right: 0;
+    top: 80px;
+  }
+
+  .mainHeader nav img {
+    padding: 0;
+    margin: 0;
+  }
+
+  .accountButton {
+    display: none;
+  }
+
+  .mainContainer {
+    padding: 12px 16px;
+  }
+
+  .heroImage {
+    padding: 0px 0px;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .heroContainer {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 80px;
+  }
+
+  .heroTitle {
+    width: 100%;
+    padding: 8px 10px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: -20px;
+  }
+
+  .heroTitle h1 {
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  .heroTitle p {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .heroPictures {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 0px;
+  }
+
+  .heroPictures img {
+    width: 90%;
+  }
+
+  .mainContent {
+    margin-top: 20px;
+    flex-direction: column;
+  }
+
+  .evaluationCardContainer {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .summaryCard {
+    display: none;
+  }
+
+  .evaluationCardSection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .evaluationCard {
+    width: 100%;
+  }
+
+  .rangeDate {
+    background-color: white;
+    color: #006c1b;
+    font-weight: 700;
+    padding-block: 4px;
+    padding-inline: 10px;
+    border-radius: 100px;
+    align-self: center;
+    justify-self: center;
+  }
+
+  .evaluationCard .background img:nth-child(2) {
+    right: -45px;
+    top: 8px;
+  }
+
+  .cardInformation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .cardInformation h3 {
+    font-weight: 800;
+    text-align: center;
+    width: 80%;
+  }
+
+  .detailButton::after {
+    content: "Detail";
+  }
+
+  .mobileSummaryMenu {
+    display: flex;
+    margin-bottom: 20px;
+    color: #0e55be;
+  }
+
+  .mobileSummaryMenu Link {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .listSummeryMenu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .listSummeryMenu>div {
+    padding: 4px;
+    border-radius: 10px;
+    border: 2px solid rgba(37, 99, 235, 0.7);
+    display: flex;
+  }
+
+  .listSummeryMenu small {
+    font-weight: 700;
+  }
+
+  .summaryCardMobile {
+    display: flex;
+    align-self: center;
+    background-color: white;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 24px;
+    border-radius: 10px;
+    gap: 6px;
+    margin-top: 30px;
+  }
+  
+  .summarySection p {
+    font-size: medium;
+    margin-bottom: 8px;
+  }
 }

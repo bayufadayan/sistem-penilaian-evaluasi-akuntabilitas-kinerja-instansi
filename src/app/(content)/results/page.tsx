@@ -50,7 +50,7 @@ export default function TempResultPage() {
     <main className={`${styles.mainContainer} min-h-[90vh]`}>
       <div className={styles.mainContent}>
         <div className={`mt-20`}>
-          <h1 className="font-bold text-3xl mb-4 text-black">Daftar Lembar Kerja Evaluasi Selesai ({completedSheets.length})</h1>
+          <h1 className="font-bold text-3xl mb-4 text-black text-center md:text-left">Daftar Lembar Kerja Evaluasi Selesai ({completedSheets.length})</h1>
           {completedSheets.length === 0 ? (
             <div className={styles.evaluationCardSection}>
               <p className='text-black'>Tidak ada LKE ditemukan</p>
@@ -67,7 +67,7 @@ export default function TempResultPage() {
                     <th scope="col" className="px-6 py-3">Tahun</th>
                     <th scope="col" className="px-6 py-3">Nilai</th>
                     <th scope="col" className="px-6 py-3">Grade</th>
-                    <th scope="col" className="px-6 py-3 font-bold text-xl"><FiExternalLink /></th>
+                    <th scope="col" className="px-6 py-3 font-bold text-xl sticky md:static right-0 bg-blue-100 md:bg-transparent shadow-lg shadow-[--x-10px]"><FiExternalLink /></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -84,9 +84,8 @@ export default function TempResultPage() {
                       <td className="px-6 py-4">{sheet.year}</td>
                       <td className="px-6 py-4">{sheet.evaluationSheetScore[0]?.nilai || "-"}</td>
                       <td className="px-6 py-4">{sheet.evaluationSheetScore[0]?.grade || "-"}</td>
-                      <td className="px-6 py-4">
-                        <Link href={`/sheets/${sheet.id}/summary`} className='py-2 px-4 bg-blue-500 text-white font-bold rounded-md shadow-md '>
-                          Lihat Detail
+                      <td className="px-6 py-4 sticky right-0 bg-blue-50 md:bg-transparent">
+                        <Link href={`/sheets/${sheet.id}/summary`} className={`py-2 px-4 bg-blue-500 text-white font-bold rounded-md shadow-md ${styles.detailButton}`}>
                         </Link>
                       </td>
                     </tr>

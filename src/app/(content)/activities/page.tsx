@@ -131,7 +131,7 @@ export default function HistoryPage() {
   return (
     <main className={`flex flex-col items-start p-6 min-h-[84vh] ${styles.mainContainer}`}>
       <div className="mt-10 w-full md:w-3/4">
-        <h1 className="font-bold text-3xl pt-10 mb-5 text-black">Riwayat Aktivitas</h1>
+        <h1 className="font-bold text-3xl pt-10 mb-5 text-black text-center md:text-left my-4 md:mt-0 md:mb-2">Riwayat Aktivitas</h1>
 
         {/* Filter Buttons */}
         <div className="mb-4 flex justify-start space-x-2">
@@ -167,7 +167,7 @@ export default function HistoryPage() {
                   </span>
                 </div>
                 <div className="flex flex-col flex-grow">
-                  <div className="flex justify-between items-center">
+                  <div className="flex md:justify-between md:items-center flex-col md:flex-row items-start">
                     <h2 className="text-lg font-bold text-gray-800">
                       {item.actionType}
                     </h2>
@@ -201,7 +201,7 @@ export default function HistoryPage() {
         </div>
 
         {/* Pagination */}
-        <div className="mt-6 text-black">{logActivity.length > 0 ? renderPagination() : ""}</div>
+        <div className="mt-6 mb-10 md:mb-0 text-black">{logActivity.length > 0 ? renderPagination() : ""}</div>
       </div>
     </main>
   );

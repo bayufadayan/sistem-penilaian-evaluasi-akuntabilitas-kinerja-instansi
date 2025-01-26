@@ -9,7 +9,7 @@ export default function DashboardHero() {
         <div className={styles.heroTitle}>
           <h1>Dashboard Evaluasi Akuntabilitas Kinerja</h1>
           <p>
-            Selamat datang di EkaPrime! Sistem manajemen kinerja yang
+            Selamat datang di Sistem manajemen kinerja yang
             terintegrasi. Pantau dan evaluasi progress ASN dengan mudah dan
             efisien.
           </p>

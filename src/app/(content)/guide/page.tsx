@@ -35,7 +35,7 @@ export default function PanduanPage() {
   return (
     <main className={styles.mainContainer}>
       <div className={`mt-10 ${guideLink ? "" : "h-screen w-3/4"}`}>
-        <h1 className="font-bold text-3xl pt-10 mb-5 text-black">Panduan Penggunaan Aplikasi</h1>
+        <h1 className="font-bold text-3xl pt-10 mb-5 text-black text-center md:text-left">Panduan Penggunaan Aplikasi</h1>
         <div className="mb-5 text-black">
           <strong>Deskripsi: </strong>
           <br />
@@ -43,12 +43,11 @@ export default function PanduanPage() {
         </div>
         <div>
           {guideLink ? (
-            <div>
+            <div className="mb-5 md:mb-0">
               <iframe
                 src={guideLink}
-                width="75%"
-                height="1000px"
-                className="border-2 border-gray-300 rounded-md shadow-sm"
+                width="100%"
+                className="border-2 border-gray-300 rounded-md shadow-sm w-full md:w-3/4 h-[550px] md:h-[1000px]"
                 allow="autoplay"
                 allowFullScreen
                 title="Panduan Penggunaan Aplikasi"
@@ -59,7 +58,7 @@ export default function PanduanPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 download
-                className="inline-block mt-3 text-blue-600 underline hover:text-blue-800"
+                className="inline-block mt-3 text-blue-600 underline hover:text-blue-800 text-center w-full md:w-fit font-bold"
               >
                 Unduh Panduan
               </a>

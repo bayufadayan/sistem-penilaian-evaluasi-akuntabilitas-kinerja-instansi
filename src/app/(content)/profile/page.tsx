@@ -83,8 +83,8 @@ function MyProfilePage() {
     <main className="bg-gradient-to-r bg-[#ecf1f4] min-h-screen flex items-center justify-center pt-16">
       <div className="bg-white w-full max-w-4xl p-8 rounded-lg shadow-lg">
 
-        <div className="flex justify-between">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">Profil Saya</h1>
+        <div className={`flex text-center ${isLoading ? "justify-between" : "justify-center md:justify-start"}`}>
+          <h1 className="text-3xl font-bold mb-6 text-gray-800 ">Profil Saya</h1>
           {isLoading && (
             <div className="px-4 bg-blue-600 text-white rounded-lg shadow-lg flex text-center items-center">
               <svg
@@ -146,7 +146,7 @@ function MyProfilePage() {
 
           {/* Informasi Akun */}
           <div className="flex-1 bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Informasi Akun</h2>
+            <h2 className="text-xl font-semibold mb-4 md:text-left text-center">Informasi Akun</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm font-medium text-gray-500">Nama</p>
