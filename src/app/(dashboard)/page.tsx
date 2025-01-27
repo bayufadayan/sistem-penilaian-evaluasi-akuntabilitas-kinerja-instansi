@@ -437,7 +437,7 @@ export default function Home() {
             className="absolute inset-0 bg-black bg-opacity-50"
             onClick={toggleSummaryModal}
           ></div>
-          <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-w-md max-h-[60%] overflow-y-auto p-0">
+          <div className="relative bg-white rounded-lg shadow-lg w-11/12 max-w-md max-h-[70%] overflow-y-auto p-0">
             <button
               type="button"
               className="absolute top-3 right-3 text-red-500 hover:text-red-700 bg-red-200 px-2 rounded-lg shadow-md border-1 border-red-600"
@@ -601,7 +601,7 @@ export default function Home() {
                 <div className="text-center text-red-600">Tidak ada LKE Aktif</div>
               )}
 
-              <div className={styles.buttonSection}>
+              <div className={`${styles.buttonSection} mb-10`}>
                 <Link href="/guide">
                   <button type="button">
                     <div className={styles.icon}>

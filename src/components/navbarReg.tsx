@@ -62,8 +62,11 @@ export default function Navbar() {
       </button>
 
       {
-        mobileMenuOpen && (<div className={styles.navMobileMenu}>
-          <ul className="flex flex-col justify-center items-center gap-4 p-4">
+        mobileMenuOpen && (<div className={styles.navMobileMenu}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setMobileMenuOpen(false);
+          }}>
+          <ul className="flex flex-col justify-center items-center gap-4 p-4 bg-transparent">
             <Link href={"/"} className="py-3 text-white w-full rounded-xl border-2 border-white bg-black bg-opacity-30 border-opacity-50 text-center font-bold text-lg hover:bg-blue-600 hover:bg-opacity-50" onClick={toggleMobileMenu}>
               Beranda
             </Link>
@@ -106,7 +109,6 @@ export default function Navbar() {
                             ? `${session?.user?.name?.slice(0, 13)}...`
                             : session.user.name}
                         </li>
-
                         <li>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +134,7 @@ export default function Navbar() {
                       <div className="absolute top-0 right-0 mt-14 w-[75vw] bg-white rounded-md shadow-2xl z-20 border-separate text-[#001D6C]">
                         <ul className="py-1 text-base">
                           {session.user.role === "ADMIN" && (
-                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                            <li className="px-4 py-4 hover:bg-gray-100 cursor-pointer">
                               <a href="/admin" className="flex items-center">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +162,7 @@ export default function Navbar() {
                               </a>
                             </li>
                           )}
-                          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                          <li className="px-4 py-4 hover:bg-gray-100 cursor-pointer">
                             <a href="/profile" className="flex items-center">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -192,7 +194,9 @@ export default function Navbar() {
               </ul>
             </li>
             <li className="py-3 text-white w-full rounded-xl bg-red-600 border-opacity-50 text-center font-bold text-lg hover:bg-blue-600 hover:bg-opacity-50"
-              onClick={() => signOut()}>
+              onClick={() => {
+                signOut();
+              }}>
               Logout
             </li>
           </ul>

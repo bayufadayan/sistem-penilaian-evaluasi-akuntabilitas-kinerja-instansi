@@ -111,9 +111,13 @@ export default function RootLayout({
         {
           evaluation.status !== "IN_PROGRESS" && evaluation.status !== "COMPLETED"
             ? <div className="z-[70] fixed w-screen h-screen bg-slate-600 text-white flex flex-col items-center justify-center gap-3">
-              <span>({evaluation.title})</span>
+              <span>
+                ({evaluation.title})
+              </span>
               <h1 className="font-bold text-white text-3xl">
-                <strong className="flex text-red-500 p-2 rounded bg-white w-fit">STATUS: {evaluation.status}</strong>
+                <strong className="flex text-red-500 p-2 rounded bg-white w-fit">
+                  STATUS: {evaluation.status}
+                </strong>
               </h1>
               <span className="w-2/3 text-center">
                 Mohon maaf, Anda saat ini tidak dapat mengisi atau melihat &quot;{evaluation.title}&quot; karena statusnya saat ini adalah {evaluation.status}. Silakan kembali lagi nanti.
@@ -121,7 +125,7 @@ export default function RootLayout({
               <small className="italic">Jika Anda merasa ini adalah kesalahan, silakan hubungi admin untuk bantuan lebih lanjut.</small>
               <div>
                 <Link href={"/"} className="underline text-blue-300 cursor-pointer hover:text-green-400">
-                Kembali ke Beranda
+                  Kembali ke Beranda
                 </Link>
               </div>
             </div>

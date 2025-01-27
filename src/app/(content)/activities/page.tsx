@@ -154,7 +154,7 @@ export default function HistoryPage() {
           {loading ? (
             <p className="text-center text-gray-500">Loading...</p>
           ) : Array.isArray(logActivity) && logActivity.length === 0 ? (
-            <p className="text-gray-500 ">Tidak ada data yang ditemukan.</p>
+            <p className="text-gray-500 italic text-center">Tidak ada data yang ditemukan.</p>
           ) : (
             logActivity.map((item, index) => (
               <div

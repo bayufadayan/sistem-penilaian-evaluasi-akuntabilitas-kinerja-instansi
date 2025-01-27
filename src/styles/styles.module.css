@@ -1211,6 +1211,9 @@
 
   .mainNav {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .navToggle {
@@ -1233,9 +1236,20 @@
     top: 80px;
   }
 
+  .navLogo{
+    display: flex;
+    align-self: center;
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .mainHeader nav img {
     padding: 0;
     margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .accountButton {

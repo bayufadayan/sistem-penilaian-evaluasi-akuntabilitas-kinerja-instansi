@@ -38,7 +38,7 @@ export const POST = async (request: Request) => {
     const session = await getServerSession(authOptions);
     const sessionUserId = Number(session?.user?.id) || null;
     await createActivityLog(
-      `{Password Akun ${session?.user.name} diReset}`,
+      `Password Akun ${user.name} diReset`,
       "User",
       user.id,
       sessionUserId,

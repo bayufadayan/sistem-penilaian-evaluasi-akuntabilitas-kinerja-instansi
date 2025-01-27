@@ -34,14 +34,14 @@ export default function PanduanPage() {
 
   return (
     <main className={styles.mainContainer}>
-      <div className={`mt-10 ${guideLink ? "" : "h-screen w-3/4"}`}>
+      <div className={`mt-10 md:min-h-[76vh] ${guideLink ? "min-h-[73vh]" : "h-screen w-3/4"}`}>
         <h1 className="font-bold text-3xl pt-10 mb-5 text-black text-center md:text-left">Panduan Penggunaan Aplikasi</h1>
         <div className="mb-5 text-black">
           <strong>Deskripsi: </strong>
           <br />
           Berikut panduan yang bisa anda baca untuk memakai Aplikasi {appName}
         </div>
-        <div>
+        <div className="w-full">
           {guideLink ? (
             <div className="mb-5 md:mb-0">
               <iframe
@@ -67,7 +67,7 @@ export default function PanduanPage() {
 
 
           ) : (
-            <p className="text-red-600">
+            <p className="text-red-600 w-full">
               Panduan belum tersedia. Silakan cek kembali nanti.
             </p>
           )}
