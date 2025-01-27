@@ -54,7 +54,7 @@ export default function RootLayout({
           <AdminNavbar />
           <AdminSidebar />
 
-          <div className="p-8 ml-64 mt-14 min-h-[calc(100vh-9.5rem)]">{children}</div>
+          <div className="p-8 md:ml-64 mt-14 min-h-[calc(100vh-9.5rem)]">{children}</div>
 
           <AdminFooter />
         </DataContext.Provider>

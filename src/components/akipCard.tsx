@@ -38,7 +38,7 @@ export default function AkipCard({
             {" "}
             {title.length > 20 ? `${title.slice(0, 20)}...` : title}
           </h3>
-          <p className={`${styles.rangeDate} shadow-md`}>
+          <p className={`${styles.rangeDate} shadow-md md:shadow-none`}>
             {new Date(startDate).toLocaleDateString()} -{" "}
             {new Date(endDate).toLocaleDateString()}
           </p>

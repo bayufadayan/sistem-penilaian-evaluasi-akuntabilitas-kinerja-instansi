@@ -29,7 +29,7 @@ export default function SubComponentListCard({
   ).map((subComponent) => (
     <Link href={`/sheets/${evaluationId}/${subComponent.id}`} key={subComponent.id}>
       <p
-        className={`font-medium hover:text-white hover:cursor-pointer ${subcomponentId === String(subComponent.id)
+        className={`font-medium hover:text-white hover:cursor-pointer w-full break-words ${subcomponentId === String(subComponent.id)
             ? "bg-green-600 text-white"
             : "bg-blue-100 hover:bg-slate-600"
           }`}

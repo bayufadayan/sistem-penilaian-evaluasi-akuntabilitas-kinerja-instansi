@@ -101,10 +101,10 @@ export default function InstructionPage() {
             / Penjelasan Penilaian
           </div>
 
-          <h1 className="leading-snug">
+          <h1 className="leading-snug text-center md:text-left">
             Penjelasan Penilaian dalam Pengisian Lembar Kerja Evaluasi AKIP
           </h1>
-          <p>
+          <p className="text-center md:text-left">
             Pengisian jawaban dilakukan pada sub-komponen, setiap sub-komponen
             dinilai berdasarkan pemenuhan kualitas dari kriteria (sebagai
             probing), dengan pilihan jawaban AA/A/BB/B/CC/C/D/E sesuai dengan
@@ -128,7 +128,7 @@ export default function InstructionPage() {
                   }
                 >
                   <p>Keberadaan</p>
-                  <IoIosArrowForward className="text-xl" />
+                  <IoIosArrowForward className="text-xl hidden md:block" />
                 </button>
 
                 <button
@@ -142,7 +142,7 @@ export default function InstructionPage() {
                   }
                 >
                   <p>Kualitas</p>
-                  <IoIosArrowForward className="text-xl" />
+                  <IoIosArrowForward className="text-xl hidden md:block" />
                 </button>
 
                 <button
@@ -156,12 +156,12 @@ export default function InstructionPage() {
                   }
                 >
                   <p>Pemanfaatan</p>
-                  <IoIosArrowForward className="text-xl" />
+                  <IoIosArrowForward className="text-xl hidden md:block" />
                 </button>
               </div>
             </div>
 
-            <div className={`${styles.nextButton}`}>
+            <div className={`${styles.nextButton} ${styles.nextButtonPenjelasanNilai}`}>
               <Link href={`/sheets/${dataContext.evaluationId}/${firstSubComponents?.id}`} className="text-blue-500 rounded-lg px-4 hover:bg-blue-500 hover:text-white transition-colors duration-300 ease-in-out shadow-md bg-white">
                 <button type="button">
                   <p>Selanjutnya</p>
@@ -224,6 +224,31 @@ export default function InstructionPage() {
               )}
             </table>
           </div>
+        </div>
+
+        <div className={`${styles.nextButton} md:hidden`}>
+          <Link href={`/sheets/${dataContext.evaluationId}/${firstSubComponents?.id}`} className="text-blue-500 rounded-lg px-4 hover:bg-blue-500 hover:text-white transition-colors duration-300 ease-in-out shadow-md bg-white">
+            <button type="button">
+              <p>Selanjutnya</p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="45"
+                height="45"
+                viewBox="0 0 45 45"
+                fill="none"
+              >
+                <title>Next</title>
+                <rect width="45" height="45" rx="22.5" fill="#01499F" />
+                <path
+                  d="M19 30L26.5 22.5L19 15"
+                  stroke="white"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </Link>
         </div>
       </div>
     </div>

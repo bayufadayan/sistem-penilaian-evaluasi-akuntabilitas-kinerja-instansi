@@ -233,10 +233,10 @@ export default function SummaryScore() {
             <div className={styles.fillCriteriaHeaderContent}>
               <div className="flex w-full">
                 <div
-                  className={`${styles.mainTitle} flex justify-between w-full`}
+                  className={`${styles.mainTitle} flex flex-col md:flex-row justify-center md:justify-between w-full`}
                 >
-                  <h1 className="text-4xl font-bold">Hasil Pengisian AKIP</h1>
-                  <div className="flex gap-2">
+                  <h1 className="text-4xl font-bold md:text-left text-center">Hasil Pengisian AKIP</h1>
+                  <div className="flex gap-2 justify-center md:mt-0 mt-3">
                     <ExcelGenerator
                       components={components}
                       evaluationName={evaluationName}
@@ -264,9 +264,9 @@ export default function SummaryScore() {
 
         <hr className="border-t-2 border-gray-300 my-2" />
 
-        <div className="grid grid-cols-4 gap-6 mb-4">
+        <div className="grid grid-cols-4 md:gap-6 mb-4 gap-4">
           {/* Card Detail Informasi */}
-          <div className="col-span-2 p-5 bg-white rounded-lg shadow-lg border-l-4 border-blue-600">
+          <div className="col-span-4 md:col-span-2 p-5 bg-white rounded-lg shadow-lg border-l-4 border-blue-600">
             <div>
               <h2 className="text-md font-bold text-blue-600 mb-2">
                 Detail Informasi
@@ -301,7 +301,7 @@ export default function SummaryScore() {
           </div>
 
           {/* Card 2 - Nilai LKE */}
-          <div className="p-5 bg-white rounded-lg shadow-lg flex items-center justify-between border-l-4 border-green-600">
+          <div className="col-span-2 md:col-span-1 p-5 bg-white rounded-lg shadow-lg flex items-center justify-between border-l-4 border-green-600">
             <div>
               <h2 className="text-md font-bold text-green-600 mb-2">
                 Nilai LKE
@@ -314,7 +314,7 @@ export default function SummaryScore() {
           </div>
 
           {/* Card 3 - Grade LKE */}
-          <div className="p-5 bg-white rounded-lg shadow-lg flex items-center justify-between border-l-4 border-yellow-500">
+          <div className="col-span-2 md:col-span-1 p-5 bg-white rounded-lg shadow-lg flex items-center justify-between border-l-4 border-yellow-500">
             <div>
               <h2 className="text-md font-bold text-yellow-500 mb-2">
                 Grade LKE

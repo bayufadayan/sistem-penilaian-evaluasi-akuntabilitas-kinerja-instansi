@@ -219,7 +219,7 @@ export default function EvaluationSheetsPage() {
 
   if (!dataContext) return <div>No Data Found</div>;
   return (
-    <div className={styles.lkeContentContainer}>
+    <div className={`${styles.lkeContentContainer}`}>
       <div className={styles.lkeContent}>
         <div className={styles.lkeContentHeader}>
           <div className={styles.breadcrumb}>
@@ -238,16 +238,16 @@ export default function EvaluationSheetsPage() {
         </div>
 
         <div className={styles.fillguideMain}>
-          <div className={`${styles.staticticAnswer} bg-white rounded-lg p-4 border px-4 duration-300 ease-in-out shadow-md`}>
+          <div className={`${styles.staticticAnswer} bg-white rounded-lg p-4 border px-4 duration-300 ease-in-out shadow-md h-fit`}>
             <strong className="text-gray-800 text-center">Progress Pengisisan Kriteria</strong>
             {criteriaStats.length > 0 ? (
-              <Bar data={chartData} options={chartOptions} />
+              <Bar data={chartData} options={chartOptions}/>
             ) : (
               <p className="text-center">Loading...</p>
             )}
 
             <strong className="mt-4">Jumlah Kriteria yang telah diisi</strong>
-            <ol className="flex justify-around gap-5">
+            <ol className="flex flex-col md:flex-row justify-around gap-5">
               {criteriaStats
                 .sort((a, b) => a.componentNumber - b.componentNumber)
                 .flatMap((stat) => {

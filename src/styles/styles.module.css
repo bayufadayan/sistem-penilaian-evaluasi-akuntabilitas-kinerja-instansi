@@ -431,7 +431,6 @@
   width: 25%;
   padding: 16px 24px 100px 24px;
   height: 100vh;
-  display: flex;
   flex-direction: column;
   gap: 16px;
   background-color: white;
@@ -1236,7 +1235,7 @@
     top: 80px;
   }
 
-  .navLogo{
+  .navLogo {
     display: flex;
     align-self: center;
     justify-self: center;
@@ -1408,9 +1407,187 @@
     gap: 6px;
     margin-top: 30px;
   }
-  
+
   .summarySection p {
     font-size: medium;
     margin-bottom: 8px;
+  }
+
+  .lkeSidebar {
+    margin-top: 80px;
+    position: fixed;
+    width: 85%;
+    padding: 0px 24px 100px 24px;
+    height: 100vh;
+    z-index: 40;
+  }
+
+  .title:hover {
+    text-decoration: underline;
+    color: #0e55be;
+  }
+
+  .lkeContentContainer {
+    width: 100%;
+    margin-inline: 8px;
+    margin-top: 80px;
+  }
+
+  .lkeContent {
+    padding-inline: 16px;
+    padding-block: 50px;
+  }
+
+  .lkeContentHeader h1 {
+    font-size: 32px;
+    margin-block: 10px;
+  }
+
+  .lkeContentHeader p {
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nextButton {
+    justify-content: center;
+  }
+
+  .scroringGuideContainer {
+    flex-direction: column;
+  }
+
+  .explainMenuSection,
+  .explainTableSection {
+    width: 100%;
+    margin-left: 0px;
+  }
+
+  .explainMenuSection{
+    position: sticky;
+  }
+
+  .nextButtonPenjelasanNilai {
+    display: none;
+  }
+
+  .menuContainer {
+    width: 100%;
+    padding: 0;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .theMenu {
+    padding: 10px 20px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .theMenu p {
+    font-size: 16px;
+  }
+
+  .explainTableSection {
+    overflow-x: auto;
+    table-layout: auto;
+    width: 100%;
+  }
+
+  .explainTableSection table{
+    table-layout: auto;
+    width: 100%;
+  }
+
+  .explainTableSection table tr td:first-child {
+    min-width: 50px;
+  }
+  
+  .explainTableSection table tr td:nth-child(2) {
+    min-width: 70px;
+  }
+  
+  .explainTableSection table tr td:nth-child(3) {
+    min-width: 60px;
+  }
+  
+  .explainTableSection table tr td:nth-child(4) {
+    width: calc(100% - 35%);
+  }
+  .fillCriteriaHeaderContent {
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .criteriaTitleContainer {
+    width: 100%;
+  }
+
+  .criteriaScoreContainer {
+    width: 100%;
+  }
+
+  .criteriaContent{
+    flex-direction: column;
+  }
+
+  .fillCriteriaCommand p{
+    text-align: center;
+  }
+
+  .criteriaContent {
+    display: flex;
+    gap: 10px;
+  }
+
+  .contentLeftMenu {
+    width: 100%;
+  }
+
+  .criteriaListContainer{
+    flex-direction: row;
+    justify-content: left;
+    gap: 10px;
+    background-color: transparent;
+    flex-wrap: wrap;
+  }
+
+  .theCriteria{
+    max-width: 55px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid rgba(14, 85, 190, 0.3);
+    border-radius: 10px;
+  }
+  
+  .theCriteria div{
+    background-color: transparent;
+    font-size: 20px;
+  }
+
+  .theCriteria p{
+    display: none;
+  }
+
+  .criteriaFormContainer{
+    width: 100%;
+  }
+
+  .scoreList {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .scoreList label {
+    width: 80px;
+  }
+}
+
+@media (max-width: 367px) {
+  .menuContainer{
+    flex-direction: column;
   }
 }

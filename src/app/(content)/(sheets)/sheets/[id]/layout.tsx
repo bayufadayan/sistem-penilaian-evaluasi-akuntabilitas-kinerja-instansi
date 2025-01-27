@@ -107,7 +107,7 @@ export default function RootLayout({
     <DataContext.Provider
       value={{ myComponents, evaluationName, evaluationId, evaluationDesc, evaluationStatus }}
     >
-      <main className={`${styles.mainContainer} ${styles.lkeFilling}`}>
+      <main className={`bg-[#ecf1f4] md:py-0 md:px-0 ${styles.lkeFilling}`}>
         {
           evaluation.status !== "IN_PROGRESS" && evaluation.status !== "COMPLETED"
             ? <div className="z-[70] fixed w-screen h-screen bg-slate-600 text-white flex flex-col items-center justify-center gap-3">
