@@ -51,11 +51,11 @@ model Component {
   name             String
   description      String?
   weight           Float
-  id_team          Int
+  id_team          Int              @default(1)
   id_LKE           String
   component_number Int              @default(0)
   evaluation       EvaluationSheet  @relation(fields: [id_LKE], references: [id], onDelete: Cascade)
-  team             Team             @relation(fields: [id_team], references: [id])
+  team             Team             @relation(fields: [id_team], references: [id], onDelete: SetDefault)
   componentScore   ComponentScore[]
   subComponents    SubComponent[]
 }
