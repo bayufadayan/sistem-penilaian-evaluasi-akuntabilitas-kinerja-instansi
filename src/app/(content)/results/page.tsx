@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import styles from "@/styles/styles.module.css";
 import Link from 'next/link';
 import { FiExternalLink } from "react-icons/fi";
+import ExportButtons from '@/components/ExportButtons';
 
 interface EvaluationSheet {
   id: string;
@@ -67,6 +68,7 @@ export default function TempResultPage() {
                     <th scope="col" className="px-6 py-3">Tahun</th>
                     <th scope="col" className="px-6 py-3">Nilai</th>
                     <th scope="col" className="px-6 py-3">Grade</th>
+                    <th scope="col" className="px-6 py-3">Export</th>
                     <th scope="col" className="px-6 py-3 font-bold text-xl sticky md:static right-0 bg-blue-100 md:bg-transparent shadow-lg shadow-[--x-10px]"><FiExternalLink /></th>
                   </tr>
                 </thead>
@@ -84,6 +86,12 @@ export default function TempResultPage() {
                       <td className="px-6 py-4">{sheet.year}</td>
                       <td className="px-6 py-4">{sheet.evaluationSheetScore[0]?.nilai || "-"}</td>
                       <td className="px-6 py-4">{sheet.evaluationSheetScore[0]?.grade || "-"}</td>
+                      <td className="px-6 py-4">
+                        <ExportButtons 
+                          evaluationId={sheet.id} 
+                          evaluationTitle={sheet.title}
+                        />
+                      </td>
                       <td className="px-6 py-4 sticky right-0 bg-blue-50 md:bg-transparent">
                         <Link href={`/sheets/${sheet.id}/summary`} className={`py-2 px-4 bg-blue-500 text-white font-bold rounded-md shadow-md ${styles.detailButton}`}>
                         </Link>

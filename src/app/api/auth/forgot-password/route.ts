@@ -47,11 +47,11 @@ export const POST = async (request: Request) => {
 `;
 
     // Kirim email
-    await sendMail({
-      to: email,
-      subject: "Reset Password",
-      html: message,
-    });
+    await sendMail(
+      email,
+      "Reset Password",
+      message
+    );
 
     return NextResponse.json(
       { message: "Password reset email sent." },

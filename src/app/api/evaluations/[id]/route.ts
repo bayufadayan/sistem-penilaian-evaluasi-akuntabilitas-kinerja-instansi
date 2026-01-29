@@ -173,11 +173,11 @@ export const PATCH = async (
 
     // Kirim email ke setiap pengguna aktif
     for (const user of activeUsers) {
-      await sendMail({
-        to: user.email,
-        subject: `Status Update for LKE: ${evaluationSheet.title}`,
-        html: emailMessage,
-      });
+      await sendMail(
+        user.email,
+        `Status Update for LKE: ${evaluationSheet.title}`,
+        emailMessage
+      );
     }
   }
 

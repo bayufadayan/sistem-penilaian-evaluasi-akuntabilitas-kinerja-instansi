@@ -30,6 +30,7 @@ model User {
   resetPasswordToken  String?
   ActivityLog         ActivityLog[]
   Score               Score[]
+  Comment             Comment[]
   team                Team          @relation(fields: [id_team], references: [id], onDelete: SetDefault)
 }
 
@@ -90,6 +91,7 @@ model Score {
   id_criterias Int
   id_users     Int?
   Evidence     Evidence[]
+  Comment      Comment[]
   criteria     Criteria   @relation(fields: [id_criterias], references: [id], onDelete: Cascade)
   user         User?      @relation(fields: [id_users], references: [id])
 }
@@ -162,6 +164,17 @@ model ActivityLog {
   id_users   Int?
   createdAt  DateTime @default(now())
   user       User?    @relation(fields: [id_users], references: [id])
+}
+
+model Comment {
+  id           Int      @id @default(autoincrement())
+  content      String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  id_score     Int
+  id_users     Int?
+  score        Score    @relation(fields: [id_score], references: [id], onDelete: Cascade)
+  user         User?    @relation(fields: [id_users], references: [id])
 }
 
 enum Role {

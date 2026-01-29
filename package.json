@@ -28,6 +28,8 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "daisyui": "^4.12.10",
     "jest-fixed-jsdom": "^0.0.9",
+    "jspdf": "^4.0.0",
+    "jspdf-autotable": "^5.0.7",
     "nanoid": "^5.0.7",
     "next": "^14.2.13",
     "next-auth": "^4.24.7",

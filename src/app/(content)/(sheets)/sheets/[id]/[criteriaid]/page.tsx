@@ -24,6 +24,7 @@ import type {
 } from "@prisma/client";
 import Link from "next/link";
 import { useDataContext } from "../layout";
+import CommentSection from "@/components/CommentSection";
 
 interface Score2 {
   id: string;
@@ -1336,6 +1337,11 @@ export default function ScoreInputPage({
                     )}
                   </div>
                 </div>
+
+                {/* Comment Section */}
+                {selectedCriterion?.score?.[0]?.id && (
+                  <CommentSection scoreId={selectedCriterion.score[0].id} />
+                )}
 
                 <div className="flex md:hidden justify-between items-center mt-4">
                   <button
