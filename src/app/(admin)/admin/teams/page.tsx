@@ -3,10 +3,13 @@ import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { Suspense, useCallback } from "react"
+import { Suspense } from "react"
 import { Helmet } from "react-helmet";
 import { useDataContext } from "../../layout";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import useSWR, { mutate } from 'swr';
+import { fetcher } from '@/lib/fetcher';
+import TableSkeleton from '@/components/skeletons/TableSkeleton';
 
 interface User {
   id: number;
@@ -26,40 +29,17 @@ const ModalMemberTeam = dynamic(() => import("./modalMemberTeam"), { ssr: false 
 const AddMemberTeam = dynamic(() => import("./addMemberTeam"), { ssr: false });
 
 export default function ManagementTeamPage() {
-  const [teams, setTeams] = useState<Team[]>([]);
   const dataContext = useDataContext();
-
-  const fetchTeams = useCallback(async () => {
-    try {
-      const response = await fetch("/api/teams");
-      if (!response.ok) {
-        throw new Error("Failed to fetch teams");
-      }
-      const teamsData = await response.json();
-      setTeams(teamsData);
-    } catch (error) {
-      console.error("Failed to fetch Teams:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
+  
+  // SWR untuk caching teams data
+  const { data: teams = [], isLoading } = useSWR<Team[]>('/api/teams', fetcher);
 
   const onAddSuccess = async () => {
-    try {
-      await fetchTeams();
-    } catch (error) {
-      console.error("Error eksekusi sukses delete:", error);
-    }
+    mutate('/api/teams');
   }
 
   const onEditSuccess = async () => {
-    try {
-      await fetchTeams();
-    } catch (error) {
-      console.error("Error eksekusi sukses delete:", error);
-    }
+    mutate('/api/teams');
   }
 
   return (
@@ -91,16 +71,19 @@ export default function ManagementTeamPage() {
 
         {/* Tabel Konten */}
         <div className="bg-white shadow-md rounded-lg p-6">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-gray-500 border-b">
-                <th className="py-2 pe-8">#</th>
-                <th className="py-2 w-52">NAMA TIM</th>
-                <th className="py-2">Anggota</th>
-                <th className="py-2">AKSI</th>
-              </tr>
-            </thead>
-            {teams.length > 0 ? (
+          {isLoading ? (
+            <TableSkeleton rows={5} columns={4} />
+          ) : (
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-gray-500 border-b">
+                  <th className="py-2 pe-8">#</th>
+                  <th className="py-2 w-52">NAMA TIM</th>
+                  <th className="py-2">Anggota</th>
+                  <th className="py-2">AKSI</th>
+                </tr>
+              </thead>
+              {teams.length > 0 ? (
               <tbody>
                 {teams.map((team, index) => (
                   <tr className="border-b" key={team.id}>
@@ -147,7 +130,8 @@ export default function ManagementTeamPage() {
                 </tr>
               </tbody>
             )}
-          </table>
+            </table>
+          )}
         </div>
       </div>
     </>

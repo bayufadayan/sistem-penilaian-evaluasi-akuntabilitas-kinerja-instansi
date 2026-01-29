@@ -2,10 +2,13 @@
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { Suspense, lazy } from "react";
 import { Helmet } from "react-helmet";
 import { useDataContext } from "../../layout";
+import useSWR, { mutate } from 'swr';
+import { fetcher } from '@/lib/fetcher';
+import TableSkeleton from '@/components/skeletons/TableSkeleton';
 
 interface Team {
   name: string;
@@ -34,32 +37,14 @@ const AdminAddButton = lazy(() => import("../../components/adminAddButton"));
 const AdminEditButton = lazy(() => import("../../components/buttons/adminEditButton"));
 
 export default function ManagementAccountPage() {
-  const [users, setUsers] = useState<User[]>([]);
   const dataContext = useDataContext();
-
-  const fetchUsers = useCallback(async () => {
-    try {
-      const response = await fetch("/api/users");
-      if (!response.ok) {
-        throw new Error("Failed to fetch users");
-      }
-      const usersData = await response.json();
-      setUsers(usersData);
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+  
+  // SWR untuk caching dan auto-revalidation
+  const { data: users = [], isLoading } = useSWR<User[]>('/api/users', fetcher);
 
   const onDeleteSuccess = async () => {
-    try {
-      await fetchUsers();
-    } catch (error) {
-      console.error("Error eksekusi sukses delete:", error);
-    }
+    // Revalidate cache setelah delete
+    mutate('/api/users');
   }
 
   return (
@@ -91,6 +76,9 @@ export default function ManagementAccountPage() {
 
         {/* Tabel Konten */}
         <div className="bg-white shadow-md rounded-lg p-6">
+          {isLoading ? (
+            <TableSkeleton rows={5} columns={6} />
+          ) : (
           <table className="w-full text-left">
             <thead>
               <tr className="text-gray-500 border-b">
@@ -141,6 +129,7 @@ export default function ManagementAccountPage() {
               </tbody>
             )}
           </table>
+          )}
         </div>
       </div>
     </>

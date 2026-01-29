@@ -9,15 +9,11 @@ const transporter = nodemailer.createTransport({
 });
 
 
-export default async function sendMail({
-  to,
-  subject,
-  html,
-}: {
-  to: string;
-  subject: string;
-  html: string;
-}) {
+export async function sendMail(
+  to: string,
+  subject: string,
+  html: string
+) {
   try {
     const info = await transporter.sendMail({
       from: `"Admin AKIP BPMSPH" <${process.env.EMAIL_USER}>`,
@@ -31,3 +27,5 @@ export default async function sendMail({
     console.error("Error sending email: ", error);
   }
 }
+
+export default sendMail;

@@ -24,6 +24,14 @@ import type {
 } from "@prisma/client";
 import Link from "next/link";
 import { useDataContext } from "../layout";
+import CommentSection from "@/components/CommentSection";
+import dynamic from "next/dynamic";
+
+// Dynamic import untuk DocumentPreview karena menggunakan pdfjs-dist
+const DocumentPreview = dynamic(() => import("@/components/DocumentPreview"), {
+  ssr: false,
+  loading: () => <div className="btn btn-sm btn-ghost loading">Loading...</div>
+});
 
 interface Score2 {
   id: string;
@@ -1318,10 +1326,15 @@ export default function ScoreInputPage({
                               </div>
 
                               <div className={styles.rightSection}>
+                                <DocumentPreview 
+                                  url={evidence.public_path}
+                                  filename={evidence.file_name}
+                                  fileType={evidence.file_type}
+                                />
                                 <button
                                   type="button"
                                   onClick={() => openModal(evidence.id)}
-                                  className="bg-red-700 px-3 py-5 rounded text-white flex items-center justify-center gap-2 transition-all duration-200 ease-in-out transform hover:bg-red-600 hover:scale-105 active:scale-95 focus:outline-none"
+                                  className="bg-red-700 px-3 py-2 rounded text-white flex items-center justify-center gap-2 transition-all duration-200 ease-in-out transform hover:bg-red-600 hover:scale-105 active:scale-95 focus:outline-none"
                                 >
                                   <FaTrashCan />
                                 </button>
@@ -1336,6 +1349,11 @@ export default function ScoreInputPage({
                     )}
                   </div>
                 </div>
+
+                {/* Comment Section */}
+                {selectedCriterion?.score?.[0]?.id && (
+                  <CommentSection scoreId={selectedCriterion.score[0].id} />
+                )}
 
                 <div className="flex md:hidden justify-between items-center mt-4">
                   <button

@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import type { Component } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { createActivityLog } from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
-const prisma = new PrismaClient();
 
 export const POST = async (request: Request) => {
   const body: Component = await request.json();

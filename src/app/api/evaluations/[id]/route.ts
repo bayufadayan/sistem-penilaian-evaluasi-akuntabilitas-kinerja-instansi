@@ -1,12 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { type NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import type { EvaluationSheet } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { createActivityLog } from "@/lib/activityLog";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 import sendMail from "@/lib/sendMail";
-const prisma = new PrismaClient();
 
 export const GET = async (
   request: Request,
@@ -174,11 +173,11 @@ export const PATCH = async (
 
     // Kirim email ke setiap pengguna aktif
     for (const user of activeUsers) {
-      await sendMail({
-        to: user.email,
-        subject: `Status Update for LKE: ${evaluationSheet.title}`,
-        html: emailMessage,
-      });
+      await sendMail(
+        user.email,
+        `Status Update for LKE: ${evaluationSheet.title}`,
+        emailMessage
+      );
     }
   }
 
