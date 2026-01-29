@@ -3,10 +3,12 @@ import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { Suspense, useCallback } from "react"
+import { Suspense } from "react"
 import { Helmet } from "react-helmet";
 import { useDataContext } from "../../layout";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import useSWR, { mutate } from 'swr';
+import { fetcher } from '@/lib/fetcher';
 
 interface User {
   id: number;
@@ -26,40 +28,17 @@ const ModalMemberTeam = dynamic(() => import("./modalMemberTeam"), { ssr: false 
 const AddMemberTeam = dynamic(() => import("./addMemberTeam"), { ssr: false });
 
 export default function ManagementTeamPage() {
-  const [teams, setTeams] = useState<Team[]>([]);
   const dataContext = useDataContext();
-
-  const fetchTeams = useCallback(async () => {
-    try {
-      const response = await fetch("/api/teams");
-      if (!response.ok) {
-        throw new Error("Failed to fetch teams");
-      }
-      const teamsData = await response.json();
-      setTeams(teamsData);
-    } catch (error) {
-      console.error("Failed to fetch Teams:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
+  
+  // SWR untuk caching teams data
+  const { data: teams = [] } = useSWR<Team[]>('/api/teams', fetcher);
 
   const onAddSuccess = async () => {
-    try {
-      await fetchTeams();
-    } catch (error) {
-      console.error("Error eksekusi sukses delete:", error);
-    }
+    mutate('/api/teams');
   }
 
   const onEditSuccess = async () => {
-    try {
-      await fetchTeams();
-    } catch (error) {
-      console.error("Error eksekusi sukses delete:", error);
-    }
+    mutate('/api/teams');
   }
 
   return (

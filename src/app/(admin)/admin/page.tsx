@@ -1,5 +1,7 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
 import CardCount from './cardCount';
 import SmallCard from './smallCard';
 import UserActivityChart from './userActivityChart';
@@ -21,102 +23,30 @@ type EvaluationStatusCount = {
 };
 
 export default function TeamPage() {
+  // SWR hooks untuk caching data
+  const { data: userCountData } = useSWR('/api/users/count', fetcher);
+  const { data: teamCountData } = useSWR('/api/teams/count', fetcher);
+  const { data: evaluationCountData } = useSWR('/api/evaluations/count', fetcher);
+  const { data: evidenceCountData } = useSWR('/api/evidence/count', fetcher);
+  const { data: componentCountData } = useSWR('/api/components/count', fetcher);
+  const { data: subComponentCountData } = useSWR('/api/subcomponents/count', fetcher);
+  const { data: criteriaCountData } = useSWR('/api/criterias/count', fetcher);
+  const { data: evaluationByStatusData } = useSWR('/api/evaluations/countbystatus', fetcher);
 
-  const [userCount, setUserCount] = useState("");
-  const [teamCount, setTeamCount] = useState("");
-  const [evaluationCount, setEvaluationCount] = useState("");
-  const [evidenceCount, setEvidenceCount] = useState("");
-  const [componentCount, setComponentCount] = useState("");
-  const [subComponentCount, setSubComponentCount] = useState("");
-  const [criteriaCount, setCriteriaCount] = useState("");
-  const [evaluationByStatusCount, setEvaluationByStatusCount] = useState<EvaluationStatusCount>({
-    COMPLETED: 0,
-    IN_PROGRESS: 0,
-    PENDING: 0,
-    CANCELLED: 0,
-  });
-
-
-  useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const [userRes, teamRes, evaluationRes, evidenceRes] = await Promise.all([
-          fetch("/api/users/count"),
-          fetch("/api/teams/count"),
-          fetch("/api/evaluations/count"),
-          fetch("/api/evidence/count")
-        ]);
-
-        if (!userRes.ok || !teamRes.ok || !evaluationRes.ok || !evidenceRes.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        const userCountData = await userRes.json();
-        const teamCountData = await teamRes.json();
-        const evaluationCountData = await evaluationRes.json();
-        const evidenceCountData = await evidenceRes.json();
-
-        setUserCount(userCountData.userCount);
-        setTeamCount(teamCountData.teamCount);
-        setEvaluationCount(evaluationCountData.evaluationSheetCount);
-        setEvidenceCount(evidenceCountData.evidenceCount);
-      } catch (error) {
-        console.error("Failed to fetch counts:", error);
-      }
-    };
-
-    fetchCount();
-  }, []);
-
-  useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const [componentRes, subComponentRes, criteriaRes] = await Promise.all([
-          fetch("/api/components/count"),
-          fetch("/api/subcomponents/count"),
-          fetch("/api/criterias/count"),
-        ]);
-
-        if (!componentRes.ok || !subComponentRes.ok || !criteriaRes.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        const componentCountData = await componentRes.json();
-        const subComponentCountData = await subComponentRes.json();
-        const criteriaCountData = await criteriaRes.json();
-
-        setComponentCount(componentCountData.componentCount);
-        setSubComponentCount(subComponentCountData.subComponentScoreCount);
-        setCriteriaCount(criteriaCountData.criteriaCount);
-      } catch (error) {
-        console.error("Failed to fetch counts:", error);
-      }
-    };
-
-    fetchCount();
-  }, []);
-
-  useEffect(() => {
-    const fetchCount = async () => {
-      try {
-        const response = await fetch("/api/evaluations/countbystatus");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        const evaluationCountStatusData = await response.json();
-        setEvaluationByStatusCount((prevState) => ({
-          ...prevState,
-          ...evaluationCountStatusData,
-        }));
-
-      } catch (error) {
-        console.error("Failed to fetch counts:", error);
-      }
-    };
-
-    fetchCount();
-  }, []);
+  const userCount = userCountData?.userCount || "";
+  const teamCount = teamCountData?.teamCount || "";
+  const evaluationCount = evaluationCountData?.evaluationSheetCount || "";
+  const evidenceCount = evidenceCountData?.evidenceCount || "";
+  const componentCount = componentCountData?.componentCount || "";
+  const subComponentCount = subComponentCountData?.subComponentScoreCount || "";
+  const criteriaCount = criteriaCountData?.criteriaCount || "";
+  
+  const evaluationByStatusCount: EvaluationStatusCount = {
+    COMPLETED: evaluationByStatusData?.COMPLETED || 0,
+    IN_PROGRESS: evaluationByStatusData?.IN_PROGRESS || 0,
+    PENDING: evaluationByStatusData?.PENDING || 0,
+    CANCELLED: evaluationByStatusData?.CANCELLED || 0,
+  };
 
   const evidenceData = {
     labels: ['Completed', 'In Progress', 'Pending', 'Canceled'],

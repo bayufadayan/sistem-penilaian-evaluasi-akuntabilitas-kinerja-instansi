@@ -2,10 +2,12 @@
 import { TiHome } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
 import Link from "next/link";
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { Suspense, lazy } from "react";
 import { Helmet } from "react-helmet";
 import { useDataContext } from "../../layout";
+import useSWR, { mutate } from 'swr';
+import { fetcher } from '@/lib/fetcher';
 
 interface Team {
   name: string;
@@ -34,32 +36,14 @@ const AdminAddButton = lazy(() => import("../../components/adminAddButton"));
 const AdminEditButton = lazy(() => import("../../components/buttons/adminEditButton"));
 
 export default function ManagementAccountPage() {
-  const [users, setUsers] = useState<User[]>([]);
   const dataContext = useDataContext();
-
-  const fetchUsers = useCallback(async () => {
-    try {
-      const response = await fetch("/api/users");
-      if (!response.ok) {
-        throw new Error("Failed to fetch users");
-      }
-      const usersData = await response.json();
-      setUsers(usersData);
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+  
+  // SWR untuk caching dan auto-revalidation
+  const { data: users = [] } = useSWR<User[]>('/api/users', fetcher);
 
   const onDeleteSuccess = async () => {
-    try {
-      await fetchUsers();
-    } catch (error) {
-      console.error("Error eksekusi sukses delete:", error);
-    }
+    // Revalidate cache setelah delete
+    mutate('/api/users');
   }
 
   return (

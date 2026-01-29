@@ -1,5 +1,5 @@
 "use client"
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { BsCardChecklist } from "react-icons/bs";
@@ -10,6 +10,8 @@ import { Helmet } from "react-helmet";
 import dynamic from "next/dynamic";
 import { useDataContext } from "../../layout";
 import { EvaluationSheet } from "@prisma/client";
+import useSWR, { mutate } from 'swr';
+import { fetcher } from '@/lib/fetcher';
 
 const AdminAddButton = dynamic(() => import("../../components/adminAddButton"), { ssr: false });
 const EditEvaluation = dynamic(() => import("./editEvaluation"), { ssr: false });
@@ -17,53 +19,33 @@ const DeleteEvaluation = dynamic(() => import("./deleteEvaluation"), { ssr: fals
 const GenerateTemplateButton = dynamic(() => import("./generateTemplateButton"), { ssr: false });
 
 export default function EvaluationPage() {
-  const [evalsheets, setEvalsheets] = useState<EvaluationSheet[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const dataContext = useDataContext();
+  
+  // SWR untuk caching evaluations data
+  const { data: evaluationsData, isLoading } = useSWR<EvaluationSheet[]>('/api/evaluations', fetcher);
 
-  const fetchEvaluations = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch("/api/evaluations");
-      if (!response.ok) {
-        throw new Error("Failed to fetch evaluations");
-      }
-      const evaluationsData = await response.json();
+  const evalsheets = evaluationsData?.map((sheet: EvaluationSheet) => {
+    const updatedSheet = {
+      ...sheet,
+      date_start: new Date(sheet.date_start),
+      date_finish: new Date(sheet.date_finish),
+      color: sheet.color
+    };
 
-      evaluationsData.map((sheet: EvaluationSheet) => {
-        sheet.date_start = new Date(sheet.date_start);
-        sheet.date_finish = new Date(sheet.date_finish);
-
-        if (sheet.status === "PENDING") {
-          sheet.color = "bg-gradient-to-r from-yellow-400 to-yellow-500";
-        } else if (sheet.status === "COMPLETED") {
-          sheet.color = "bg-gradient-to-r from-green-400 to-green-600";
-        } else if (sheet.status === "IN_PROGRESS") {
-          sheet.color = "bg-gradient-to-r from-cyan-500 via-blue-600 to-blue-800";
-        } else if (sheet.status === "CANCELLED") {
-          sheet.color = "bg-gradient-to-r from-red-500 via-red-600 to-red-700";
-        }
-        return sheet;
-      });
-
-      setIsLoading(false);
-      setEvalsheets(evaluationsData);
-    } catch (error) {
-      setIsLoading(false);
-      console.error("Failed to fetch evaluations:", error);
+    if (sheet.status === "PENDING") {
+      updatedSheet.color = "bg-gradient-to-r from-yellow-400 to-yellow-500";
+    } else if (sheet.status === "COMPLETED") {
+      updatedSheet.color = "bg-gradient-to-r from-green-400 to-green-600";
+    } else if (sheet.status === "IN_PROGRESS") {
+      updatedSheet.color = "bg-gradient-to-r from-cyan-500 via-blue-600 to-blue-800";
+    } else if (sheet.status === "CANCELLED") {
+      updatedSheet.color = "bg-gradient-to-r from-red-500 via-red-600 to-red-700";
     }
-  }, []);
-
-  useEffect(() => {
-    fetchEvaluations();
-  }, [fetchEvaluations]);
+    return updatedSheet;
+  }) || [];
 
   const onDeleteSuccess = async () => {
-    try {
-      await fetchEvaluations();
-    } catch (error) {
-      console.error("Error eksekusi sukses delete:", error);
-    }
+    mutate('/api/evaluations');
   }
 
   const formatDate = (date: Date) => {
