@@ -12,7 +12,7 @@ Aplikasi web untuk mengelola dan mengevaluasi kinerja instansi pemerintah berdas
 - [Menjalankan Aplikasi](#menjalankan-aplikasi)
 - [Troubleshooting](#troubleshooting)
 
-## 🖥️ Persyaratan Sistem
+## 🖥️ Persyaratan System
 
 Sebelum memulai, pastikan komputer Anda sudah terinstall:
 
