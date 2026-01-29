@@ -12,6 +12,7 @@ import { useDataContext } from "../../layout";
 import { EvaluationSheet } from "@prisma/client";
 import useSWR, { mutate } from 'swr';
 import { fetcher } from '@/lib/fetcher';
+import EvaluationCardSkeleton from '@/components/skeletons/EvaluationCardSkeleton';
 
 const AdminAddButton = dynamic(() => import("../../components/adminAddButton"), { ssr: false });
 const EditEvaluation = dynamic(() => import("./editEvaluation"), { ssr: false });
@@ -84,8 +85,10 @@ export default function EvaluationPage() {
         </div>
 
         {/* Kumpulan Kartu */}
-        {evalsheets.length > 0 ?
-          (<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {isLoading ? (
+          <EvaluationCardSkeleton count={6} />
+        ) : evalsheets.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
             {evalsheets.map((evalsheet) => (
               <div
@@ -156,11 +159,11 @@ export default function EvaluationPage() {
             ))}
 
           </div>
-          ) : (
-            <div className="flex items-center justify-center w-full h-full rounded-lg">
-              <p className="text-gray-400 text-lg font-semibold pt-24">{isLoading ? "Loading..." : "Lembar Evaluasi Kosong"}</p>
-            </div>
-          )}
+        ) : (
+          <div className="flex items-center justify-center w-full h-full rounded-lg">
+            <p className="text-gray-400 text-lg font-semibold pt-24">Lembar Evaluasi Kosong</p>
+          </div>
+        )}
       </div>
     </>
   );

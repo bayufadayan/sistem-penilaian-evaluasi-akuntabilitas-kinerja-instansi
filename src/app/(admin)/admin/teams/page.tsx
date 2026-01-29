@@ -9,6 +9,7 @@ import { useDataContext } from "../../layout";
 import React from 'react';
 import useSWR, { mutate } from 'swr';
 import { fetcher } from '@/lib/fetcher';
+import TableSkeleton from '@/components/skeletons/TableSkeleton';
 
 interface User {
   id: number;
@@ -31,7 +32,7 @@ export default function ManagementTeamPage() {
   const dataContext = useDataContext();
   
   // SWR untuk caching teams data
-  const { data: teams = [] } = useSWR<Team[]>('/api/teams', fetcher);
+  const { data: teams = [], isLoading } = useSWR<Team[]>('/api/teams', fetcher);
 
   const onAddSuccess = async () => {
     mutate('/api/teams');
@@ -70,16 +71,19 @@ export default function ManagementTeamPage() {
 
         {/* Tabel Konten */}
         <div className="bg-white shadow-md rounded-lg p-6">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-gray-500 border-b">
-                <th className="py-2 pe-8">#</th>
-                <th className="py-2 w-52">NAMA TIM</th>
-                <th className="py-2">Anggota</th>
-                <th className="py-2">AKSI</th>
-              </tr>
-            </thead>
-            {teams.length > 0 ? (
+          {isLoading ? (
+            <TableSkeleton rows={5} columns={4} />
+          ) : (
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-gray-500 border-b">
+                  <th className="py-2 pe-8">#</th>
+                  <th className="py-2 w-52">NAMA TIM</th>
+                  <th className="py-2">Anggota</th>
+                  <th className="py-2">AKSI</th>
+                </tr>
+              </thead>
+              {teams.length > 0 ? (
               <tbody>
                 {teams.map((team, index) => (
                   <tr className="border-b" key={team.id}>
@@ -126,7 +130,8 @@ export default function ManagementTeamPage() {
                 </tr>
               </tbody>
             )}
-          </table>
+            </table>
+          )}
         </div>
       </div>
     </>

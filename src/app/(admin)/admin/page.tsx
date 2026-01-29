@@ -14,6 +14,8 @@ import { ImFilesEmpty } from "react-icons/im";
 import EvaluationScoreCompleted, { EvaluationScoreInProgress } from './lastEvaluationScore';
 import EvaluationScoreTable from './evaluationScoreTable';
 import ActivityTable from './activityTable';
+import CardSkeleton from '@/components/skeletons/CardSkeleton';
+import ChartSkeleton from '@/components/skeletons/ChartSkeleton';
 
 type EvaluationStatusCount = {
   COMPLETED: number;
@@ -24,14 +26,17 @@ type EvaluationStatusCount = {
 
 export default function TeamPage() {
   // SWR hooks untuk caching data
-  const { data: userCountData } = useSWR('/api/users/count', fetcher);
-  const { data: teamCountData } = useSWR('/api/teams/count', fetcher);
-  const { data: evaluationCountData } = useSWR('/api/evaluations/count', fetcher);
-  const { data: evidenceCountData } = useSWR('/api/evidence/count', fetcher);
-  const { data: componentCountData } = useSWR('/api/components/count', fetcher);
-  const { data: subComponentCountData } = useSWR('/api/subcomponents/count', fetcher);
-  const { data: criteriaCountData } = useSWR('/api/criterias/count', fetcher);
-  const { data: evaluationByStatusData } = useSWR('/api/evaluations/countbystatus', fetcher);
+  const { data: userCountData, isLoading: isLoadingUsers } = useSWR('/api/users/count', fetcher);
+  const { data: teamCountData, isLoading: isLoadingTeams } = useSWR('/api/teams/count', fetcher);
+  const { data: evaluationCountData, isLoading: isLoadingEvaluations } = useSWR('/api/evaluations/count', fetcher);
+  const { data: evidenceCountData, isLoading: isLoadingEvidence } = useSWR('/api/evidence/count', fetcher);
+  const { data: componentCountData, isLoading: isLoadingComponents } = useSWR('/api/components/count', fetcher);
+  const { data: subComponentCountData, isLoading: isLoadingSubComponents } = useSWR('/api/subcomponents/count', fetcher);
+  const { data: criteriaCountData, isLoading: isLoadingCriterias } = useSWR('/api/criterias/count', fetcher);
+  const { data: evaluationByStatusData, isLoading: isLoadingByStatus } = useSWR('/api/evaluations/countbystatus', fetcher);
+
+  const isLoadingCounts = isLoadingUsers || isLoadingTeams || isLoadingEvaluations || isLoadingEvidence;
+  const isLoadingStats = isLoadingComponents || isLoadingSubComponents || isLoadingCriterias;
 
   const userCount = userCountData?.userCount || "";
   const teamCount = teamCountData?.teamCount || "";
@@ -86,27 +91,41 @@ export default function TeamPage() {
       </div>
 
       <div className="flex gap-2 flex-col">
-        <div className="flex gap-4 mb-6">
-          <CardCount title="Jumlah Akun Terdaftar" value={userCount} color="from-red-600 to-red-400" icon={< MdOutlineAccountCircle className="text-white w-12 h-12" />} />
-          <CardCount title="Jumlah Tim Terdaftar" value={teamCount} color="from-blue-600 to-blue-400" icon={< AiOutlineTeam className="text-white w-12 h-12" />} />
-          <CardCount title="Jumlah LKE AKIP" value={evaluationCount} color="from-green-600 to-green-400" icon={< FaRegChartBar className="text-white w-12 h-12" />} />
-          <CardCount title="Jumlah Evidence" value={evidenceCount} color="from-yellow-600 to-yellow-400" icon={<ImFilesEmpty className="text-white w-12 h-12" />} />
-        </div>
+        {isLoadingCounts ? (
+          <CardSkeleton count={4} />
+        ) : (
+          <div className="flex gap-4 mb-6">
+            <CardCount title="Jumlah Akun Terdaftar" value={userCount} color="from-red-600 to-red-400" icon={< MdOutlineAccountCircle className="text-white w-12 h-12" />} />
+            <CardCount title="Jumlah Tim Terdaftar" value={teamCount} color="from-blue-600 to-blue-400" icon={< AiOutlineTeam className="text-white w-12 h-12" />} />
+            <CardCount title="Jumlah LKE AKIP" value={evaluationCount} color="from-green-600 to-green-400" icon={< FaRegChartBar className="text-white w-12 h-12" />} />
+            <CardCount title="Jumlah Evidence" value={evidenceCount} color="from-yellow-600 to-yellow-400" icon={<ImFilesEmpty className="text-white w-12 h-12" />} />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col md:flex-row gap-5">
         <div className="bg-white flex-1 p-4 rounded-lg shadow-md">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-            <SmallCard title="Total Seluruh Komponen" value={componentCount} color="text-blue-600" borderColor="border-blue-600" />
+          {isLoadingStats ? (
+            <div className="mb-4">
+              <CardSkeleton count={3} />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <SmallCard title="Total Seluruh Komponen" value={componentCount} color="text-blue-600" borderColor="border-blue-600" />
             <SmallCard title="Total Seluruh Subkomponen" value={subComponentCount} color="text-green-600" borderColor="border-green-600" />
             <SmallCard title="Total Seluruh Kriteria" value={criteriaCount} color="text-yellow-600" borderColor="border-yellow-600" />
           </div>
+          )}
 
           <div className="flex flex-col gap-4">
             {/* Evidence Pie Chart */}
             <div className="w-full flex gap-2 items-stretch">
               <div className="w-3/5 grid grid-cols-1">
-                <EvaluationPieChart data={evidenceData} />
+                {isLoadingByStatus ? (
+                  <ChartSkeleton />
+                ) : (
+                  <EvaluationPieChart data={evidenceData} />
+                )}
               </div>
 
               <div className="w-2/5 flex flex-col gap-2 min-h-full">

@@ -8,6 +8,7 @@ import { Helmet } from "react-helmet";
 import { useDataContext } from "../../layout";
 import useSWR, { mutate } from 'swr';
 import { fetcher } from '@/lib/fetcher';
+import TableSkeleton from '@/components/skeletons/TableSkeleton';
 
 interface Team {
   name: string;
@@ -39,7 +40,7 @@ export default function ManagementAccountPage() {
   const dataContext = useDataContext();
   
   // SWR untuk caching dan auto-revalidation
-  const { data: users = [] } = useSWR<User[]>('/api/users', fetcher);
+  const { data: users = [], isLoading } = useSWR<User[]>('/api/users', fetcher);
 
   const onDeleteSuccess = async () => {
     // Revalidate cache setelah delete
@@ -75,6 +76,9 @@ export default function ManagementAccountPage() {
 
         {/* Tabel Konten */}
         <div className="bg-white shadow-md rounded-lg p-6">
+          {isLoading ? (
+            <TableSkeleton rows={5} columns={6} />
+          ) : (
           <table className="w-full text-left">
             <thead>
               <tr className="text-gray-500 border-b">
@@ -125,6 +129,7 @@ export default function ManagementAccountPage() {
               </tbody>
             )}
           </table>
+          )}
         </div>
       </div>
     </>
